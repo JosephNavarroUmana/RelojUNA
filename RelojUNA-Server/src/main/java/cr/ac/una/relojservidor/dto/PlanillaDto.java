@@ -1,13 +1,57 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cr.ac.una.relojservidor.dto;
 
-/**
- *
- * @author Usuario
- */
-public class PlanillaDto {
-    
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
+
+public class PlanillaDto implements Serializable {
+
+    private Long id;
+    private Integer mes;
+    private Integer anio;
+    private LocalDate fechaGeneracion;
+    private List<DetallePlanillaDto> detalles;
+
+    public PlanillaDto() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getMes() {
+        return mes;
+    }
+
+    public void setMes(Integer mes) {
+        this.mes = mes;
+    }
+
+    public Integer getAnio() {
+        return anio;
+    }
+
+    public void setAnio(Integer anio) {
+        this.anio = anio;
+    }
+
+    public LocalDate getFechaGeneracion() {
+        return fechaGeneracion;
+    }
+
+    public void setFechaGeneracion(LocalDate fechaGeneracion) {
+        this.fechaGeneracion = fechaGeneracion;
+    }
+
+    public List<DetallePlanillaDto> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetallePlanillaDto> detalles) {
+        this.detalles = detalles;
+    }
 }
