@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="15" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.ReporteController">
+    <padding>
+        <Insets bottom="15" left="15" right="15" top="15" />
+    </padding>
+
+    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Módulo de Reportes (Jasper Reports)" />
+
+    <GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
+        <Label text="Tipo de reporte:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+
+        <HBox spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <RadioButton fx:id="rbReporteEmpleados" text="Empleados" />
+            <RadioButton fx:id="rbReporteMarcas" selected="true" text="Marcas" />
+            <ToggleGroup fx:id="tipoReporteGroup" />
+        </HBox>
+
+        <Label text="Empleado:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ComboBox fx:id="cmbEmpleado" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label text="Fecha desde:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <DatePicker fx:id="dpFechaDesde" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <Label text="Fecha hasta:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <DatePicker fx:id="dpFechaHasta" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <Button fx:id="btnGenerarReporte" onAction="#handleGenerarReporte" text="Generar Reporte" />
+            <Button fx:id="btnVistaPrevia" onAction="#handleVistaPrevia" text="Vista Previa" />
+        </HBox>
+    </GridPane>
+</VBox>

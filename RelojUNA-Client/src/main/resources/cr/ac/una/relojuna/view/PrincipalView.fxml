@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="15" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.PrincipalController">
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30" />
+    </padding>
+
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Menú Principal - Reloj Marcador" />
+    <Label fx:id="lblUsuario" style="-fx-font-size: 14px;" text="Bienvenido: " />
+
+    <GridPane alignment="CENTER" hgap="15" vgap="15">
+        <Button fx:id="btnEmpleados" onAction="#handleEmpleados" prefWidth="200" text="Mantenimiento de Empleados" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Button fx:id="btnMarcas" onAction="#handleMarcas" prefWidth="200" text="Pantalla de Marcas" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <Button fx:id="btnMantenimientoMarcas" onAction="#handleMantenimientoMarcas" prefWidth="200" text="Mantenimiento de Marcas" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Button fx:id="btnPlanilla" onAction="#handlePlanilla" prefWidth="200" text="Generación de Planillas" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Button fx:id="btnConsulta" onAction="#handleConsulta" prefWidth="200" text="Consultas (Streams)" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <Button fx:id="btnReportes" onAction="#handleReportes" prefWidth="200" text="Módulo de Reportes" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Button fx:id="btnCerrarSesion" onAction="#handleCerrarSesion" prefWidth="200" text="Cerrar Sesión" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2" />
+    </GridPane>
+</VBox>

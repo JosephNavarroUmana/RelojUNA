@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.LoginController">
-    <children>
-        <Label text="RelojUNA - Acceso Administrativo" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
-        <TextField fx:id="txtFolio" promptText="Folio"/>
-        <PasswordField fx:id="txtClave" promptText="Clave"/>
-        <Button text="Ingresar" onAction="#onLogin"/>
-    </children>
+<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.LoginController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="30" left="30" right="30" top="30" />
     </padding>
+
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Inicio de Sesión - Reloj Marcador" />
+
+    <GridPane alignment="CENTER" hgap="10" vgap="10">
+        <Label text="Folio:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="txtFolio" promptText="Ingrese su folio" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <Label text="Clave:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <PasswordField fx:id="txtClave" promptText="Ingrese su clave" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Button fx:id="btnLogin" onAction="#handleLogin" text="Ingresar" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    </GridPane>
 </VBox>
