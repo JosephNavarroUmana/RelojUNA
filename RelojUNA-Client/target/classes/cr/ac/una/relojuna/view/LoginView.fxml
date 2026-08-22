@@ -20,7 +20,7 @@
         <TextField fx:id="txtFolio" promptText="Ingrese su folio" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
         <Label text="Clave:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <PasswordField fx:id="txtClave" promptText="Ingrese su claveeeee" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <PasswordField fx:id="txtClave" promptText="Ingrese su clave" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
         <Button fx:id="btnLogin" onAction="#handleLogin" text="Ingresar" GridPane.columnIndex="1" GridPane.rowIndex="2" />
     </GridPane>

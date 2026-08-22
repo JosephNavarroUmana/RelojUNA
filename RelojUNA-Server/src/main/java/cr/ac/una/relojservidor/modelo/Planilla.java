@@ -9,10 +9,15 @@ import java.util.List;
 @Table(name = "PLANILLA")
 public class Planilla implements Serializable {
 
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "PLA_ID")
+//    private Long id;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PLA_ID")
-    private Long id;
+@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_planilla")
+@SequenceGenerator(name = "seq_planilla", sequenceName = "SEQ_PLA_ID", allocationSize = 1)
+@Column(name = "PLA_ID")
+private Long id;
 
     @Column(name = "PLA_MES", nullable = false)
     private Integer mes;

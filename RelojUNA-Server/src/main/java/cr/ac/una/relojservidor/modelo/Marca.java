@@ -9,8 +9,14 @@ import java.time.LocalDateTime;
 @Table(name = "MARCA")
 public class Marca implements Serializable {
 
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "MAR_ID")
+//    private Long id;
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_marca")
+    @SequenceGenerator(name = "seq_marca", sequenceName = "SEQ_MAR_ID", allocationSize = 1)
     @Column(name = "MAR_ID")
     private Long id;
 
