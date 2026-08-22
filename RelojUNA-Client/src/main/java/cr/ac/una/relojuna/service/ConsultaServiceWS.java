@@ -1,13 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package cr.ac.una.relojuna.service;
 
-/**
- * @author Ortiz
- */
-public class ConsultaServiceWS {
+import cr.ac.una.relojuna.model.ConsultaResultadoDto;
+import java.time.LocalDate;
+import java.util.List;
 
+public class ConsultaServiceWS implements IConsultaService {
+
+    @Override
+    public List<ConsultaResultadoDto> consultarMarcas(LocalDate fechaDesde, LocalDate fechaHasta, Integer folioEmpleado) {
+        //Pendiente, se implementa cuando este listo el servicio real
+        return null;
+    }
 }

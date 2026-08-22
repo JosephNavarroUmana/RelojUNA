@@ -6,7 +6,6 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -22,9 +21,8 @@
         <Label text="Tipo de reporte:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 
         <HBox spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <RadioButton fx:id="rbReporteEmpleados" text="Empleados" />
-            <RadioButton fx:id="rbReporteMarcas" selected="true" text="Marcas" />
-            <ToggleGroup fx:id="tipoReporteGroup" />
+            <RadioButton fx:id="rbReporteEmpleados" text="Empleados" toggleGroup="$tipoReporteGroup" />
+            <RadioButton fx:id="rbReporteMarcas" selected="true" text="Marcas" toggleGroup="$tipoReporteGroup" />
         </HBox>
 
         <Label text="Empleado:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
@@ -41,4 +39,8 @@
             <Button fx:id="btnVistaPrevia" onAction="#handleVistaPrevia" text="Vista Previa" />
         </HBox>
     </GridPane>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="btnRegresar" onAction="#handleRegresar" text="Regresar" />
+    </HBox>
 </VBox>

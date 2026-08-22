@@ -1,13 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package cr.ac.una.relojuna.service;
 
-/**
- * @author Ortiz
- */
-public class LoginServiceWS {
+import cr.ac.una.relojuna.model.EmpleadoDto;
 
+public class LoginServiceWS implements ILoginService {
+
+    @Override
+    public EmpleadoDto validarLogin(String folio, String clave) {
+        //Pendiente, se implementa cuando este listo el servicio real
+        return null;
+    }
 }

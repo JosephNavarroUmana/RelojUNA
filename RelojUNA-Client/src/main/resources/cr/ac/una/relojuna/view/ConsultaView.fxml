@@ -50,4 +50,8 @@
             <TableColumn fx:id="colHorasTrabajadas" prefWidth="120" text="Horas Trabajadas" />
         </columns>
     </TableView>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="btnRegresar" onAction="#handleRegresar" text="Regresar" />
+    </HBox>
 </VBox>
