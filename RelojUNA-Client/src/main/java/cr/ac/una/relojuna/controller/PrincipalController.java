@@ -1,18 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package cr.ac.una.relojuna.controller;
 
-import javafx.event.ActionEvent;
+import cr.ac.una.relojuna.model.EmpleadoDto;
+import cr.ac.una.relojuna.util.FlowController;
+import cr.ac.una.relojuna.util.SesionTemporal;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-/**
- * @author Ortiz
- */
 public class PrincipalController {
 
     @FXML
@@ -33,31 +27,49 @@ public class PrincipalController {
     private Button btnCerrarSesion;
 
     @FXML
-    private void handleEmpleados(ActionEvent event) {
+    private void initialize() {
+        // Mostramos el nombre del empleado que inicio sesion
+        EmpleadoDto empleado = SesionTemporal.getInstancia().getEmpleadoActual();
+
+        if (empleado != null) {
+            lblUsuario.setText("Bienvenido: " + empleado.getNombre() + " " + empleado.getApellidos());
+        }
     }
 
     @FXML
-    private void handleMarcas(ActionEvent event) {
+    private void handleEmpleados() {
+        FlowController.getInstancia().abrirVistaModal("EmpleadoView.fxml", "Mantenimiento de Empleados");
     }
 
     @FXML
-    private void handleMantenimientoMarcas(ActionEvent event) {
+    private void handleMarcas() {
+        FlowController.getInstancia().abrirVistaModal("MarcaView.fxml", "Pantalla de Marcas");
     }
 
     @FXML
-    private void handlePlanilla(ActionEvent event) {
+    private void handleMantenimientoMarcas() {
+        FlowController.getInstancia().abrirVistaModal("MantenimientoMarcasView.fxml", "Mantenimiento de Marcas");
     }
 
     @FXML
-    private void handleConsulta(ActionEvent event) {
+    private void handlePlanilla() {
+        FlowController.getInstancia().abrirVistaModal("PlanillaView.fxml", "Generacion de Planillas");
     }
 
     @FXML
-    private void handleReportes(ActionEvent event) {
+    private void handleConsulta() {
+        FlowController.getInstancia().abrirVistaModal("ConsultaView.fxml", "Consultas con Streams");
     }
 
     @FXML
-    private void handleCerrarSesion(ActionEvent event) {
+    private void handleReportes() {
+        FlowController.getInstancia().abrirVistaModal("ReporteView.fxml", "Modulo de Reportes");
     }
 
+    @FXML
+    private void handleCerrarSesion() {
+        // Limpiamos la sesion y regresamos a la pantalla de login
+        SesionTemporal.getInstancia().cerrarSesion();
+        FlowController.getInstancia().irAVista("LoginView.fxml", "Reloj Marcador");
+    }
 }

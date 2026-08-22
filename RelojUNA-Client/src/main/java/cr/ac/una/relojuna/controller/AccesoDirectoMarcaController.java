@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package cr.ac.una.relojuna.controller;
 
 import javafx.event.ActionEvent;
@@ -12,28 +7,24 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
-/**
- * @author Ortiz
- */
 public class AccesoDirectoMarcaController {
 
     @FXML
-    private Label lblReloj;
+    private Label lblReloj, lblNombreEmpleado, lblHoraMarca, lblMensaje;
     @FXML
     private TextField txtFolio;
     @FXML
-    private Button btnMarcar;
-    @FXML
     private ImageView imgFoto;
     @FXML
-    private Label lblNombreEmpleado;
+    private Button btnMarcar;
     @FXML
-    private Label lblHoraMarca;
-    @FXML
-    private Label lblMensaje;
+    private Button btnRegresar;
 
     @FXML
-    private void handleMarcar(ActionEvent event) {
+    private void handleMarcar() { /* ... */ }
+
+    @FXML
+    private void handleRegresar(ActionEvent event) {
+        
     }
-
 }

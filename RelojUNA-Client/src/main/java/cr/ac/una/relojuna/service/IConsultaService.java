@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package cr.ac.una.relojuna.service;
 
-/**
- * @author Ortiz
- */
-public class IConsultaService {
+import cr.ac.una.relojuna.model.ConsultaResultadoDto;
+import java.time.LocalDate;
+import java.util.List;
 
+public interface IConsultaService {
+
+    //Consulta marcas usando streams, el folio es opcional, si viene null trae todos los empleados
+    List<ConsultaResultadoDto> consultarMarcas(LocalDate fechaDesde, LocalDate fechaHasta, Integer folioEmpleado);
 }

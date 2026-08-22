@@ -1,13 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package cr.ac.una.relojuna.service;
 
-/**
- * @author Ortiz
- */
-public class IPlanillaService {
+import cr.ac.una.relojuna.model.PlanillaDto;
+import java.util.List;
 
+public interface IPlanillaService {
+
+    //Genera la planilla de un mes y anio especifico, con las horas de todos los empleados
+    List<PlanillaDto> generarPlanilla(int anio, int mes);
 }

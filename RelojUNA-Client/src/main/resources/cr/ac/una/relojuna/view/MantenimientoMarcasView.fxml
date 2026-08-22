@@ -2,10 +2,12 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -28,7 +30,7 @@
         <Button fx:id="btnSiguienteInconsistencia" onAction="#handleSiguienteInconsistencia" text="Siguiente ›" />
     </HBox>
 
-    <TableView fx:id="tblMarcas" prefHeight="300">
+    <TableView fx:id="tblMarcas" prefHeight="250">
         <columns>
             <TableColumn fx:id="colEmpleado" prefWidth="120" text="Empleado" />
             <TableColumn fx:id="colFechaHora" prefWidth="150" text="Fecha / Hora" />
@@ -37,10 +39,28 @@
         </columns>
     </TableView>
 
+    <GridPane alignment="CENTER_LEFT" hgap="10" vgap="8">
+        <Label text="Folio empleado:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="txtFolioMarca" promptText="Folio" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <Label text="Fecha:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <DatePicker fx:id="dpFechaMarca" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label text="Hora (HH:mm):" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="txtHoraMarca" promptText="08:00" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <Label text="Tipo:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <ComboBox fx:id="cmbTipoMarca" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+    </GridPane>
+
     <HBox alignment="CENTER_LEFT" spacing="10">
         <Button fx:id="btnAgregar" onAction="#handleAgregar" text="Agregar Marca" />
         <Button fx:id="btnModificar" onAction="#handleModificar" text="Modificar" />
         <Button fx:id="btnEliminar" onAction="#handleEliminar" text="Eliminar" />
         <Button fx:id="btnCorregirInconsistencia" onAction="#handleCorregirInconsistencia" text="Corregir Seleccionada" />
+    </HBox>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="btnRegresar" onAction="#handleRegresar" text="Regresar" />
     </HBox>
 </VBox>

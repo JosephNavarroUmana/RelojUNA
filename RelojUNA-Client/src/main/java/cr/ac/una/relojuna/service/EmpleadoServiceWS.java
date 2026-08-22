@@ -1,13 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package cr.ac.una.relojuna.service;
 
-/**
- * @author Ortiz
- */
-public class EmpleadoServiceWS {
+import cr.ac.una.relojuna.model.EmpleadoDto;
+import java.util.List;
 
+public class EmpleadoServiceWS implements IEmpleadoService {
+
+    @Override
+    public List<EmpleadoDto> buscarEmpleados(String texto) {
+        //Pendiente, se implementa cuando este listo el servicio real
+        return null;
+    }
+
+    @Override
+    public EmpleadoDto guardarEmpleado(EmpleadoDto empleado) {
+        //Pendiente, se implementa cuando este listo el servicio real
+        return null;
+    }
+
+    @Override
+    public void eliminarEmpleado(Integer folio) {
+        //Pendiente, se implementa cuando este listo el servicio real
+    }
 }

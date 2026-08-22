@@ -24,4 +24,6 @@
 
         <Button fx:id="btnLogin" onAction="#handleLogin" text="Ingresar" GridPane.columnIndex="1" GridPane.rowIndex="2" />
     </GridPane>
+
+    <Label fx:id="lblMensaje" style="-fx-font-size: 14px; -fx-text-fill: red;" text="" />
 </VBox>
