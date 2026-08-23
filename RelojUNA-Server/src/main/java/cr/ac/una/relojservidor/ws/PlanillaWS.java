@@ -1,25 +1,30 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/WebServices/WebService.java to edit this template
- */
 package cr.ac.una.relojservidor.ws;
 
-import jakarta.jws.WebService;
+import cr.ac.una.relojservidor.dto.PlanillaDto;
+import cr.ac.una.relojservidor.servicio.PlanillaService;
+import cr.ac.una.relojservidor.util.Respuesta;
+
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
+import jakarta.jws.WebService;
 
-/**
- *
- * @author Usuario
- */
 @WebService(serviceName = "PlanillaWS")
 public class PlanillaWS {
 
-    /**
-     * This is a sample web service operation
-     */
-    @WebMethod(operationName = "hello")
-    public String hello(@WebParam(name = "name") String txt) {
-        return "Hello " + txt + " !";
+    private final PlanillaService planillaService = new PlanillaService();
+
+    @WebMethod(operationName = "guardarPlanilla")
+    public Respuesta guardarPlanilla(@WebParam(name = "planilla") PlanillaDto planilla) {
+        return planillaService.guardar(planilla);
+    }
+
+    @WebMethod(operationName = "obtenerPlanillas")
+    public Respuesta obtenerPlanillas() {
+        return planillaService.obtenerTodos();
+    }
+
+    @WebMethod(operationName = "obtenerPlanillaPorId")
+    public Respuesta obtenerPlanillaPorId(@WebParam(name = "id") Long id) {
+        return planillaService.obtenerPorId(id);
     }
 }

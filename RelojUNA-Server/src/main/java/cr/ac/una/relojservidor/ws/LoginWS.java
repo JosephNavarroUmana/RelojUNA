@@ -1,25 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/WebServices/WebService.java to edit this template
- */
 package cr.ac.una.relojservidor.ws;
 
-import jakarta.jws.WebService;
+import cr.ac.una.relojservidor.servicio.LoginService;
+import cr.ac.una.relojservidor.util.Respuesta;
+
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
+import jakarta.jws.WebService;
 
-/**
- *
- * @author Usuario
- */
 @WebService(serviceName = "LoginWS")
 public class LoginWS {
 
-    /**
-     * This is a sample web service operation
-     */
-    @WebMethod(operationName = "hello")
-    public String hello(@WebParam(name = "name") String txt) {
-        return "Hello " + txt + " !";
+    private final LoginService loginService = new LoginService();
+
+    @WebMethod(operationName = "login")
+    public Respuesta login(@WebParam(name = "folio") String folio, @WebParam(name = "clave") String clave) {
+        return loginService.login(folio, clave);
     }
 }

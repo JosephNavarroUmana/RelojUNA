@@ -144,12 +144,14 @@ public class PlanillaService {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-
             Planilla planilla = new Planilla();
             planilla.setMes(mes);
             planilla.setAnio(anio);
             planilla.setFechaGeneracion(LocalDate.now());
             planilla.setDetalles(new ArrayList<>());
+
+            LocalDate primerDia = LocalDate.of(anio, mes, 1);
+            LocalDate ultimoDia = primerDia.withDayOfMonth(primerDia.lengthOfMonth());
 
             List<Empleado> empleados = em.createQuery(
                     "SELECT e FROM Empleado e", Empleado.class).getResultList();
@@ -157,36 +159,20 @@ public class PlanillaService {
             for (Empleado empleado : empleados) {
                 List<Marca> marcasDelMes = em.createQuery(
                         "SELECT m FROM Marca m WHERE m.empleado.id = :empId "
-                        + "AND FUNCTION('MONTH', m.fecha) = :mes "
-                        + "AND FUNCTION('YEAR', m.fecha) = :anio",
+                        + "AND m.fecha >= :desde AND m.fecha <= :hasta",
                         Marca.class)
                         .setParameter("empId", empleado.getId())
-                        .setParameter("mes", mes)
-                        .setParameter("anio", anio)
+                        .setParameter("desde", primerDia)
+                        .setParameter("hasta", ultimoDia)
                         .getResultList();
 
                 if (marcasDelMes.isEmpty()) {
-                    continue; // este empleado no marcó nada ese mes, se omite
+                    continue;
                 }
 
-                // --- BLOQUE TEMPORAL: reemplazar por CalculadoraJornada ---
-                // Por ahora solo cuenta pares ENTRADA/SALIDA como horas ordinarias,
-                // sin distinguir diurna/nocturna/extra/doble todavía.
-                long totalHoras = contarHorasBasico(marcasDelMes);
-                int horasOrdinarias = (int) Math.min(totalHoras, 160); // tope simple de referencia
-                int horasExtras = (int) Math.max(0, totalHoras - 160);
-                int horasDobles = 0;
-                double salarioTotal = (horasOrdinarias + horasExtras * 1.5) * empleado.getSalarioHora();
-                // --- FIN BLOQUE TEMPORAL ---
-
-                DetallePlanilla detalle = new DetallePlanilla();
-                detalle.setEmpleado(empleado);
+                CalculadoraJornada calculadora = new CalculadoraJornada();
+                DetallePlanilla detalle = calculadora.calcularDetalle(empleado, marcasDelMes);
                 detalle.setPlanilla(planilla);
-                detalle.setHorasOrdinarias(horasOrdinarias);
-                detalle.setHorasExtras(horasExtras);
-                detalle.setHorasDobles(horasDobles);
-                detalle.setSalarioTotal(salarioTotal);
-
                 planilla.getDetalles().add(detalle);
             }
 
@@ -197,9 +183,7 @@ public class PlanillaService {
 
             em.persist(planilla);
             tx.commit();
-
             return new Respuesta(true, "Planilla generada con éxito", convertirADto(planilla));
-
         } catch (Exception e) {
             if (tx.isActive()) {
                 tx.rollback();
