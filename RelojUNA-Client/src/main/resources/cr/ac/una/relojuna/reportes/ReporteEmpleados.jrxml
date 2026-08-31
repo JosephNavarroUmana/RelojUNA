@@ -1,0 +1,62 @@
+<!-- Created with Jaspersoft Studio version 7.0.8.final using JasperReports Library version 7.0.8-6f896111  -->
+<jasperReport name="ReporteEmpleados" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"> 
+	<field name="folio" class="java.lang.Integer"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="apellidos" class="java.lang.String"/>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="fechaNacimiento" class="java.time.LocalDate"/>
+	<field name="salarioPorHora" class="java.lang.Double"/>
+	<background splitType="Stretch"/>
+	<title height="79" splitType="Stretch">
+		<element kind="staticText" uuid="cac84f87-d27a-4d11-853d-a62c093c0673" x="222" y="30" width="120" height="30">
+			<text><![CDATA[Reporte de empleados]]></text>
+		</element>
+	</title>
+	<pageHeader height="35" splitType="Stretch"/>
+	<columnHeader height="61" splitType="Stretch">
+		<element kind="staticText" uuid="0eff6d90-f21d-43c9-b708-483e326e81ef" x="20" y="30" width="40" height="15" stretchType="NoStretch">
+			<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+			<text><![CDATA[Folio]]></text>
+		</element>
+		<element kind="staticText" uuid="eba8cf2b-c6bb-4879-aa06-741bfb14e4ae" x="80" y="26" width="70" height="22">
+			<text><![CDATA[Nombre]]></text>
+		</element>
+		<element kind="staticText" uuid="a69e7fe6-2276-42a6-bc6d-110e06ad0d2a" x="170" y="24" width="52" height="14">
+			<text><![CDATA[Apellidos]]></text>
+		</element>
+		<element kind="staticText" uuid="7b778772-a636-4809-a521-3fa7f930a7ce" x="246" y="24" width="62" height="23">
+			<text><![CDATA[Cedula]]></text>
+		</element>
+		<element kind="staticText" uuid="4a14ff23-7fd9-494e-904a-6b331ffca766" x="340" y="20" width="100" height="30">
+			<text><![CDATA[Fecha Nacimiento]]></text>
+		</element>
+		<element kind="staticText" uuid="a4b5428a-0968-472d-a602-752225bc3c81" x="480" y="30" width="75" height="14">
+			<text><![CDATA[Salario/Hora]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="71" splitType="Stretch">
+			<element kind="textField" uuid="033f67e9-ad3d-4bcd-8555-7ea10c870fa2" x="10" y="10" width="59" height="19">
+				<expression><![CDATA[$F{folio}]]></expression>
+			</element>
+			<element kind="textField" uuid="f7d71ae4-4230-4159-af3a-aaaf1b488ddb" x="90" y="10" width="70" height="18">
+				<expression><![CDATA[$F{nombre}]]></expression>
+			</element>
+			<element kind="textField" uuid="776a8184-d6fc-4b4d-b25d-4b068b681e09" x="180" y="10" width="66" height="18">
+				<expression><![CDATA[$F{apellidos}]]></expression>
+			</element>
+			<element kind="textField" uuid="20812349-45de-4dd1-b0ab-24b844a4a609" x="250" y="10" width="66" height="18">
+				<expression><![CDATA[$F{cedula}]]></expression>
+			</element>
+			<element kind="textField" uuid="1539d27b-c937-4e46-8adf-8d49131b752a" x="316" y="10" width="154" height="18">
+				<expression><![CDATA[$F{fechaNacimiento}.toString()]]></expression>
+			</element>
+			<element kind="textField" uuid="f8c4b774-a189-4f4d-b342-8be9b4948791" x="472" y="10" width="90" height="18">
+				<expression><![CDATA[$F{salarioPorHora}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>

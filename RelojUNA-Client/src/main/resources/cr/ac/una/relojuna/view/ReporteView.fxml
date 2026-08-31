@@ -21,8 +21,8 @@
         <Label text="Tipo de reporte:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 
         <HBox spacing="15" GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <RadioButton fx:id="rbReporteEmpleados" text="Empleados" toggleGroup="$tipoReporteGroup" />
-            <RadioButton fx:id="rbReporteMarcas" selected="true" text="Marcas" toggleGroup="$tipoReporteGroup" />
+            <RadioButton fx:id="rbReporteEmpleados" text="Empleados" />
+<RadioButton fx:id="rbReporteMarcas" selected="true" text="Marcas" />
         </HBox>
 
         <Label text="Empleado:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
