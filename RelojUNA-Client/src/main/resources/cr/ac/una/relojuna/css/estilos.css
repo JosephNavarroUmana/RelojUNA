@@ -1,0 +1,131 @@
+/* Estilos generales para toda la aplicacion RelojUNA */
+
+.fondo-app {
+    -fx-background-color: #f2f4f7;
+    -fx-font-family: "Segoe UI";
+}
+
+.barra-titulo {
+    -fx-background-color: #26456b;
+    -fx-padding: 18 25 18 25;
+}
+
+.titulo-pantalla {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.panel-tarjeta {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dfe3e8;
+    -fx-border-width: 1;
+    -fx-padding: 20;
+    -fx-spacing: 12;
+}
+
+.etiqueta-campo {
+    -fx-font-size: 13px;
+    -fx-text-fill: #444444;
+    -fx-pref-width: 140;
+}
+
+.reloj-digital {
+    -fx-font-size: 52px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Consolas";
+    -fx-text-fill: #26456b;
+}
+
+.mensaje-exito {
+    -fx-text-fill: #1b8a3a;
+    -fx-font-size: 14px;
+}
+
+.mensaje-error {
+    -fx-text-fill: #c0392b;
+    -fx-font-size: 14px;
+}
+
+.tabla-datos {
+    -fx-background-color: white;
+    -fx-border-color: #dfe3e8;
+}
+
+.tabla-datos .column-header-background {
+    -fx-background-color: #26456b;
+}
+
+.tabla-datos .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.barra-botones {
+    -fx-padding: 12 0 0 0;
+    -fx-spacing: 10;
+}
+
+.boton-primario {
+    -fx-background-color: #26456b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 8 18 8 18;
+    -fx-cursor: hand;
+}
+
+.boton-primario:hover {
+    -fx-background-color: #1c3350;
+}
+
+.boton-secundario {
+    -fx-background-color: #e3e7ec;
+    -fx-text-fill: #26456b;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 8 18 8 18;
+    -fx-cursor: hand;
+}
+
+.boton-secundario:hover {
+    -fx-background-color: #cfd5dc;
+}
+
+.boton-peligro {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 8 18 8 18;
+    -fx-cursor: hand;
+}
+
+.boton-peligro:hover {
+    -fx-background-color: #992d22;
+}
+
+.menu-boton {
+    -fx-background-color: white;
+    -fx-text-fill: #26456b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dfe3e8;
+    -fx-border-width: 1;
+    -fx-pref-width: 220;
+    -fx-pref-height: 70;
+    -fx-cursor: hand;
+}
+
+.menu-boton:hover {
+    -fx-background-color: #eef2f7;
+}
+
+/* Esta clase queda lista por si luego quieres pintar de otro color las filas inconsistentes desde el controller */
+.fila-inconsistente {
+    -fx-background-color: #fbdcd7;
+}

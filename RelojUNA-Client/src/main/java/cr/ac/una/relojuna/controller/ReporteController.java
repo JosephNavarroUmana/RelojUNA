@@ -7,12 +7,15 @@ import cr.ac.una.relojuna.service.IEmpleadoService;
 import cr.ac.una.relojuna.service.ServiceFactory;
 import cr.ac.una.relojuna.util.JasperExportador;
 import java.io.File;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -23,7 +26,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class ReporteController {
+public class ReporteController implements Initializable{
 
     @FXML
     private RadioButton rbReporteEmpleados, rbReporteMarcas;
@@ -40,8 +43,8 @@ public class ReporteController {
     private IEmpleadoService empleadoService;
     private IConsultaService consultaService;
 
-    @FXML
-    private void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         empleadoService = ServiceFactory.getEmpleadoService();
         consultaService = ServiceFactory.getConsultaService();
 
