@@ -3,15 +3,18 @@ package cr.ac.una.relojuna.controller;
 import cr.ac.una.relojuna.model.MarcaDto;
 import cr.ac.una.relojuna.service.IMarcaService;
 import cr.ac.una.relojuna.service.ServiceFactory;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -24,7 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-public class MantenimientoMarcasController {
+public class MantenimientoMarcasController implements Initializable{
 
     @FXML
     private DatePicker dpFechaDesde, dpFechaHasta;
@@ -59,8 +62,11 @@ public class MantenimientoMarcasController {
     // Formato para mostrar la fecha y hora en la tabla
     private DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    @FXML
-    private void initialize() {
+    // Formato solo de hora, se usa para llenar el campo de texto del formulario
+    private DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         marcaService = ServiceFactory.getMarcaService();
         listaMarcas = FXCollections.observableArrayList();
         indiceInconsistenciaActual = 0;
@@ -78,6 +84,13 @@ public class MantenimientoMarcasController {
         });
 
         tblMarcas.setItems(listaMarcas);
+
+        // Cuando el usuario selecciona una fila, llenamos el formulario con esos datos
+        tblMarcas.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionada) -> {
+            if (seleccionada != null) {
+                cargarFormulario(seleccionada);
+            }
+        });
 
         // Por defecto mostramos los ultimos 30 dias
         dpFechaDesde.setValue(LocalDate.now().minusDays(30));
@@ -99,6 +112,14 @@ public class MantenimientoMarcasController {
         List<MarcaDto> marcas = marcaService.buscarMarcas(fechaDesde, fechaHasta);
         listaMarcas.clear();
         listaMarcas.addAll(marcas);
+    }
+
+    // Llena los campos del formulario con los datos de la marca seleccionada
+    private void cargarFormulario(MarcaDto marca) {
+        txtFolioMarca.setText(marca.getFolioEmpleado().toString());
+        dpFechaMarca.setValue(marca.getFechaHora().toLocalDate());
+        txtHoraMarca.setText(marca.getFechaHora().toLocalTime().format(formatoHora));
+        cmbTipoMarca.setValue(marca.getTipo());
     }
 
     @FXML
@@ -216,6 +237,11 @@ public class MantenimientoMarcasController {
 
         // Volvemos a calcular las inconsistencias para actualizar la lista
         handleVerInconsistencias();
+    }
+
+    // Limpia el formulario y quita la seleccion de la tabla, sin tocar los datos guardados
+    private void handleLimpiar() {
+        limpiarFormulario();
     }
 
     // Lee los datos del formulario y arma un MarcaDto, retorna null si hay error de validacion

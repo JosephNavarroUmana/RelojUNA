@@ -3,11 +3,14 @@ package cr.ac.una.relojuna.controller;
 import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.util.FlowController;
 import cr.ac.una.relojuna.util.SesionTemporal;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-public class PrincipalController {
+public class PrincipalController implements Initializable{
 
     @FXML
     private Label lblUsuario;
@@ -26,8 +29,8 @@ public class PrincipalController {
     @FXML
     private Button btnCerrarSesion;
 
-    @FXML
-    private void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         // Mostramos el nombre del empleado que inicio sesion
         EmpleadoDto empleado = SesionTemporal.getInstancia().getEmpleadoActual();
 

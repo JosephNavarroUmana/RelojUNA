@@ -5,15 +5,18 @@ import cr.ac.una.relojuna.model.MarcaDto;
 import cr.ac.una.relojuna.service.IEmpleadoService;
 import cr.ac.una.relojuna.service.IMarcaService;
 import cr.ac.una.relojuna.service.ServiceFactory;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -21,7 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class MarcaController {
+public class MarcaController implements Initializable {
 
     @FXML
     private Label lblReloj, lblNombreEmpleado, lblHoraMarca, lblMensaje;
@@ -41,8 +44,9 @@ public class MarcaController {
     // Formato para mostrar la hora en el reloj digital
     private DateTimeFormatter formatoReloj = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    @FXML
-    private void initialize() {
+    
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         empleadoService = ServiceFactory.getEmpleadoService();
         marcaService = ServiceFactory.getMarcaService();
 

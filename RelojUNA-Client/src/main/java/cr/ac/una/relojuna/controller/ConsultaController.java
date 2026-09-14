@@ -10,13 +10,16 @@ import cr.ac.una.relojuna.service.ServiceFactory;
 import cr.ac.una.relojuna.util.ExcelExportador;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -29,7 +32,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class ConsultaController {
+public class ConsultaController implements Initializable{
 
     @FXML
     private DatePicker dpFechaDesde, dpFechaHasta;
@@ -60,9 +63,9 @@ public class ConsultaController {
     private List<EmpleadoDto> empleadosDelCombo;
 
     private DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
-
-    @FXML
-    private void initialize() {
+    
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         consultaService = ServiceFactory.getConsultaService();
         empleadoService = ServiceFactory.getEmpleadoService();
         marcaService = ServiceFactory.getMarcaService();

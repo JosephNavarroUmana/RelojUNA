@@ -7,39 +7,52 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.PlanillaController">
-    <padding>
-        <Insets bottom="15" left="15" right="15" top="15" />
-    </padding>
+<BorderPane styleClass="fondo-app" stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.PlanillaController">
 
-    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Generación de Planillas" />
+    <top>
+        <VBox styleClass="barra-titulo">
+            <Label styleClass="titulo-pantalla" text="Generacion de Planillas" />
+        </VBox>
+    </top>
 
-    <GridPane alignment="CENTER_LEFT" hgap="10" vgap="10">
-        <Label text="Año:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="txtAnio" promptText="2026" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+    <center>
+        <VBox spacing="15" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="15" left="20" right="20" top="15" />
+            </padding>
 
-        <Label text="Mes:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <ComboBox fx:id="cmbMes" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label styleClass="etiqueta-campo" text="Anio:" />
+                <TextField fx:id="txtAnio" promptText="2026" />
+                <Label styleClass="etiqueta-campo" text="Mes:" />
+                <ComboBox fx:id="cmbMes" />
+                <Button fx:id="btnGenerar" onAction="#handleGenerar" styleClass="boton-primario" text="Generar Planilla" />
+                <Button fx:id="btnExportarExcel" onAction="#handleExportarExcel" styleClass="boton-secundario" text="Exportar a Excel" />
+            </HBox>
 
-        <Button fx:id="btnGenerar" onAction="#handleGenerar" text="Generar Planilla" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-        <Button fx:id="btnExportarExcel" onAction="#handleExportarExcel" text="Exportar a Excel" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-    </GridPane>
+            <TableView fx:id="tblPlanilla" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colEmpleado" prefWidth="150" text="Empleado" />
+                    <TableColumn fx:id="colHorasOrdinarias" prefWidth="120" text="H. Ordinarias" />
+                    <TableColumn fx:id="colHorasExtras" prefWidth="100" text="H. Extras" />
+                    <TableColumn fx:id="colHorasDobles" prefWidth="100" text="H. Dobles" />
+                    <TableColumn fx:id="colSalarioMensual" prefWidth="120" text="Salario Mensual" />
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
 
-    <TableView fx:id="tblPlanilla" prefHeight="350">
-        <columns>
-            <TableColumn fx:id="colEmpleado" prefWidth="150" text="Empleado" />
-            <TableColumn fx:id="colHorasOrdinarias" prefWidth="120" text="H. Ordinarias" />
-            <TableColumn fx:id="colHorasExtras" prefWidth="100" text="H. Extras" />
-            <TableColumn fx:id="colHorasDobles" prefWidth="100" text="H. Dobles" />
-            <TableColumn fx:id="colSalarioMensual" prefWidth="120" text="Salario Mensual" />
-        </columns>
-    </TableView>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="barra-botones">
+            <padding>
+                <Insets bottom="15" left="20" right="20" top="0" />
+            </padding>
+            <Button fx:id="btnRegresar" onAction="#handleRegresar" styleClass="boton-secundario" text="Regresar" />
+        </HBox>
+    </bottom>
 
-    <HBox alignment="CENTER_RIGHT" spacing="10">
-        <Button fx:id="btnRegresar" onAction="#handleRegresar" text="Regresar" />
-    </HBox>
-</VBox>
+</BorderPane>

@@ -5,25 +5,29 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.LoginController">
+<VBox alignment="CENTER" spacing="20" styleClass="fondo-app" stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.LoginController">
     <padding>
-        <Insets bottom="30" left="30" right="30" top="30" />
+        <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
 
-    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Inicio de Sesión - Reloj Marcador" />
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #26456b;" text="Inicio de Sesion - Reloj Marcador" />
 
-    <GridPane alignment="CENTER" hgap="10" vgap="10">
-        <Label text="Folio:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="txtFolio" promptText="Ingrese su folio" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+    <VBox alignment="CENTER" maxWidth="320" spacing="15" styleClass="panel-tarjeta">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label styleClass="etiqueta-campo" text="Folio:" />
+            <TextField fx:id="txtFolio" promptText="Ingrese su folio" HBox.hgrow="ALWAYS" />
+        </HBox>
 
-        <Label text="Clave:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <PasswordField fx:id="txtClave" promptText="Ingrese su clave" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label styleClass="etiqueta-campo" text="Clave:" />
+            <PasswordField fx:id="txtClave" promptText="Ingrese su clave" HBox.hgrow="ALWAYS" />
+        </HBox>
 
-        <Button fx:id="btnLogin" onAction="#handleLogin" text="Ingresar" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-    </GridPane>
+        <Button fx:id="btnLogin" maxWidth="Infinity" onAction="#handleLogin" styleClass="boton-primario" text="Ingresar" />
+    </VBox>
 
-    <Label fx:id="lblMensaje" style="-fx-font-size: 14px; -fx-text-fill: red;" text="" />
+    <Label fx:id="lblMensaje" styleClass="mensaje-error" text="" />
 </VBox>

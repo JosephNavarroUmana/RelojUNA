@@ -3,12 +3,15 @@ package cr.ac.una.relojuna.controller;
 import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.service.IEmpleadoService;
 import cr.ac.una.relojuna.service.ServiceFactory;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -21,7 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-public class EmpleadoController {
+public class EmpleadoController implements Initializable {
 
     @FXML
     private TextField txtBuscar, txtFolio, txtNombre, txtApellidos, txtCedula, txtSalario, txtFoto;
@@ -50,18 +53,19 @@ public class EmpleadoController {
     @FXML
     private Button btnRegresar;
 
-    // Servicio de empleados, se obtiene por medio de la fabrica
+    //Servicio de empleados, se obtiene por medio de la fabrica
     private IEmpleadoService empleadoService;
 
-    // Lista observable que alimenta la tabla
+    //Lista observable que alimenta la tabla
     private ObservableList<EmpleadoDto> listaEmpleados;
 
-    @FXML
-    private void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("initialize de EmpleadoController SI se ejecuto");
         empleadoService = ServiceFactory.getEmpleadoService();
         listaEmpleados = FXCollections.observableArrayList();
 
-        // Enlazamos cada columna con el atributo correspondiente del EmpleadoDto
+        //Enlazamos cada columna con el atributo correspondiente del EmpleadoDto
         colFolio.setCellValueFactory(new PropertyValueFactory<>("folio"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
@@ -72,7 +76,7 @@ public class EmpleadoController {
 
         tblEmpleados.setItems(listaEmpleados);
 
-        // Cuando el usuario selecciona una fila, llenamos el formulario con esos datos
+        //Cuando el usuario selecciona una fila, llenamos el formulario con esos datos
         tblEmpleados.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionado) -> {
             if (seleccionado != null) {
                 cargarFormulario(seleccionado);
@@ -82,14 +86,14 @@ public class EmpleadoController {
         cargarTabla("");
     }
 
-    // Trae los empleados desde el servicio y los pone en la tabla
+    //Trae los empleados desde el servicio y los pone en la tabla
     private void cargarTabla(String textoBusqueda) {
         List<EmpleadoDto> empleados = empleadoService.buscarEmpleados(textoBusqueda);
         listaEmpleados.clear();
         listaEmpleados.addAll(empleados);
     }
 
-    // Llena los campos del formulario con los datos de un empleado
+    //Llena los campos del formulario con los datos de un empleado
     private void cargarFormulario(EmpleadoDto empleado) {
         txtFolio.setText(empleado.getFolio().toString());
         txtNombre.setText(empleado.getNombre());
@@ -102,7 +106,7 @@ public class EmpleadoController {
         chkAdmin.setSelected(empleado.isAdministrador());
     }
 
-    // Limpia todos los campos del formulario
+    //Limpia todos los campos del formulario
     private void limpiarFormulario() {
         txtFolio.clear();
         txtNombre.clear();
@@ -134,7 +138,7 @@ public class EmpleadoController {
 
     @FXML
     private void handleGuardar() {
-        // Validamos los campos obligatorios antes de guardar
+        //Validamos los campos obligatorios antes de guardar
         if (txtNombre.getText().isBlank() || txtApellidos.getText().isBlank() || txtCedula.getText().isBlank()) {
             mostrarMensaje("Nombre, apellidos y cedula son obligatorios.");
             return;
@@ -155,7 +159,7 @@ public class EmpleadoController {
 
         EmpleadoDto empleado = new EmpleadoDto();
 
-        // Si el campo folio tiene algo, es una modificacion, si no, es un empleado nuevo
+        //Si el campo folio tiene algo, es una modificacion, si no, es un empleado nuevo
         if (!txtFolio.getText().isBlank()) {
             empleado.setFolio(Integer.valueOf(txtFolio.getText()));
         }
@@ -200,7 +204,7 @@ public class EmpleadoController {
         stage.close();
     }
 
-    // Muestra una ventana con un mensaje al usuario
+    //Muestra una ventana con un mensaje al usuario
     private void mostrarMensaje(String mensaje) {
         Alert alerta = new Alert(AlertType.WARNING);
         alerta.setTitle("Aviso");
