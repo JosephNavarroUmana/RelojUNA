@@ -3,6 +3,7 @@ package cr.ac.una.relojservidor.ws;
 import cr.ac.una.relojservidor.dto.EmpleadoDto;
 import cr.ac.una.relojservidor.servicio.EmpleadoService;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.EJB;
 
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
@@ -11,7 +12,9 @@ import jakarta.jws.WebService;
 @WebService(serviceName = "EmpleadoWS")
 public class EmpleadoWS {
 
-    private final EmpleadoService empleadoService = new EmpleadoService();
+//    private final EmpleadoService empleadoService = new EmpleadoService();
+    @EJB
+    private EmpleadoService empleadoService;
 
     @WebMethod(operationName = "guardarEmpleado")
     public Respuesta guardarEmpleado(@WebParam(name = "empleado") EmpleadoDto empleado) {

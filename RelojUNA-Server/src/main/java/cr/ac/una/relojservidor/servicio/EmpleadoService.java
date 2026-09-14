@@ -4,16 +4,23 @@ import cr.ac.una.relojservidor.dto.EmpleadoDto;
 import cr.ac.una.relojservidor.modelo.Empleado;
 import cr.ac.una.relojservidor.util.EntityManagerHelper;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//@Stateless
 public class EmpleadoService {
 
     public Respuesta guardar(EmpleadoDto dto) {
         EntityManager em = EntityManagerHelper.getManager();
         EntityTransaction tx = em.getTransaction();
+        
+//        @Persistence(unitName = "RelojUNAPU")
+//        private EntityManager em;
+        
         try {
             tx.begin();
 

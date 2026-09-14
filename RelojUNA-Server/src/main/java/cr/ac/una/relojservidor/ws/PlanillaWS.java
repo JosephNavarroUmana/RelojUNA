@@ -3,6 +3,7 @@ package cr.ac.una.relojservidor.ws;
 import cr.ac.una.relojservidor.dto.PlanillaDto;
 import cr.ac.una.relojservidor.servicio.PlanillaService;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.EJB;
 
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
@@ -11,7 +12,9 @@ import jakarta.jws.WebService;
 @WebService(serviceName = "PlanillaWS")
 public class PlanillaWS {
 
-    private final PlanillaService planillaService = new PlanillaService();
+//    private final PlanillaService planillaService = new PlanillaService();
+    @EJB
+    private PlanillaService planillaService;
 
     @WebMethod(operationName = "guardarPlanilla")
     public Respuesta guardarPlanilla(@WebParam(name = "planilla") PlanillaDto planilla) {

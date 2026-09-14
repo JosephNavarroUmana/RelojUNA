@@ -2,6 +2,7 @@ package cr.ac.una.relojservidor.ws;
 
 import cr.ac.una.relojservidor.servicio.ConsultaService;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.EJB;
 
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
@@ -12,8 +13,10 @@ import java.time.LocalDate;
 @WebService(serviceName = "ConsultaWS")
 public class ConsultaWS {
 
-    private final ConsultaService consultaService = new ConsultaService();
-
+//    private final ConsultaService consultaService = new ConsultaService();
+    @EJB
+    private ConsultaService consultaService;
+    
     @WebMethod(operationName = "consultarMarcas")
     public Respuesta consultarMarcas(
             @WebParam(name = "desde") LocalDate desde,

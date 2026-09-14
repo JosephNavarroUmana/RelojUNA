@@ -3,6 +3,7 @@ package cr.ac.una.relojservidor.ws;
 import cr.ac.una.relojservidor.dto.MarcaDto;
 import cr.ac.una.relojservidor.servicio.MarcaService;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.EJB;
 
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
@@ -11,7 +12,9 @@ import jakarta.jws.WebService;
 @WebService(serviceName = "MarcaWS")
 public class MarcaWS {
 
-    private final MarcaService marcaService = new MarcaService();
+//    private final MarcaService marcaService = new MarcaService();
+    @EJB
+    private MarcaService marcaService;
 
     @WebMethod(operationName = "guardarMarca")
     public Respuesta guardarMarca(@WebParam(name = "marca") MarcaDto marca) {

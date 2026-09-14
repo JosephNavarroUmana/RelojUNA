@@ -8,7 +8,7 @@
     <class>cr.ac.una.relojservidor.modelo.DetallePlanilla</class>
     <properties>
       <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/>
-      <property name="jakarta.persistence.jdbc.user" value="una"/>
+      <property name="jakarta.persistence.jdbc.user" value="relojUNA"/>
       <property name="jakarta.persistence.jdbc.password" value="una"/>
       <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
     </properties>
