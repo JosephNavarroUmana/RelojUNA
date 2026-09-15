@@ -1,20 +1,17 @@
 package cr.ac.una.relojuna.controller;
 
 import cr.ac.una.relojuna.model.PlanillaDto;
-import cr.ac.una.relojuna.service.IPlanillaService;
-import cr.ac.una.relojuna.service.ServiceFactory;
+import cr.ac.una.relojuna.service.PlanillaService;
 import cr.ac.una.relojuna.util.ExcelExportador;
+import cr.ac.una.relojuna.util.Respuesta;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -26,7 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class PlanillaController implements Initializable{
+public class PlanillaController {
 
     @FXML
     private TextField txtAnio;
@@ -43,21 +40,21 @@ public class PlanillaController implements Initializable{
     @FXML
     private Button btnRegresar;
 
-    // Servicio de planillas, se obtiene por medio de la fabrica
-    private IPlanillaService planillaService;
+    //Servicio de planillas
+    private PlanillaService planillaService;
 
-    // Lista observable que alimenta la tabla
+    //Lista observable que alimenta la tabla
     private ObservableList<PlanillaDto> listaPlanilla;
 
-    // Nombres de los meses en el mismo orden que su numero, enero es la posicion 0
+    //Nombres de los meses en el mismo orden que su numero, enero es la posicion 0
     private String[] nombresMeses = {
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Setiembre", "Octubre", "Noviembre", "Diciembre"
     };
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        planillaService = ServiceFactory.getPlanillaService();
+    @FXML
+    private void initialize() {
+        planillaService = new PlanillaService();
         listaPlanilla = FXCollections.observableArrayList();
 
         colEmpleado.setCellValueFactory(new PropertyValueFactory<>("nombreEmpleado"));
@@ -70,7 +67,6 @@ public class PlanillaController implements Initializable{
 
         cmbMes.setItems(FXCollections.observableArrayList(nombresMeses));
 
-        // Dejamos el anio y mes actual como valores por defecto
         txtAnio.setText(String.valueOf(LocalDate.now().getYear()));
         int mesActual = LocalDate.now().getMonthValue();
         cmbMes.setValue(nombresMeses[mesActual - 1]);
@@ -96,7 +92,6 @@ public class PlanillaController implements Initializable{
             return;
         }
 
-        // Buscamos la posicion del mes seleccionado dentro del arreglo de nombres
         int mes = 0;
         for (int i = 0; i < nombresMeses.length; i++) {
             if (nombresMeses[i].equals(cmbMes.getValue())) {
@@ -105,36 +100,43 @@ public class PlanillaController implements Initializable{
             }
         }
 
-        List<PlanillaDto> planilla = planillaService.generarPlanilla(anio, mes);
+        Respuesta respuesta = planillaService.generarPlanilla(anio, mes);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        List<PlanillaDto> planilla = (List<PlanillaDto>) respuesta.getResultado("Planilla");
         listaPlanilla.clear();
         listaPlanilla.addAll(planilla);
     }
 
-   @FXML
-private void handleExportarExcel() {
-    if (listaPlanilla.isEmpty()) {
-        mostrarMensaje("Debe generar la planilla antes de exportar.");
-        return;
+    @FXML
+    private void handleExportarExcel() {
+        if (listaPlanilla.isEmpty()) {
+            mostrarMensaje("Debe generar la planilla antes de exportar.");
+            return;
+        }
+
+        FileChooser selector = new FileChooser();
+        selector.setTitle("Guardar planilla como Excel");
+        selector.setInitialFileName("Planilla.xlsx");
+        selector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de Excel", "*.xlsx"));
+
+        File archivo = selector.showSaveDialog(btnExportarExcel.getScene().getWindow());
+
+        if (archivo == null) {
+            return;
+        }
+
+        try {
+            ExcelExportador.exportarPlanilla(listaPlanilla, archivo);
+            mostrarMensaje("Archivo exportado correctamente.");
+        } catch (IOException ex) {
+            mostrarMensaje("Ocurrio un error al exportar el archivo.");
+        }
     }
-
-    FileChooser selector = new FileChooser();
-    selector.setTitle("Guardar planilla como Excel");
-    selector.setInitialFileName("Planilla.xlsx");
-    selector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de Excel", "*.xlsx"));
-
-    File archivo = selector.showSaveDialog(btnExportarExcel.getScene().getWindow());
-
-    if (archivo == null) {
-        return;
-    }
-
-    try {
-        ExcelExportador.exportarPlanilla(listaPlanilla, archivo);
-        mostrarMensaje("Archivo exportado correctamente.");
-    } catch (IOException ex) {
-        mostrarMensaje("Ocurrio un error al exportar el archivo.");
-    }
-}
 
     @FXML
     private void handleRegresar(ActionEvent event) {

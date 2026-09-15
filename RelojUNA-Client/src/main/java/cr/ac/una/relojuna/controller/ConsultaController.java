@@ -3,23 +3,20 @@ package cr.ac.una.relojuna.controller;
 import cr.ac.una.relojuna.model.ConsultaResultadoDto;
 import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.model.MarcaDto;
-import cr.ac.una.relojuna.service.IConsultaService;
-import cr.ac.una.relojuna.service.IEmpleadoService;
-import cr.ac.una.relojuna.service.IMarcaService;
-import cr.ac.una.relojuna.service.ServiceFactory;
+import cr.ac.una.relojuna.service.ConsultaService;
+import cr.ac.una.relojuna.service.EmpleadoService;
+import cr.ac.una.relojuna.service.MarcaService;
 import cr.ac.una.relojuna.util.ExcelExportador;
+import cr.ac.una.relojuna.util.Respuesta;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -32,7 +29,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class ConsultaController implements Initializable{
+public class ConsultaController {
 
     @FXML
     private DatePicker dpFechaDesde, dpFechaHasta;
@@ -51,24 +48,24 @@ public class ConsultaController implements Initializable{
     @FXML
     private Button btnRegresar;
 
-    // Servicios usados en esta pantalla
-    private IConsultaService consultaService;
-    private IEmpleadoService empleadoService;
-    private IMarcaService marcaService;
+    //Servicios usados en esta pantalla
+    private ConsultaService consultaService;
+    private EmpleadoService empleadoService;
+    private MarcaService marcaService;
 
-    // Lista observable que alimenta la tabla
+    //Lista observable que alimenta la tabla
     private ObservableList<ConsultaResultadoDto> listaResultados;
 
-    // Lista de empleados cargados en el combo
+    //Lista de empleados cargados en el combo
     private List<EmpleadoDto> empleadosDelCombo;
 
     private DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
-    
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        consultaService = ServiceFactory.getConsultaService();
-        empleadoService = ServiceFactory.getEmpleadoService();
-        marcaService = ServiceFactory.getMarcaService();
+
+    @FXML
+    private void initialize() {
+        consultaService = new ConsultaService();
+        empleadoService = new EmpleadoService();
+        marcaService = new MarcaService();
         listaResultados = FXCollections.observableArrayList();
 
         colEmpleado.setCellValueFactory(new PropertyValueFactory<>("nombreEmpleado"));
@@ -91,14 +88,20 @@ public class ConsultaController implements Initializable{
 
         cargarComboEmpleados();
 
-        // Por defecto mostramos los ultimos 30 dias
         dpFechaDesde.setValue(LocalDate.now().minusDays(30));
         dpFechaHasta.setValue(LocalDate.now());
     }
 
-    // Llena el combo de empleados con la opcion Todos de primero
+    //Llena el combo de empleados con la opcion Todos de primero
     private void cargarComboEmpleados() {
-        empleadosDelCombo = empleadoService.buscarEmpleados("");
+        Respuesta respuesta = empleadoService.buscarEmpleados("");
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        empleadosDelCombo = (List<EmpleadoDto>) respuesta.getResultado("Empleados");
 
         ObservableList<String> opciones = FXCollections.observableArrayList();
         opciones.add("Todos");
@@ -111,7 +114,6 @@ public class ConsultaController implements Initializable{
         cmbEmpleado.setValue("Todos");
     }
 
-    // Obtiene el folio del empleado seleccionado en el combo, null si esta en Todos
     private Integer obtenerFolioSeleccionado() {
         String seleccionado = cmbEmpleado.getValue();
 
@@ -135,14 +137,21 @@ public class ConsultaController implements Initializable{
 
         Integer folioEmpleado = obtenerFolioSeleccionado();
 
-        List<ConsultaResultadoDto> resultado = consultaService.consultarMarcas(fechaDesde, fechaHasta, folioEmpleado);
+        Respuesta respuesta = consultaService.consultarMarcas(fechaDesde, fechaHasta, folioEmpleado);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        List<ConsultaResultadoDto> resultado = (List<ConsultaResultadoDto>) respuesta.getResultado("Consultas");
         listaResultados.clear();
         listaResultados.addAll(resultado);
 
         actualizarTotales(fechaDesde, fechaHasta, folioEmpleado, resultado);
     }
 
-    // Calcula los totales de la consulta usando streams
+    //Calcula los totales de la consulta usando streams
     private void actualizarTotales(LocalDate fechaDesde, LocalDate fechaHasta, Integer folioEmpleado, List<ConsultaResultadoDto> resultado) {
         long totalEmpleados = resultado.stream()
                 .map(fila -> fila.getFolioEmpleado())
@@ -153,7 +162,8 @@ public class ConsultaController implements Initializable{
                 .mapToDouble(fila -> fila.getHorasTrabajadas())
                 .sum();
 
-        List<MarcaDto> marcasDelRango = marcaService.buscarMarcas(fechaDesde, fechaHasta);
+        Respuesta respuestaMarcas = marcaService.buscarMarcas(fechaDesde, fechaHasta);
+        List<MarcaDto> marcasDelRango = (List<MarcaDto>) respuestaMarcas.getResultado("Marcas");
 
         long totalMarcas = marcasDelRango.stream()
                 .filter(marca -> folioEmpleado == null || marca.getFolioEmpleado().equals(folioEmpleado))
@@ -165,30 +175,30 @@ public class ConsultaController implements Initializable{
     }
 
     @FXML
-private void handleExportarExcel() {
-    if (listaResultados.isEmpty()) {
-        mostrarMensaje("Debe realizar una consulta antes de exportar.");
-        return;
+    private void handleExportarExcel() {
+        if (listaResultados.isEmpty()) {
+            mostrarMensaje("Debe realizar una consulta antes de exportar.");
+            return;
+        }
+
+        FileChooser selector = new FileChooser();
+        selector.setTitle("Guardar consulta como Excel");
+        selector.setInitialFileName("ConsultaMarcas.xlsx");
+        selector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de Excel", "*.xlsx"));
+
+        File archivo = selector.showSaveDialog(btnExportarExcel.getScene().getWindow());
+
+        if (archivo == null) {
+            return;
+        }
+
+        try {
+            ExcelExportador.exportarConsultas(listaResultados, archivo);
+            mostrarMensaje("Archivo exportado correctamente.");
+        } catch (IOException ex) {
+            mostrarMensaje("Ocurrio un error al exportar el archivo.");
+        }
     }
-
-    FileChooser selector = new FileChooser();
-    selector.setTitle("Guardar consulta como Excel");
-    selector.setInitialFileName("ConsultaMarcas.xlsx");
-    selector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos de Excel", "*.xlsx"));
-
-    File archivo = selector.showSaveDialog(btnExportarExcel.getScene().getWindow());
-
-    if (archivo == null) {
-        return;
-    }
-
-    try {
-        ExcelExportador.exportarConsultas(listaResultados, archivo);
-        mostrarMensaje("Archivo exportado correctamente.");
-    } catch (IOException ex) {
-        mostrarMensaje("Ocurrio un error al exportar el archivo.");
-    }
-}
 
     @FXML
     private void handleRegresar(ActionEvent event) {

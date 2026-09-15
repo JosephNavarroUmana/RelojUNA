@@ -1,20 +1,17 @@
 package cr.ac.una.relojuna.controller;
 
 import cr.ac.una.relojuna.model.MarcaDto;
-import cr.ac.una.relojuna.service.IMarcaService;
-import cr.ac.una.relojuna.service.ServiceFactory;
-import java.net.URL;
+import cr.ac.una.relojuna.service.MarcaService;
+import cr.ac.una.relojuna.util.Respuesta;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -27,7 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-public class MantenimientoMarcasController implements Initializable{
+public class MantenimientoMarcasController {
 
     @FXML
     private DatePicker dpFechaDesde, dpFechaHasta;
@@ -49,31 +46,27 @@ public class MantenimientoMarcasController implements Initializable{
     @FXML
     private ComboBox<String> cmbTipoMarca;
 
-    // Servicio de marcas, se obtiene por medio de la fabrica
-    private IMarcaService marcaService;
+    //Servicio de marcas
+    private MarcaService marcaService;
 
-    // Lista observable que alimenta la tabla
+    //Lista observable que alimenta la tabla
     private ObservableList<MarcaDto> listaMarcas;
 
-    // Lista de inconsistencias encontradas y la posicion actual al navegar con Siguiente
+    //Lista de inconsistencias encontradas y la posicion actual al navegar con Siguiente
     private List<MarcaDto> listaInconsistencias;
     private int indiceInconsistenciaActual;
 
-    // Formato para mostrar la fecha y hora en la tabla
+    //Formato para mostrar la fecha y hora en la tabla
     private DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    // Formato solo de hora, se usa para llenar el campo de texto del formulario
-    private DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        marcaService = ServiceFactory.getMarcaService();
+    @FXML
+    private void initialize() {
+        marcaService = new MarcaService();
         listaMarcas = FXCollections.observableArrayList();
         indiceInconsistenciaActual = 0;
 
         cmbTipoMarca.setItems(FXCollections.observableArrayList("ENTRADA", "SALIDA"));
 
-        // Enlazamos las columnas, la de fecha y hora se muestra ya formateada como texto
         colEmpleado.setCellValueFactory(new PropertyValueFactory<>("nombreEmpleado"));
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
@@ -85,21 +78,13 @@ public class MantenimientoMarcasController implements Initializable{
 
         tblMarcas.setItems(listaMarcas);
 
-        // Cuando el usuario selecciona una fila, llenamos el formulario con esos datos
-        tblMarcas.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionada) -> {
-            if (seleccionada != null) {
-                cargarFormulario(seleccionada);
-            }
-        });
-
-        // Por defecto mostramos los ultimos 30 dias
         dpFechaDesde.setValue(LocalDate.now().minusDays(30));
         dpFechaHasta.setValue(LocalDate.now());
 
         cargarTabla();
     }
 
-    // Trae las marcas del rango de fechas seleccionado y las pone en la tabla
+    //Trae las marcas del rango de fechas seleccionado y las pone en la tabla
     private void cargarTabla() {
         LocalDate fechaDesde = dpFechaDesde.getValue();
         LocalDate fechaHasta = dpFechaHasta.getValue();
@@ -109,17 +94,16 @@ public class MantenimientoMarcasController implements Initializable{
             return;
         }
 
-        List<MarcaDto> marcas = marcaService.buscarMarcas(fechaDesde, fechaHasta);
+        Respuesta respuesta = marcaService.buscarMarcas(fechaDesde, fechaHasta);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        List<MarcaDto> marcas = (List<MarcaDto>) respuesta.getResultado("Marcas");
         listaMarcas.clear();
         listaMarcas.addAll(marcas);
-    }
-
-    // Llena los campos del formulario con los datos de la marca seleccionada
-    private void cargarFormulario(MarcaDto marca) {
-        txtFolioMarca.setText(marca.getFolioEmpleado().toString());
-        dpFechaMarca.setValue(marca.getFechaHora().toLocalDate());
-        txtHoraMarca.setText(marca.getFechaHora().toLocalTime().format(formatoHora));
-        cmbTipoMarca.setValue(marca.getTipo());
     }
 
     @FXML
@@ -137,12 +121,18 @@ public class MantenimientoMarcasController implements Initializable{
             return;
         }
 
-        listaInconsistencias = marcaService.buscarInconsistencias(fechaDesde, fechaHasta);
+        Respuesta respuesta = marcaService.buscarInconsistencias(fechaDesde, fechaHasta);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        listaInconsistencias = (List<MarcaDto>) respuesta.getResultado("Marcas");
         indiceInconsistenciaActual = 0;
 
         lblCantInconsistencias.setText("Inconsistencias: " + listaInconsistencias.size());
 
-        // Mostramos en la tabla solo las marcas inconsistentes
         listaMarcas.clear();
         listaMarcas.addAll(listaInconsistencias);
 
@@ -160,7 +150,6 @@ public class MantenimientoMarcasController implements Initializable{
 
         indiceInconsistenciaActual = indiceInconsistenciaActual + 1;
 
-        // Si llegamos al final de la lista, volvemos a empezar desde el principio
         if (indiceInconsistenciaActual >= listaInconsistencias.size()) {
             indiceInconsistenciaActual = 0;
         }
@@ -177,7 +166,13 @@ public class MantenimientoMarcasController implements Initializable{
             return;
         }
 
-        marcaService.guardarMarca(marcaNueva);
+        Respuesta respuesta = marcaService.guardarMarca(marcaNueva);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
         cargarTabla();
         limpiarFormulario();
     }
@@ -197,7 +192,13 @@ public class MantenimientoMarcasController implements Initializable{
             return;
         }
 
-        marcaService.guardarMarca(marcaModificada);
+        Respuesta respuesta = marcaService.guardarMarca(marcaModificada);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
         cargarTabla();
         limpiarFormulario();
     }
@@ -211,7 +212,13 @@ public class MantenimientoMarcasController implements Initializable{
             return;
         }
 
-        marcaService.eliminarMarca(seleccionada.getId());
+        Respuesta respuesta = marcaService.eliminarMarca(seleccionada.getId());
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
         cargarTabla();
         limpiarFormulario();
     }
@@ -225,7 +232,7 @@ public class MantenimientoMarcasController implements Initializable{
             return;
         }
 
-        // Invertimos el tipo de la marca, si era entrada pasa a salida y viceversa
+        //Invertimos el tipo de la marca, si era entrada pasa a salida y viceversa
         if (seleccionada.getTipo().equals("ENTRADA")) {
             seleccionada.setTipo("SALIDA");
         } else {
@@ -235,16 +242,10 @@ public class MantenimientoMarcasController implements Initializable{
         seleccionada.setEstado("OK");
         marcaService.guardarMarca(seleccionada);
 
-        // Volvemos a calcular las inconsistencias para actualizar la lista
         handleVerInconsistencias();
     }
 
-    // Limpia el formulario y quita la seleccion de la tabla, sin tocar los datos guardados
-    private void handleLimpiar() {
-        limpiarFormulario();
-    }
-
-    // Lee los datos del formulario y arma un MarcaDto, retorna null si hay error de validacion
+    //Lee los datos del formulario y arma un MarcaDto, retorna null si hay error de validacion
     private MarcaDto leerFormulario(Integer idExistente) {
         String folioTexto = txtFolioMarca.getText();
         LocalDate fecha = dpFechaMarca.getValue();

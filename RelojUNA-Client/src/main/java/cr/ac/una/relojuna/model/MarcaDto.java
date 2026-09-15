@@ -1,66 +1,105 @@
 package cr.ac.una.relojuna.model;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import java.time.LocalDateTime;
-
-//Faltan los properties
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class MarcaDto {
 
-    private Integer id;
-    private Integer folioEmpleado;
-    private String nombreEmpleado;
-    private LocalDateTime fechaHora;
-    private String tipo;
-    private String estado;
+    private ObjectProperty<Integer> id;
+    private ObjectProperty<Integer> folioEmpleado;
+    private StringProperty nombreEmpleado;
+    private ObjectProperty<LocalDateTime> fechaHora;
+    private StringProperty tipo;
+    private StringProperty estado;
 
     public MarcaDto() {
+        this.id = new SimpleObjectProperty<>(0);
+        this.folioEmpleado = new SimpleObjectProperty<>(0);
+        this.nombreEmpleado = new SimpleStringProperty("");
+        this.fechaHora = new SimpleObjectProperty<>();
+        this.tipo = new SimpleStringProperty("");
+        this.estado = new SimpleStringProperty("");
     }
 
     public Integer getId() {
-        return id;
+        return id.get();
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.id.set(id);
     }
 
     public Integer getFolioEmpleado() {
-        return folioEmpleado;
+        return folioEmpleado.get();
     }
 
     public void setFolioEmpleado(Integer folioEmpleado) {
-        this.folioEmpleado = folioEmpleado;
+        this.folioEmpleado.set(folioEmpleado);
     }
 
     public String getNombreEmpleado() {
-        return nombreEmpleado;
+        return nombreEmpleado.get();
     }
 
     public void setNombreEmpleado(String nombreEmpleado) {
-        this.nombreEmpleado = nombreEmpleado;
+        this.nombreEmpleado.set(nombreEmpleado);
     }
 
     public LocalDateTime getFechaHora() {
-        return fechaHora;
+        return fechaHora.get();
     }
 
     public void setFechaHora(LocalDateTime fechaHora) {
-        this.fechaHora = fechaHora;
+        this.fechaHora.set(fechaHora);
     }
 
     public String getTipo() {
-        return tipo;
+        return tipo.get();
     }
 
     public void setTipo(String tipo) {
-        this.tipo = tipo;
+        this.tipo.set(tipo);
     }
 
     public String getEstado() {
-        return estado;
+        return estado.get();
     }
 
     public void setEstado(String estado) {
-        this.estado = estado;
+        this.estado.set(estado);
+    }
+
+    @JsonbTransient
+    public ObjectProperty<Integer> getIdProperty() {
+        return id;
+    }
+
+    @JsonbTransient
+    public ObjectProperty<Integer> getFolioEmpleadoProperty() {
+        return folioEmpleado;
+    }
+
+    @JsonbTransient
+    public StringProperty getNombreEmpleadoProperty() {
+        return nombreEmpleado;
+    }
+
+    @JsonbTransient
+    public ObjectProperty<LocalDateTime> getFechaHoraProperty() {
+        return fechaHora;
+    }
+
+    @JsonbTransient
+    public StringProperty getTipoProperty() {
+        return tipo;
+    }
+
+    @JsonbTransient
+    public StringProperty getEstadoProperty() {
+        return estado;
     }
 }

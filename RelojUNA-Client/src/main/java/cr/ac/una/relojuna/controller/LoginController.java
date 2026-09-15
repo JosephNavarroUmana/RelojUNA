@@ -1,10 +1,10 @@
 package cr.ac.una.relojuna.controller;
 
 import cr.ac.una.relojuna.model.EmpleadoDto;
-import cr.ac.una.relojuna.service.ILoginService;
-import cr.ac.una.relojuna.service.ServiceFactory;
+import cr.ac.una.relojuna.service.EmpleadoService;
+import cr.ac.una.relojuna.util.AppContext;
 import cr.ac.una.relojuna.util.FlowController;
-import cr.ac.una.relojuna.util.SesionTemporal;
+import cr.ac.una.relojuna.util.Respuesta;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -33,16 +33,18 @@ public class LoginController {
             return;
         }
 
-        ILoginService loginService = ServiceFactory.getLoginService();
-        EmpleadoDto empleado = loginService.validarLogin(folio, clave);
+        EmpleadoService empleadoService = new EmpleadoService();
+        Respuesta respuesta = empleadoService.validarLogin(folio, clave);
 
-        if (empleado == null) {
-            lblMensaje.setText("Folio o clave incorrectos.");
+        if (!respuesta.getEstado()) {
+            lblMensaje.setText(respuesta.getMensaje());
             return;
         }
 
-        //Guardamos el empleado en la sesion para usarlo en las demas pantallas
-        SesionTemporal.getInstancia().setEmpleadoActual(empleado);
+        EmpleadoDto empleado = (EmpleadoDto) respuesta.getResultado("Usuario");
+
+        //Guardamos el empleado en el contexto para usarlo en las demas pantallas
+        AppContext.getInstance().set("Usuario", empleado);
 
         //Cambiamos a la pantalla principal
         FlowController.getInstancia().irAVista("PrincipalView.fxml", "Menu Principal");

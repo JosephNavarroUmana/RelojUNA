@@ -1,17 +1,14 @@
 package cr.ac.una.relojuna.controller;
 
 import cr.ac.una.relojuna.model.EmpleadoDto;
-import cr.ac.una.relojuna.service.IEmpleadoService;
-import cr.ac.una.relojuna.service.ServiceFactory;
-import java.net.URL;
+import cr.ac.una.relojuna.service.EmpleadoService;
+import cr.ac.una.relojuna.util.Respuesta;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -24,7 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-public class EmpleadoController implements Initializable {
+public class EmpleadoController {
 
     @FXML
     private TextField txtBuscar, txtFolio, txtNombre, txtApellidos, txtCedula, txtSalario, txtFoto;
@@ -53,16 +50,15 @@ public class EmpleadoController implements Initializable {
     @FXML
     private Button btnRegresar;
 
-    //Servicio de empleados, se obtiene por medio de la fabrica
-    private IEmpleadoService empleadoService;
+    //Servicio de empleados
+    private EmpleadoService empleadoService;
 
     //Lista observable que alimenta la tabla
     private ObservableList<EmpleadoDto> listaEmpleados;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("initialize de EmpleadoController SI se ejecuto");
-        empleadoService = ServiceFactory.getEmpleadoService();
+    @FXML
+    private void initialize() {
+        empleadoService = new EmpleadoService();
         listaEmpleados = FXCollections.observableArrayList();
 
         //Enlazamos cada columna con el atributo correspondiente del EmpleadoDto
@@ -88,7 +84,14 @@ public class EmpleadoController implements Initializable {
 
     //Trae los empleados desde el servicio y los pone en la tabla
     private void cargarTabla(String textoBusqueda) {
-        List<EmpleadoDto> empleados = empleadoService.buscarEmpleados(textoBusqueda);
+        Respuesta respuesta = empleadoService.buscarEmpleados(textoBusqueda);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        List<EmpleadoDto> empleados = (List<EmpleadoDto>) respuesta.getResultado("Empleados");
         listaEmpleados.clear();
         listaEmpleados.addAll(empleados);
     }
@@ -173,7 +176,12 @@ public class EmpleadoController implements Initializable {
         empleado.setClave(txtClave.getText());
         empleado.setAdministrador(chkAdmin.isSelected());
 
-        empleadoService.guardarEmpleado(empleado);
+        Respuesta respuesta = empleadoService.guardarEmpleado(empleado);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
 
         cargarTabla(txtBuscar.getText());
         limpiarFormulario();
@@ -188,7 +196,13 @@ public class EmpleadoController implements Initializable {
             return;
         }
 
-        empleadoService.eliminarEmpleado(seleccionado.getFolio());
+        Respuesta respuesta = empleadoService.eliminarEmpleado(seleccionado.getFolio());
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
         cargarTabla(txtBuscar.getText());
         limpiarFormulario();
     }

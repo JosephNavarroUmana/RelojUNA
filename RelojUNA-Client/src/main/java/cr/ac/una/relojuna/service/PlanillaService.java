@@ -3,6 +3,7 @@ package cr.ac.una.relojuna.service;
 import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.model.MarcaDto;
 import cr.ac.una.relojuna.model.PlanillaDto;
+import cr.ac.una.relojuna.util.Respuesta;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,41 +13,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlanillaServiceSimulado implements IPlanillaService {
+public class PlanillaService {
 
-    // Hora limite inferior y superior de la jornada diurna
+    //Hora limite inferior y superior de la jornada diurna
     private static final LocalTime INICIO_JORNADA_DIURNA = LocalTime.of(2, 0);
     private static final LocalTime FIN_JORNADA_DIURNA = LocalTime.of(22, 0);
 
-    // Multiplicador para convertir horas reales a horas nocturnas
+    //Multiplicador para convertir horas reales a horas nocturnas
     private static final double MULTIPLICADOR_NOCTURNO = 1.3333;
 
-    // Multiplicador para las horas extras
+    //Multiplicador para las horas extras
     private static final double MULTIPLICADOR_EXTRA = 1.5;
 
-    @Override
-    public List<PlanillaDto> generarPlanilla(int anio, int mes) {
-        List<PlanillaDto> resultado = new ArrayList<>();
+    //Genera la planilla de un mes y anio especifico, con las horas de todos los empleados
+    public Respuesta generarPlanilla(int anio, int mes) {
+        try {
+            List<PlanillaDto> resultado = new ArrayList<>();
 
-        IEmpleadoService empleadoService = new EmpleadoServiceSimulado();
-        List<EmpleadoDto> empleados = empleadoService.buscarEmpleados("");
+            EmpleadoService empleadoService = new EmpleadoService();
+            Respuesta respuestaEmpleados = empleadoService.buscarEmpleados("");
+            List<EmpleadoDto> empleados = (List<EmpleadoDto>) respuestaEmpleados.getResultado("Empleados");
 
-        LocalDate primerDia = LocalDate.of(anio, mes, 1);
-        LocalDate ultimoDia = primerDia.withDayOfMonth(primerDia.lengthOfMonth());
+            LocalDate primerDia = LocalDate.of(anio, mes, 1);
+            LocalDate ultimoDia = primerDia.withDayOfMonth(primerDia.lengthOfMonth());
 
-        for (EmpleadoDto empleado : empleados) {
-            PlanillaDto planilla = calcularPlanillaDelEmpleado(empleado, primerDia, ultimoDia);
-            resultado.add(planilla);
+            for (EmpleadoDto empleado : empleados) {
+                PlanillaDto planilla = calcularPlanillaDelEmpleado(empleado, primerDia, ultimoDia);
+                resultado.add(planilla);
+            }
+
+            return new Respuesta(true, "", "", "Planilla", resultado);
+        } catch (Exception ex) {
+            return new Respuesta(false, "Error generando la planilla.", "generarPlanilla " + ex.getMessage());
         }
-
-        return resultado;
     }
 
-    // Calcula la planilla de un empleado para el rango de fechas del mes indicado
+    //Calcula la planilla de un empleado para el rango de fechas del mes indicado
     private PlanillaDto calcularPlanillaDelEmpleado(EmpleadoDto empleado, LocalDate primerDia, LocalDate ultimoDia) {
         List<MarcaDto> marcasDelEmpleado = obtenerMarcasDelEmpleadoEnRango(empleado.getFolio(), primerDia, ultimoDia);
 
-        // Agrupamos las marcas por dia para procesar una jornada a la vez
         Map<LocalDate, List<MarcaDto>> marcasPorDia = agruparMarcasPorDia(marcasDelEmpleado);
 
         double acumuladoOrdinarias = 0.0;
@@ -59,7 +64,6 @@ public class PlanillaServiceSimulado implements IPlanillaService {
             LocalDateTime entrada = buscarPrimeraEntrada(marcasDelDia);
             LocalDateTime salida = buscarUltimaSalida(marcasDelDia);
 
-            // Si no hay entrada y salida ese dia, no se puede calcular la jornada
             if (entrada == null || salida == null) {
                 continue;
             }
@@ -68,7 +72,6 @@ public class PlanillaServiceSimulado implements IPlanillaService {
             double horasOrdinariasDelDia = horasDelDia[0];
             double horasExtrasDelDia = horasDelDia[1];
 
-            // Los domingos son el dia libre, si se trabaja se paga doble
             boolean esDiaLibre = dia.getDayOfWeek().getValue() == 7;
 
             if (esDiaLibre) {
@@ -92,10 +95,10 @@ public class PlanillaServiceSimulado implements IPlanillaService {
         return planilla;
     }
 
-    // Trae las marcas de un empleado especifico dentro de un rango de fechas
+    //Trae las marcas de un empleado especifico dentro de un rango de fechas
     private List<MarcaDto> obtenerMarcasDelEmpleadoEnRango(Integer folio, LocalDate desde, LocalDate hasta) {
         List<MarcaDto> resultado = new ArrayList<>();
-        List<MarcaDto> todasLasMarcas = MarcaServiceSimulado.obtenerTodasLasMarcas();
+        List<MarcaDto> todasLasMarcas = MarcaService.obtenerTodasLasMarcas();
 
         for (MarcaDto marca : todasLasMarcas) {
             if (!marca.getFolioEmpleado().equals(folio)) {
@@ -114,7 +117,7 @@ public class PlanillaServiceSimulado implements IPlanillaService {
         return resultado;
     }
 
-    // Agrupa una lista de marcas segun el dia en el que ocurrieron
+    //Agrupa una lista de marcas segun el dia en el que ocurrieron
     private Map<LocalDate, List<MarcaDto>> agruparMarcasPorDia(List<MarcaDto> marcas) {
         Map<LocalDate, List<MarcaDto>> marcasPorDia = new HashMap<>();
 
@@ -133,7 +136,7 @@ public class PlanillaServiceSimulado implements IPlanillaService {
         return marcasPorDia;
     }
 
-    // Busca la primera marca de tipo ENTRADA del dia
+    //Busca la primera marca de tipo ENTRADA del dia
     private LocalDateTime buscarPrimeraEntrada(List<MarcaDto> marcasDelDia) {
         LocalDateTime primeraEntrada = null;
 
@@ -148,7 +151,7 @@ public class PlanillaServiceSimulado implements IPlanillaService {
         return primeraEntrada;
     }
 
-    // Busca la ultima marca de tipo SALIDA del dia
+    //Busca la ultima marca de tipo SALIDA del dia
     private LocalDateTime buscarUltimaSalida(List<MarcaDto> marcasDelDia) {
         LocalDateTime ultimaSalida = null;
 
@@ -163,16 +166,13 @@ public class PlanillaServiceSimulado implements IPlanillaService {
         return ultimaSalida;
     }
 
-    // Calcula las horas ordinarias y extras ya pagaderas (con multiplicadores) de una jornada
-    // Retorna un arreglo de 2 posiciones, la 0 son las ordinarias y la 1 las extras
+    //Calcula las horas ordinarias y extras ya pagaderas, con multiplicadores, de una jornada
     private double[] calcularHorasDelDia(LocalDateTime entrada, LocalDateTime salida) {
         long minutosTrabajados = Duration.between(entrada, salida).toMinutes();
 
-        // Redondeamos la jornada a bloques de 30 minutos
         long minutosRedondeados = Math.round(minutosTrabajados / 30.0) * 30;
         double horasTrabajadas = minutosRedondeados / 60.0;
 
-        // Determinamos si la jornada es nocturna, si se sale del rango de 2am a 10pm
         LocalTime horaEntrada = entrada.toLocalTime();
         LocalTime horaSalida = salida.toLocalTime();
         boolean esNocturna = horaEntrada.isBefore(INICIO_JORNADA_DIURNA) || horaSalida.isAfter(FIN_JORNADA_DIURNA);

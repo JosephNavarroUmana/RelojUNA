@@ -2,20 +2,17 @@ package cr.ac.una.relojuna.controller;
 
 import cr.ac.una.relojuna.model.ConsultaResultadoDto;
 import cr.ac.una.relojuna.model.EmpleadoDto;
-import cr.ac.una.relojuna.service.IConsultaService;
-import cr.ac.una.relojuna.service.IEmpleadoService;
-import cr.ac.una.relojuna.service.ServiceFactory;
+import cr.ac.una.relojuna.service.ConsultaService;
+import cr.ac.una.relojuna.service.EmpleadoService;
 import cr.ac.una.relojuna.util.JasperExportador;
+import cr.ac.una.relojuna.util.Respuesta;
 import java.io.File;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -26,7 +23,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class ReporteController implements Initializable{
+public class ReporteController {
 
     @FXML
     private RadioButton rbReporteEmpleados, rbReporteMarcas;
@@ -39,27 +36,25 @@ public class ReporteController implements Initializable{
     @FXML
     private Button btnRegresar;
 
-    // Servicios usados en esta pantalla
-    private IEmpleadoService empleadoService;
-    private IConsultaService consultaService;
+    //Servicios usados en esta pantalla
+    private EmpleadoService empleadoService;
+    private ConsultaService consultaService;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        empleadoService = ServiceFactory.getEmpleadoService();
-        consultaService = ServiceFactory.getConsultaService();
+    @FXML
+    private void initialize() {
+        empleadoService = new EmpleadoService();
+        consultaService = new ConsultaService();
 
         cargarComboEmpleados();
 
         dpFechaDesde.setValue(LocalDate.now().minusDays(30));
         dpFechaHasta.setValue(LocalDate.now());
 
-        // Creamos el grupo de radios a mano, para que ambos radios se comporten como mutuamente excluyentes
         ToggleGroup grupoTipoReporte = new ToggleGroup();
         rbReporteEmpleados.setToggleGroup(grupoTipoReporte);
         rbReporteMarcas.setToggleGroup(grupoTipoReporte);
         rbReporteMarcas.setSelected(true);
 
-        // Cuando cambia el tipo de reporte, habilitamos o deshabilitamos los controles que le corresponden
         grupoTipoReporte.selectedToggleProperty().addListener((observable, anterior, seleccionado) -> {
             actualizarControlesSegunTipo();
         });
@@ -67,9 +62,16 @@ public class ReporteController implements Initializable{
         actualizarControlesSegunTipo();
     }
 
-    // Llena el combo de empleados con la opcion Todos de primero
+    //Llena el combo de empleados con la opcion Todos de primero
     private void cargarComboEmpleados() {
-        List<EmpleadoDto> empleados = empleadoService.buscarEmpleados("");
+        Respuesta respuesta = empleadoService.buscarEmpleados("");
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        List<EmpleadoDto> empleados = (List<EmpleadoDto>) respuesta.getResultado("Empleados");
 
         ObservableList<String> opciones = FXCollections.observableArrayList();
         opciones.add("Todos");
@@ -82,7 +84,6 @@ public class ReporteController implements Initializable{
         cmbEmpleado.setValue("Todos");
     }
 
-    // El reporte de empleados no usa fechas ni empleado especifico, el de marcas si
     private void actualizarControlesSegunTipo() {
         boolean esReporteMarcas = rbReporteMarcas.isSelected();
 
@@ -91,7 +92,6 @@ public class ReporteController implements Initializable{
         dpFechaHasta.setDisable(!esReporteMarcas);
     }
 
-    // Obtiene el folio del empleado seleccionado en el combo, null si esta en Todos
     private Integer obtenerFolioSeleccionado() {
         String seleccionado = cmbEmpleado.getValue();
 
@@ -103,24 +103,42 @@ public class ReporteController implements Initializable{
         return Integer.valueOf(folioTexto);
     }
 
-    // Trae las marcas segun los filtros de la pantalla y las ordena por empleado para que el reporte agrupe bien
+    //Trae las marcas segun los filtros de la pantalla y las ordena por empleado para que el reporte agrupe bien
     private List<ConsultaResultadoDto> obtenerMarcasOrdenadas() {
         LocalDate fechaDesde = dpFechaDesde.getValue();
         LocalDate fechaHasta = dpFechaHasta.getValue();
         Integer folioEmpleado = obtenerFolioSeleccionado();
 
-        List<ConsultaResultadoDto> marcas = consultaService.consultarMarcas(fechaDesde, fechaHasta, folioEmpleado);
+        Respuesta respuesta = consultaService.consultarMarcas(fechaDesde, fechaHasta, folioEmpleado);
 
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return List.of();
+        }
+
+        List<ConsultaResultadoDto> marcas = (List<ConsultaResultadoDto>) respuesta.getResultado("Consultas");
         marcas.sort((marca1, marca2) -> marca1.getNombreEmpleado().compareTo(marca2.getNombreEmpleado()));
 
         return marcas;
+    }
+
+    //Trae todos los empleados para el reporte de empleados
+    private List<EmpleadoDto> obtenerTodosLosEmpleados() {
+        Respuesta respuesta = empleadoService.buscarEmpleados("");
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return List.of();
+        }
+
+        return (List<EmpleadoDto>) respuesta.getResultado("Empleados");
     }
 
     @FXML
     private void handleVistaPrevia() {
         try {
             if (rbReporteEmpleados.isSelected()) {
-                List<EmpleadoDto> empleados = empleadoService.buscarEmpleados("");
+                List<EmpleadoDto> empleados = obtenerTodosLosEmpleados();
                 JasperExportador.mostrarVistaPreviaEmpleados(empleados);
             } else {
                 List<ConsultaResultadoDto> marcas = obtenerMarcasOrdenadas();
@@ -141,7 +159,7 @@ public class ReporteController implements Initializable{
         }
     }
 
-    // Genera el PDF del reporte de empleados y lo guarda donde el usuario elija
+    //Genera el PDF del reporte de empleados y lo guarda donde el usuario elija
     private void generarReporteEmpleados() {
         FileChooser selector = new FileChooser();
         selector.setTitle("Guardar reporte de empleados");
@@ -155,7 +173,7 @@ public class ReporteController implements Initializable{
         }
 
         try {
-            List<EmpleadoDto> empleados = empleadoService.buscarEmpleados("");
+            List<EmpleadoDto> empleados = obtenerTodosLosEmpleados();
             JasperExportador.exportarEmpleadosAPdf(empleados, archivo);
             mostrarMensaje("Reporte generado correctamente.");
         } catch (Exception ex) {
@@ -164,7 +182,7 @@ public class ReporteController implements Initializable{
         }
     }
 
-    // Genera el PDF del reporte de marcas y lo guarda donde el usuario elija
+    //Genera el PDF del reporte de marcas y lo guarda donde el usuario elija
     private void generarReporteMarcas() {
         FileChooser selector = new FileChooser();
         selector.setTitle("Guardar reporte de marcas");

@@ -1,16 +1,13 @@
 package cr.ac.una.relojuna.controller;
 
 import cr.ac.una.relojuna.model.EmpleadoDto;
+import cr.ac.una.relojuna.util.AppContext;
 import cr.ac.una.relojuna.util.FlowController;
-import cr.ac.una.relojuna.util.SesionTemporal;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-public class PrincipalController implements Initializable{
+public class PrincipalController {
 
     @FXML
     private Label lblUsuario;
@@ -29,10 +26,10 @@ public class PrincipalController implements Initializable{
     @FXML
     private Button btnCerrarSesion;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // Mostramos el nombre del empleado que inicio sesion
-        EmpleadoDto empleado = SesionTemporal.getInstancia().getEmpleadoActual();
+    @FXML
+    private void initialize() {
+        //Mostramos el nombre del empleado que inicio sesion
+        EmpleadoDto empleado = (EmpleadoDto) AppContext.getInstance().get("Usuario");
 
         if (empleado != null) {
             lblUsuario.setText("Bienvenido: " + empleado.getNombre() + " " + empleado.getApellidos());
@@ -71,8 +68,8 @@ public class PrincipalController implements Initializable{
 
     @FXML
     private void handleCerrarSesion() {
-        // Limpiamos la sesion y regresamos a la pantalla de login
-        SesionTemporal.getInstancia().cerrarSesion();
+        //Limpiamos el contexto y regresamos a la pantalla de login
+        AppContext.getInstance().delete("Usuario");
         FlowController.getInstancia().irAVista("LoginView.fxml", "Reloj Marcador");
     }
 }

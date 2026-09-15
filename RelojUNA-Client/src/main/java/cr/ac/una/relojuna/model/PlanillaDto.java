@@ -1,64 +1,104 @@
 package cr.ac.una.relojuna.model;
 
-//Faltan los properties
+import jakarta.json.bind.annotation.JsonbTransient;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class PlanillaDto {
 
-    private Integer folioEmpleado;
-    private String nombreEmpleado;
-    private Double horasOrdinarias;
-    private Double horasExtras;
-    private Double horasDobles;
-    private Double salarioMensual;
+    private ObjectProperty<Integer> folioEmpleado;
+    private StringProperty nombreEmpleado;
+    private ObjectProperty<Double> horasOrdinarias;
+    private ObjectProperty<Double> horasExtras;
+    private ObjectProperty<Double> horasDobles;
+    private ObjectProperty<Double> salarioMensual;
 
     public PlanillaDto() {
+        this.folioEmpleado = new SimpleObjectProperty<>(0);
+        this.nombreEmpleado = new SimpleStringProperty("");
+        this.horasOrdinarias = new SimpleObjectProperty<>(0.0);
+        this.horasExtras = new SimpleObjectProperty<>(0.0);
+        this.horasDobles = new SimpleObjectProperty<>(0.0);
+        this.salarioMensual = new SimpleObjectProperty<>(0.0);
     }
 
     public Integer getFolioEmpleado() {
-        return folioEmpleado;
+        return folioEmpleado.get();
     }
 
     public void setFolioEmpleado(Integer folioEmpleado) {
-        this.folioEmpleado = folioEmpleado;
+        this.folioEmpleado.set(folioEmpleado);
     }
 
     public String getNombreEmpleado() {
-        return nombreEmpleado;
+        return nombreEmpleado.get();
     }
 
     public void setNombreEmpleado(String nombreEmpleado) {
-        this.nombreEmpleado = nombreEmpleado;
+        this.nombreEmpleado.set(nombreEmpleado);
     }
 
     public Double getHorasOrdinarias() {
-        return horasOrdinarias;
+        return horasOrdinarias.get();
     }
 
     public void setHorasOrdinarias(Double horasOrdinarias) {
-        this.horasOrdinarias = horasOrdinarias;
+        this.horasOrdinarias.set(horasOrdinarias);
     }
 
     public Double getHorasExtras() {
-        return horasExtras;
+        return horasExtras.get();
     }
 
     public void setHorasExtras(Double horasExtras) {
-        this.horasExtras = horasExtras;
+        this.horasExtras.set(horasExtras);
     }
 
     public Double getHorasDobles() {
-        return horasDobles;
+        return horasDobles.get();
     }
 
     public void setHorasDobles(Double horasDobles) {
-        this.horasDobles = horasDobles;
+        this.horasDobles.set(horasDobles);
     }
 
     public Double getSalarioMensual() {
-        return salarioMensual;
+        return salarioMensual.get();
     }
 
     public void setSalarioMensual(Double salarioMensual) {
-        this.salarioMensual = salarioMensual;
+        this.salarioMensual.set(salarioMensual);
+    }
+
+    @JsonbTransient
+    public ObjectProperty<Integer> getFolioEmpleadoProperty() {
+        return folioEmpleado;
+    }
+
+    @JsonbTransient
+    public StringProperty getNombreEmpleadoProperty() {
+        return nombreEmpleado;
+    }
+
+    @JsonbTransient
+    public ObjectProperty<Double> getHorasOrdinariasProperty() {
+        return horasOrdinarias;
+    }
+
+    @JsonbTransient
+    public ObjectProperty<Double> getHorasExtrasProperty() {
+        return horasExtras;
+    }
+
+    @JsonbTransient
+    public ObjectProperty<Double> getHorasDoblesProperty() {
+        return horasDobles;
+    }
+
+    @JsonbTransient
+    public ObjectProperty<Double> getSalarioMensualProperty() {
+        return salarioMensual;
     }
 }

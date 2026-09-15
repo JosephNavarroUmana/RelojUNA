@@ -2,21 +2,18 @@ package cr.ac.una.relojuna.controller;
 
 import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.model.MarcaDto;
-import cr.ac.una.relojuna.service.IEmpleadoService;
-import cr.ac.una.relojuna.service.IMarcaService;
-import cr.ac.una.relojuna.service.ServiceFactory;
-import java.net.URL;
+import cr.ac.una.relojuna.service.EmpleadoService;
+import cr.ac.una.relojuna.service.MarcaService;
+import cr.ac.una.relojuna.util.Respuesta;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -24,7 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class MarcaController implements Initializable {
+public class MarcaController {
 
     @FXML
     private Label lblReloj, lblNombreEmpleado, lblHoraMarca, lblMensaje;
@@ -37,23 +34,22 @@ public class MarcaController implements Initializable {
     @FXML
     private Button btnRegresar;
 
-    // Servicios que se usan en esta pantalla
-    private IEmpleadoService empleadoService;
-    private IMarcaService marcaService;
+    //Servicios que se usan en esta pantalla
+    private EmpleadoService empleadoService;
+    private MarcaService marcaService;
 
-    // Formato para mostrar la hora en el reloj digital
+    //Formato para mostrar la hora en el reloj digital
     private DateTimeFormatter formatoReloj = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        empleadoService = ServiceFactory.getEmpleadoService();
-        marcaService = ServiceFactory.getMarcaService();
+    @FXML
+    private void initialize() {
+        empleadoService = new EmpleadoService();
+        marcaService = new MarcaService();
 
         iniciarReloj();
     }
 
-    // Arranca un timeline que actualiza el label del reloj cada segundo
+    //Arranca un timeline que actualiza el label del reloj cada segundo
     private void iniciarReloj() {
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), evento -> actualizarReloj())
@@ -61,7 +57,7 @@ public class MarcaController implements Initializable {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
-        // Ponemos la hora inmediatamente para no esperar el primer segundo
+        //Ponemos la hora inmediatamente para no esperar el primer segundo
         actualizarReloj();
     }
 
@@ -87,8 +83,15 @@ public class MarcaController implements Initializable {
             return;
         }
 
-        // Buscamos el empleado para mostrar su nombre y validar que exista
-        List<EmpleadoDto> empleados = empleadoService.buscarEmpleados(folioTexto);
+        //Buscamos el empleado para mostrar su nombre y validar que exista
+        Respuesta respuestaEmpleados = empleadoService.buscarEmpleados(folioTexto);
+
+        if (!respuestaEmpleados.getEstado()) {
+            lblMensaje.setText(respuestaEmpleados.getMensaje());
+            return;
+        }
+
+        List<EmpleadoDto> empleados = (List<EmpleadoDto>) respuestaEmpleados.getResultado("Empleados");
 
         if (empleados.isEmpty()) {
             lblMensaje.setText("No existe un empleado con ese folio.");
@@ -98,14 +101,21 @@ public class MarcaController implements Initializable {
 
         EmpleadoDto empleado = empleados.get(0);
 
-        // Registramos la marca
-        MarcaDto marca = marcaService.marcar(folio);
+        //Registramos la marca
+        Respuesta respuestaMarca = marcaService.marcar(folio);
+
+        if (!respuestaMarca.getEstado()) {
+            lblMensaje.setText(respuestaMarca.getMensaje());
+            return;
+        }
+
+        MarcaDto marca = (MarcaDto) respuestaMarca.getResultado("Marca");
 
         lblNombreEmpleado.setText(empleado.getNombre() + " " + empleado.getApellidos());
         lblHoraMarca.setText(marca.getTipo() + " registrada a las " + marca.getFechaHora().format(formatoReloj));
         lblMensaje.setText("Marca registrada correctamente.");
 
-        // Verificamos si hoy es el cumpleanos del empleado
+        //Verificamos si hoy es el cumpleanos del empleado
         if (esCumpleanios(empleado)) {
             mostrarAnimacionCumpleanios();
         }
@@ -113,7 +123,7 @@ public class MarcaController implements Initializable {
         txtFolio.clear();
     }
 
-    // Compara el dia y mes de nacimiento con la fecha de hoy
+    //Compara el dia y mes de nacimiento con la fecha de hoy
     private boolean esCumpleanios(EmpleadoDto empleado) {
         LocalDate fechaNacimiento = empleado.getFechaNacimiento();
         LocalDate hoy = LocalDate.now();
@@ -128,7 +138,7 @@ public class MarcaController implements Initializable {
         return mismoMes && mismoDia;
     }
 
-    // Animacion simple, la foto crece y vuelve a su tamano varias veces
+    //Animacion simple, la foto crece y vuelve a su tamano varias veces
     private void mostrarAnimacionCumpleanios() {
         lblMensaje.setText("Feliz cumpleanios " + lblNombreEmpleado.getText() + "!");
 
