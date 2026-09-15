@@ -68,8 +68,26 @@
             <artifactId>commons-collections4</artifactId>
             <version>4.5.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.metro</groupId>
+            <artifactId>webservices-rt</artifactId>
+            <version>4.0.6</version>
+        </dependency>
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <targetPath>META-INF</targetPath>
+                <directory>src</directory>
+                <includes>
+                    <include>jax-ws-catalog.xml</include>
+                    <include>wsdl/**</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.openjfx</groupId>
@@ -86,6 +104,117 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.sun.xml.ws</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>4.0.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>localhost_8080/RelojUNA-Server/EmpleadoWS.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName>cr.ac.una.relojuna.ws</packageName>
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                            <wsdlLocation>http://localhost:8080/RelojUNA-Server/EmpleadoWS?wsdl</wsdlLocation>
+                            <staleFile>${project.build.directory}/jaxws/stale/EmpleadoWS.stale</staleFile>
+                        </configuration>
+                        <id>wsimport-generate-EmpleadoWS</id>
+                        <phase>generate-sources</phase>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>localhost_8080/RelojUNA-Server/MarcaWS.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName>cr.ac.una.relojuna.ws</packageName>
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                            <wsdlLocation>http://localhost:8080/RelojUNA-Server/MarcaWS?wsdl</wsdlLocation>
+                            <staleFile>${project.build.directory}/jaxws/stale/MarcaWS.stale</staleFile>
+                        </configuration>
+                        <id>wsimport-generate-MarcaWS</id>
+                        <phase>generate-sources</phase>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>localhost_8080/RelojUNA-Server/ConsultaWS.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName>cr.ac.una.relojuna.ws</packageName>
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                            <wsdlLocation>http://localhost:8080/RelojUNA-Server/ConsultaWS?wsdl</wsdlLocation>
+                            <staleFile>${project.build.directory}/jaxws/stale/ConsultaWS.stale</staleFile>
+                        </configuration>
+                        <id>wsimport-generate-ConsultaWS</id>
+                        <phase>generate-sources</phase>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>localhost_8080/RelojUNA-Server/PlanillaWS.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName>cr.ac.una.relojuna.ws</packageName>
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                            <wsdlLocation>http://localhost:8080/RelojUNA-Server/PlanillaWS?wsdl</wsdlLocation>
+                            <staleFile>${project.build.directory}/jaxws/stale/PlanillaWS.stale</staleFile>
+                        </configuration>
+                        <id>wsimport-generate-PlanillaWS</id>
+                        <phase>generate-sources</phase>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>localhost_8080/RelojUNA-Server/LoginWS.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName>cr.ac.una.relojuna.ws</packageName>
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                            <wsdlLocation>http://localhost:8080/RelojUNA-Server/LoginWS?wsdl</wsdlLocation>
+                            <staleFile>${project.build.directory}/jaxws/stale/LoginWS.stale</staleFile>
+                        </configuration>
+                        <id>wsimport-generate-LoginWS</id>
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.glassfish.metro</groupId>
+                        <artifactId>webservices-api</artifactId>
+                        <version>4.0.6</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <sourceDestDir>${project.build.directory}/generated-sources/jaxws-wsimport</sourceDestDir>
+                    <xnocompile>true</xnocompile>
+                    <verbose>true</verbose>
+                    <extension>true</extension>
+                    <catalog>${basedir}/src/jax-ws-catalog.xml</catalog>
                 </configuration>
             </plugin>
         </plugins>
