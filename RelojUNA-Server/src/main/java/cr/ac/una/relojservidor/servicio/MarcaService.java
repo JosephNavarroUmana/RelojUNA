@@ -3,10 +3,10 @@ package cr.ac.una.relojservidor.servicio;
 import cr.ac.una.relojservidor.dto.MarcaDto;
 import cr.ac.una.relojservidor.modelo.Empleado;
 import cr.ac.una.relojservidor.modelo.Marca;
-import cr.ac.una.relojservidor.util.EntityManagerHelper;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,21 +14,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Stateless
 public class MarcaService {
+
+    @PersistenceContext(unitName = "RelojUNAPU")
+    private EntityManager em;
 
     // =========================================================
     // CRUD básico
     // =========================================================
 
     public Respuesta guardar(MarcaDto dto) {
-        EntityManager em = EntityManagerHelper.getManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
-
             Empleado empleado = em.find(Empleado.class, dto.getEmpleadoId());
             if (empleado == null) {
-                tx.rollback();
                 return new Respuesta(false, "No se encontró el empleado con ID " + dto.getEmpleadoId());
             }
 
@@ -38,7 +37,6 @@ public class MarcaService {
             } else {
                 marca = em.find(Marca.class, dto.getId());
                 if (marca == null) {
-                    tx.rollback();
                     return new Respuesta(false, "No se encontró la marca con ID " + dto.getId());
                 }
             }
@@ -54,14 +52,9 @@ public class MarcaService {
                 marca = em.merge(marca);
             }
 
-            tx.commit();
-
             return new Respuesta(true, "Marca guardada con éxito", convertirADto(marca));
 
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             return new Respuesta(false, "Error al guardar marca: " + e.getMessage());
         }
     }
@@ -71,14 +64,9 @@ public class MarcaService {
      * decidiendo automáticamente el tipo según su última marca del día.
      */
     public Respuesta marcar(Long empleadoId) {
-        EntityManager em = EntityManagerHelper.getManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
-
             Empleado empleado = em.find(Empleado.class, empleadoId);
             if (empleado == null) {
-                tx.rollback();
                 return new Respuesta(false, "No se encontró el empleado con ID " + empleadoId);
             }
 
@@ -99,20 +87,15 @@ public class MarcaService {
             marca.setTipo(tipo);
 
             em.persist(marca);
-            tx.commit();
 
             return new Respuesta(true, "Marca de " + tipo + " registrada con éxito", convertirADto(marca));
 
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             return new Respuesta(false, "Error al marcar: " + e.getMessage());
         }
     }
 
     public Respuesta obtenerTodas() {
-        EntityManager em = EntityManagerHelper.getManager();
         try {
             List<Marca> marcas = em.createQuery("SELECT m FROM Marca m", Marca.class).getResultList();
 
@@ -128,26 +111,17 @@ public class MarcaService {
     }
 
     public Respuesta eliminar(Long id) {
-        EntityManager em = EntityManagerHelper.getManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
-
             Marca marca = em.find(Marca.class, id);
             if (marca == null) {
-                tx.rollback();
                 return new Respuesta(false, "No se encontró la marca con ID " + id);
             }
 
             em.remove(marca);
-            tx.commit();
 
             return new Respuesta(true, "Marca eliminada con éxito");
 
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             return new Respuesta(false, "Error al eliminar marca: " + e.getMessage());
         }
     }
@@ -162,7 +136,6 @@ public class MarcaService {
      * marcas que no alternan correctamente ENTRADA/SALIDA.
      */
     public Respuesta buscarInconsistencias() {
-        EntityManager em = EntityManagerHelper.getManager();
         try {
             List<Marca> todasLasMarcas = em.createQuery(
                     "SELECT m FROM Marca m", Marca.class).getResultList();

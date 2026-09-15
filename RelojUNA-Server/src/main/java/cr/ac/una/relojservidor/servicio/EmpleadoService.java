@@ -2,37 +2,28 @@ package cr.ac.una.relojservidor.servicio;
 
 import cr.ac.una.relojservidor.dto.EmpleadoDto;
 import cr.ac.una.relojservidor.modelo.Empleado;
-import cr.ac.una.relojservidor.util.EntityManagerHelper;
 import cr.ac.una.relojservidor.util.Respuesta;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceContext;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@Stateless
+@Stateless
 public class EmpleadoService {
+    
+    @PersistenceContext(unitName = "RelojUNAPU")
+    private EntityManager em;
 
     public Respuesta guardar(EmpleadoDto dto) {
-        EntityManager em = EntityManagerHelper.getManager();
-        EntityTransaction tx = em.getTransaction();
-        
-//        @Persistence(unitName = "RelojUNAPU")
-//        private EntityManager em;
-        
         try {
-            tx.begin();
-
             Empleado empleado;
             if (dto.getId() == null) {
-                // Es un empleado nuevo
                 empleado = new Empleado();
             } else {
-                // Es una edición de uno existente
                 empleado = em.find(Empleado.class, dto.getId());
                 if (empleado == null) {
-                    tx.rollback();
                     return new Respuesta(false, "No se encontró el empleado con ID " + dto.getId());
                 }
             }
@@ -40,7 +31,7 @@ public class EmpleadoService {
             empleado.setNombre(dto.getNombre());
             empleado.setApellidos(dto.getApellidos());
             empleado.setCedula(dto.getCedula());
-            empleado.setFechaNacimiento(dto.getFechaNacimiento());
+            empleado.setFechaNacimiento(LocalDate.parse(dto.getFechaNacimiento()));
             empleado.setFoto(dto.getFoto());
             empleado.setFolio(dto.getFolio());
             empleado.setSalarioHora(dto.getSalarioHora());
@@ -53,20 +44,14 @@ public class EmpleadoService {
                 em.merge(empleado);
             }
 
-            tx.commit();
-
             return new Respuesta(true, "Empleado guardado con éxito", convertirADto(empleado));
 
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             return new Respuesta(false, "Error al guardar empleado: " + e.getMessage());
         }
     }
 
     public Respuesta obtenerTodos() {
-        EntityManager em = EntityManagerHelper.getManager();
         try {
             List<Empleado> empleados = em.createQuery("SELECT e FROM Empleado e", Empleado.class)
                     .getResultList();
@@ -83,7 +68,6 @@ public class EmpleadoService {
     }
 
     public Respuesta obtenerPorId(Long id) {
-        EntityManager em = EntityManagerHelper.getManager();
         try {
             Empleado empleado = em.find(Empleado.class, id);
             if (empleado == null) {
@@ -97,26 +81,17 @@ public class EmpleadoService {
     }
 
     public Respuesta eliminar(Long id) {
-        EntityManager em = EntityManagerHelper.getManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
-
             Empleado empleado = em.find(Empleado.class, id);
             if (empleado == null) {
-                tx.rollback();
                 return new Respuesta(false, "No se encontró el empleado con ID " + id);
             }
 
             em.remove(empleado);
-            tx.commit();
 
             return new Respuesta(true, "Empleado eliminado con éxito");
 
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             return new Respuesta(false, "Error al eliminar empleado: " + e.getMessage());
         }
     }
@@ -128,7 +103,7 @@ public class EmpleadoService {
         dto.setNombre(empleado.getNombre());
         dto.setApellidos(empleado.getApellidos());
         dto.setCedula(empleado.getCedula());
-        dto.setFechaNacimiento(empleado.getFechaNacimiento());
+        dto.setFechaNacimiento(empleado.getFechaNacimiento().toString());
         dto.setFoto(empleado.getFoto());
         dto.setFolio(empleado.getFolio());
         dto.setSalarioHora(empleado.getSalarioHora());

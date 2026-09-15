@@ -1,7 +1,7 @@
 package cr.ac.una.relojservidor.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+//import java.time.LocalDate;
 
 public class EmpleadoDto implements Serializable {
 
@@ -9,7 +9,7 @@ public class EmpleadoDto implements Serializable {
     private String nombre;
     private String apellidos;
     private String cedula;
-    private LocalDate fechaNacimiento;
+    private String fechaNacimiento;
     private byte[] foto;
     private String folio;
     private Double salarioHora;
@@ -53,11 +53,11 @@ public class EmpleadoDto implements Serializable {
         this.cedula = cedula;
     }
 
-    public LocalDate getFechaNacimiento() {
+    public String getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+    public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 

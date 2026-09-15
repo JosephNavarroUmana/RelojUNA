@@ -3,19 +3,23 @@ package cr.ac.una.relojservidor.servicio;
 import cr.ac.una.relojservidor.dto.ConsultaResultadoDto;
 import cr.ac.una.relojservidor.dto.MarcaDto;
 import cr.ac.una.relojservidor.modelo.Marca;
-import cr.ac.una.relojservidor.util.EntityManagerHelper;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Stateless
 public class ConsultaService {
+
+    @PersistenceContext(unitName = "RelojUNAPU")
+    private EntityManager em;
 
     /**
      * Consulta las marcas de un rango de fechas, opcionalmente filtradas
@@ -26,7 +30,6 @@ public class ConsultaService {
      * @param empleadoId opcional; si es null, se consideran todos los empleados
      */
     public Respuesta consultarMarcas(LocalDate desde, LocalDate hasta, Long empleadoId) {
-        EntityManager em = EntityManagerHelper.getManager();
         try {
             // Única consulta JPQL permitida: traer TODAS las marcas
             List<Marca> todasLasMarcas = em.createQuery(

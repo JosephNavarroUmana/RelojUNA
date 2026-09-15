@@ -6,27 +6,27 @@ import cr.ac.una.relojservidor.modelo.DetallePlanilla;
 import cr.ac.una.relojservidor.modelo.Empleado;
 import cr.ac.una.relojservidor.modelo.Marca;
 import cr.ac.una.relojservidor.modelo.Planilla;
-import cr.ac.una.relojservidor.util.EntityManagerHelper;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Stateless
 public class PlanillaService {
+
+    @PersistenceContext(unitName = "RelojUNAPU")
+    private EntityManager em;
 
     // =========================================================
     // CRUD básico
     // =========================================================
 
     public Respuesta guardar(PlanillaDto dto) {
-        EntityManager em = EntityManagerHelper.getManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
-
             Planilla planilla;
             if (dto.getId() == null) {
                 planilla = new Planilla();
@@ -34,7 +34,6 @@ public class PlanillaService {
             } else {
                 planilla = em.find(Planilla.class, dto.getId());
                 if (planilla == null) {
-                    tx.rollback();
                     return new Respuesta(false, "No se encontró la planilla con ID " + dto.getId());
                 }
                 if (planilla.getDetalles() == null) {
@@ -44,11 +43,10 @@ public class PlanillaService {
 
             planilla.setMes(dto.getMes());
             planilla.setAnio(dto.getAnio());
-            planilla.setFechaGeneracion(dto.getFechaGeneracion());
+            planilla.setFechaGeneracion(LocalDate.parse(dto.getFechaGeneracion()));
 
             Respuesta errorDetalle = sincronizarDetalles(em, planilla, dto.getDetalles());
             if (errorDetalle != null) {
-                tx.rollback();
                 return errorDetalle;
             }
 
@@ -58,20 +56,14 @@ public class PlanillaService {
                 planilla = em.merge(planilla);
             }
 
-            tx.commit();
-
             return new Respuesta(true, "Planilla guardada con éxito", convertirADto(planilla));
 
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             return new Respuesta(false, "Error al guardar planilla: " + e.getMessage());
         }
     }
 
     public Respuesta obtenerTodos() {
-        EntityManager em = EntityManagerHelper.getManager();
         try {
             List<Planilla> planillas = em.createQuery(
                     "SELECT p FROM Planilla p", Planilla.class).getResultList();
@@ -88,7 +80,6 @@ public class PlanillaService {
     }
 
     public Respuesta obtenerPorId(Long id) {
-        EntityManager em = EntityManagerHelper.getManager();
         try {
             Planilla planilla = em.find(Planilla.class, id);
             if (planilla == null) {
@@ -102,26 +93,17 @@ public class PlanillaService {
     }
 
     public Respuesta eliminar(Long id) {
-        EntityManager em = EntityManagerHelper.getManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
-
             Planilla planilla = em.find(Planilla.class, id);
             if (planilla == null) {
-                tx.rollback();
                 return new Respuesta(false, "No se encontró la planilla con ID " + id);
             }
 
             em.remove(planilla); // el orphanRemoval/cascade limpia los detalles
-            tx.commit();
 
             return new Respuesta(true, "Planilla eliminada con éxito");
 
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             return new Respuesta(false, "Error al eliminar planilla: " + e.getMessage());
         }
     }
@@ -140,10 +122,7 @@ public class PlanillaService {
      * las reglas reales de diurna/nocturna/domingo/feriado.
      */
     public Respuesta generarPlanilla(int mes, int anio) {
-        EntityManager em = EntityManagerHelper.getManager();
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
             Planilla planilla = new Planilla();
             planilla.setMes(mes);
             planilla.setAnio(anio);
@@ -177,17 +156,12 @@ public class PlanillaService {
             }
 
             if (planilla.getDetalles().isEmpty()) {
-                tx.rollback();
                 return new Respuesta(false, "No hay marcas registradas para " + mes + "/" + anio);
             }
 
             em.persist(planilla);
-            tx.commit();
             return new Respuesta(true, "Planilla generada con éxito", convertirADto(planilla));
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             return new Respuesta(false, "Error al generar planilla: " + e.getMessage());
         }
     }
@@ -263,7 +237,7 @@ public class PlanillaService {
         dto.setId(planilla.getId());
         dto.setMes(planilla.getMes());
         dto.setAnio(planilla.getAnio());
-        dto.setFechaGeneracion(planilla.getFechaGeneracion());
+        dto.setFechaGeneracion(planilla.getFechaGeneracion().toString());
 
         if (planilla.getDetalles() != null) {
             dto.setDetalles(planilla.getDetalles().stream()

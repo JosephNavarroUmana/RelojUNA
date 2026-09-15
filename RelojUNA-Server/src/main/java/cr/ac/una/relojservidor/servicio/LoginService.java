@@ -1,15 +1,20 @@
 package cr.ac.una.relojservidor.servicio;
 
+import cr.ac.una.relojservidor.dto.EmpleadoDto;
 import cr.ac.una.relojservidor.modelo.Empleado;
-import cr.ac.una.relojservidor.util.EntityManagerHelper;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.NoResultException;
 
+@Stateless
 public class LoginService {
 
+    @PersistenceContext(unitName = "RelojUNAPU")
+    private EntityManager em;
+
     public Respuesta login(String folio, String clave) {
-        EntityManager em = EntityManagerHelper.getManager();
         try {
             Empleado empleado = em.createQuery(
                     "SELECT e FROM Empleado e WHERE e.folio = :folio AND e.clave = :clave AND e.esAdmin = 1",
@@ -18,12 +23,26 @@ public class LoginService {
                     .setParameter("clave", clave)
                     .getSingleResult();
 
-            return new Respuesta(true, "Login exitoso", empleado);
+            return new Respuesta(true, "Login exitoso", convertirADto(empleado));
 
         } catch (NoResultException e) {
             return new Respuesta(false, "Folio o clave incorrectos, o el empleado no es administrador");
         } catch (Exception e) {
             return new Respuesta(false, "Error al iniciar sesión: " + e.getMessage());
         }
+    }
+
+    private EmpleadoDto convertirADto(Empleado empleado) {
+        EmpleadoDto dto = new EmpleadoDto();
+        dto.setId(empleado.getId());
+        dto.setNombre(empleado.getNombre());
+        dto.setApellidos(empleado.getApellidos());
+        dto.setCedula(empleado.getCedula());
+        dto.setFechaNacimiento(empleado.getFechaNacimiento().toString());
+        dto.setFolio(empleado.getFolio());
+        dto.setSalarioHora(empleado.getSalarioHora());
+        dto.setEsAdmin(empleado.getEsAdmin());
+        
+        return dto;
     }
 }

@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <persistence-unit name="RelojUNAPU" transaction-type="RESOURCE_LOCAL">
-    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+  <persistence-unit name="RelojUNAPU" transaction-type="JTA">
+    <jta-data-source>jdbc/Reloj</jta-data-source>
     <class>cr.ac.una.relojservidor.modelo.Empleado</class>
     <class>cr.ac.una.relojservidor.modelo.Marca</class>
     <class>cr.ac.una.relojservidor.modelo.Planilla</class>
     <class>cr.ac.una.relojservidor.modelo.DetallePlanilla</class>
     <properties>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521/XEPDB1"/>
-      <property name="jakarta.persistence.jdbc.user" value="relojUNA"/>
-      <property name="jakarta.persistence.jdbc.password" value="una"/>
-      <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+      <property name="eclipselink.ddl-generation" value="none"/>
     </properties>
   </persistence-unit>
 </persistence>

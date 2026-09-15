@@ -9,7 +9,7 @@ public class PlanillaDto implements Serializable {
     private Long id;
     private Integer mes;
     private Integer anio;
-    private LocalDate fechaGeneracion;
+    private String fechaGeneracion;
     private List<DetallePlanillaDto> detalles;
 
     public PlanillaDto() {
@@ -39,11 +39,11 @@ public class PlanillaDto implements Serializable {
         this.anio = anio;
     }
 
-    public LocalDate getFechaGeneracion() {
+    public String getFechaGeneracion() {
         return fechaGeneracion;
     }
 
-    public void setFechaGeneracion(LocalDate fechaGeneracion) {
+    public void setFechaGeneracion(String fechaGeneracion) {
         this.fechaGeneracion = fechaGeneracion;
     }
 
