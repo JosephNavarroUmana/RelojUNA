@@ -13,15 +13,19 @@ import java.time.LocalDate;
 @WebService(serviceName = "ConsultaWS")
 public class ConsultaWS {
 
-//    private final ConsultaService consultaService = new ConsultaService();
     @EJB
     private ConsultaService consultaService;
-    
+
+    //Recibimos las fechas como texto porque LocalDate no tiene constructor vacio y JAXB no lo puede armar solo
     @WebMethod(operationName = "consultarMarcas")
     public Respuesta consultarMarcas(
-            @WebParam(name = "desde") LocalDate desde,
-            @WebParam(name = "hasta") LocalDate hasta,
+            @WebParam(name = "desde") String desdeTexto,
+            @WebParam(name = "hasta") String hastaTexto,
             @WebParam(name = "empleadoId") Long empleadoId) {
+
+        LocalDate desde = LocalDate.parse(desdeTexto);
+        LocalDate hasta = LocalDate.parse(hastaTexto);
+
         return consultaService.consultarMarcas(desde, hasta, empleadoId);
     }
 }

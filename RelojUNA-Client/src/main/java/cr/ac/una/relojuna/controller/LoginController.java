@@ -1,22 +1,19 @@
 package cr.ac.una.relojuna.controller;
 
 import cr.ac.una.relojuna.model.EmpleadoDto;
-import cr.ac.una.relojuna.service.EmpleadoService;
+import cr.ac.una.relojuna.service.LoginService;
 import cr.ac.una.relojuna.util.AppContext;
 import cr.ac.una.relojuna.util.FlowController;
 import cr.ac.una.relojuna.util.Respuesta;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class LoginController {
 
     @FXML
     private TextField txtFolio;
-    @FXML
-    private PasswordField txtClave;
     @FXML
     private Button btnLogin;
     @FXML
@@ -25,16 +22,15 @@ public class LoginController {
     @FXML
     private void handleLogin() {
         String folio = txtFolio.getText();
-        String clave = txtClave.getText();
 
-        //Validamos que los campos no vengan vacios
-        if (folio == null || folio.isBlank() || clave == null || clave.isBlank()) {
-            lblMensaje.setText("Debe ingresar el folio y la clave.");
+        //Validamos que el campo no venga vacio
+        if (folio == null || folio.isBlank()) {
+            lblMensaje.setText("Debe ingresar el folio.");
             return;
         }
 
-        EmpleadoService empleadoService = new EmpleadoService();
-        Respuesta respuesta = empleadoService.validarLogin(folio, clave);
+        LoginService loginService = new LoginService();
+        Respuesta respuesta = loginService.validarLogin(folio);
 
         if (!respuesta.getEstado()) {
             lblMensaje.setText(respuesta.getMensaje());

@@ -1,6 +1,7 @@
 package cr.ac.una.relojservidor.util;
 
 import java.io.Serializable;
+import jakarta.xml.bind.annotation.XmlAnyElement;
 
 public class Respuesta implements Serializable {
 
@@ -38,6 +39,7 @@ public class Respuesta implements Serializable {
         this.mensaje = mensaje;
     }
 
+    @XmlAnyElement(lax = true)
     public Object getResultado() {
         return resultado;
     }
