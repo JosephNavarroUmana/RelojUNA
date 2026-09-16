@@ -2,12 +2,14 @@ package cr.ac.una.relojservidor.dto;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MarcaDto implements Serializable {
 
@@ -21,6 +23,10 @@ public class MarcaDto implements Serializable {
 
     private String tipo;
     private Long empleadoId;
+
+    //Campos nuevos, se llenan solo cuando se convierte de entidad a dto, no hacen falta para guardar
+    private String folioEmpleado;
+    private String nombreEmpleado;
 
     public MarcaDto() {
     }
@@ -40,26 +46,44 @@ public class MarcaDto implements Serializable {
     public Long getEmpleadoId() { return empleadoId; }
     public void setEmpleadoId(Long empleadoId) { this.empleadoId = empleadoId; }
 
+    public String getFolioEmpleado() { return folioEmpleado; }
+    public void setFolioEmpleado(String folioEmpleado) { this.folioEmpleado = folioEmpleado; }
+
+    public String getNombreEmpleado() { return nombreEmpleado; }
+    public void setNombreEmpleado(String nombreEmpleado) { this.nombreEmpleado = nombreEmpleado; }
+
     // --- Adapters anidados ---
     static class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
         @Override
         public LocalDate unmarshal(String v) {
-            return (v == null || v.isBlank()) ? null : LocalDate.parse(v);
+            if (v == null || v.isBlank()) {
+                return null;
+            }
+            return LocalDate.parse(v);
         }
         @Override
         public String marshal(LocalDate v) {
-            return (v == null) ? null : v.toString();
+            if (v == null) {
+                return null;
+            }
+            return v.toString();
         }
     }
 
     static class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
         @Override
         public LocalDateTime unmarshal(String v) {
-            return (v == null || v.isBlank()) ? null : LocalDateTime.parse(v);
+            if (v == null || v.isBlank()) {
+                return null;
+            }
+            return LocalDateTime.parse(v);
         }
         @Override
         public String marshal(LocalDateTime v) {
-            return (v == null) ? null : v.toString();
+            if (v == null) {
+                return null;
+            }
+            return v.toString();
         }
     }
 }

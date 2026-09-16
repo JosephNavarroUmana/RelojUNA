@@ -1,88 +1,172 @@
 package cr.ac.una.relojuna.service;
 
-import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.model.MarcaDto;
 import cr.ac.una.relojuna.util.Respuesta;
+import cr.ac.una.relojuna.ws.MarcaWS;
+import cr.ac.una.relojuna.ws.MarcaWS_Service;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Unmarshaller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.w3c.dom.Element;
 
 public class MarcaService {
 
-    //Lista de marcas en memoria, simula la base de datos
-    private static List<MarcaDto> marcas = new ArrayList<>();
+    private MarcaWS puerto;
 
-    //Contador para generar el siguiente id de marca
-    private static int siguienteId = 1;
+    public MarcaService() {
+        MarcaWS_Service servicioWS = new MarcaWS_Service();
+        puerto = servicioWS.getMarcaWSPort();
+    }
 
-    //Registra la marca de entrada o salida de un empleado segun su folio
-    public Respuesta marcar(Integer folioEmpleado) {
+public Respuesta marcar(Integer folioEmpleado) {
+    try {
+        Long idEmpleado = Long.valueOf(folioEmpleado);
+        cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.marcar(idEmpleado);
+
+        if (!respuestaServidor.isExito()) {
+            return new Respuesta(false, respuestaServidor.getMensaje(), "");
+        }
+
+        Object resultadoCrudo = respuestaServidor.getAny();
+        cr.ac.una.relojuna.ws.MarcaDto marcaServidor = convertirAMarcaDtoServidor(resultadoCrudo);
+
+        MarcaDto marca = convertirAMarcaCliente(marcaServidor);
+
+        return new Respuesta(true, "", "", "Marca", marca);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return new Respuesta(false, "Error registrando la marca.", "marcar " + ex.getMessage());
+    }
+}
+
+//    Guarda una marca nueva o actualiza una existente segun el id
+//    public Respuesta guardarMarca(MarcaDto marca) {
+//        try {
+//            cr.ac.una.relojuna.ws.MarcaDto marcaServidor = convertirAMarcaServidor(marca);
+//            cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.guardarMarca(marcaServidor);
+//
+//            if (!respuestaServidor.isExito()) {
+//                return new Respuesta(false, respuestaServidor.getMensaje(), "");
+//            }
+//
+//            Object resultadoCrudo = respuestaServidor.getAny();
+//            cr.ac.una.relojuna.ws.MarcaDto marcaGuardadaServidor;
+//
+//            if (resultadoCrudo instanceof JAXBElement) {
+//                marcaGuardadaServidor = (cr.ac.una.relojuna.ws.MarcaDto) ((JAXBElement<?>) resultadoCrudo).getValue();
+//            } else {
+//                marcaGuardadaServidor = (cr.ac.una.relojuna.ws.MarcaDto) resultadoCrudo;
+//            }
+//
+//            MarcaDto marcaGuardada = convertirAMarcaCliente(marcaGuardadaServidor);
+//
+//            return new Respuesta(true, "", "", "Marca", marcaGuardada);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            return new Respuesta(false, "Error guardando la marca.", "guardarMarca " + ex.getMessage());
+//        }
+//    }
+
+    //Elimina una marca segun su id
+    public Respuesta eliminarMarca(Integer id) {
         try {
-            EmpleadoService empleadoService = new EmpleadoService();
-            Respuesta respuestaEmpleado = empleadoService.buscarEmpleados(folioEmpleado.toString());
-            List<EmpleadoDto> empleadosEncontrados = (List<EmpleadoDto>) respuestaEmpleado.getResultado("Empleados");
+            cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.eliminarMarca(Long.valueOf(id));
 
-            String nombreEmpleado = "Desconocido";
-            if (empleadosEncontrados != null && !empleadosEncontrados.isEmpty()) {
-                EmpleadoDto empleado = empleadosEncontrados.get(0);
-                nombreEmpleado = empleado.getNombre() + " " + empleado.getApellidos();
+            if (!respuestaServidor.isExito()) {
+                return new Respuesta(false, respuestaServidor.getMensaje(), "");
             }
 
-            String tipoMarca = "ENTRADA";
-            String ultimoTipo = buscarUltimoTipoDeMarca(folioEmpleado);
-            if (ultimoTipo != null && ultimoTipo.equals("ENTRADA")) {
-                tipoMarca = "SALIDA";
-            }
-
-            MarcaDto marcaNueva = new MarcaDto();
-            marcaNueva.setId(siguienteId);
-            siguienteId = siguienteId + 1;
-            marcaNueva.setFolioEmpleado(folioEmpleado);
-            marcaNueva.setNombreEmpleado(nombreEmpleado);
-            marcaNueva.setFechaHora(LocalDateTime.now());
-            marcaNueva.setTipo(tipoMarca);
-            marcaNueva.setEstado("OK");
-
-            marcas.add(marcaNueva);
-
-            return new Respuesta(true, "", "", "Marca", marcaNueva);
+            return new Respuesta(true, "", "");
         } catch (Exception ex) {
-            return new Respuesta(false, "Error registrando la marca.", "marcar " + ex.getMessage());
+            ex.printStackTrace();
+            return new Respuesta(false, "Error eliminando la marca.", "eliminarMarca " + ex.getMessage());
         }
     }
 
-    //Busca el tipo de la ultima marca registrada de un empleado
-    private String buscarUltimoTipoDeMarca(Integer folioEmpleado) {
-        MarcaDto ultimaMarca = null;
+public Respuesta obtenerMarcas() {
+    try {
+        cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.obtenerMarcas();
 
-        for (MarcaDto marca : marcas) {
-            if (marca.getFolioEmpleado().equals(folioEmpleado)) {
-                if (ultimaMarca == null || marca.getFechaHora().isAfter(ultimaMarca.getFechaHora())) {
-                    ultimaMarca = marca;
-                }
+        if (!respuestaServidor.isExito()) {
+            return new Respuesta(false, respuestaServidor.getMensaje(), "");
+        }
+
+        Object resultadoCrudo = respuestaServidor.getAny();
+        cr.ac.una.relojuna.ws.ListaMarcaDto listaEnvoltorio = convertirAListaMarcaDto(resultadoCrudo);
+
+        List<cr.ac.una.relojuna.ws.MarcaDto> marcasServidor = listaEnvoltorio.getMarcas();
+
+        List<MarcaDto> marcas = new ArrayList<>();
+        for (cr.ac.una.relojuna.ws.MarcaDto marcaServidor : marcasServidor) {
+            marcas.add(convertirAMarcaCliente(marcaServidor));
+        }
+
+        return new Respuesta(true, "", "", "Marcas", marcas);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return new Respuesta(false, "Error obteniendo las marcas.", "obtenerMarcas " + ex.getMessage());
+    }
+}
+
+private Respuesta obtenerInconsistencias() {
+    try {
+        cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.buscarInconsistencias();
+
+        if (!respuestaServidor.isExito()) {
+            return new Respuesta(false, respuestaServidor.getMensaje(), "");
+        }
+
+        Object resultadoCrudo = respuestaServidor.getAny();
+        cr.ac.una.relojuna.ws.ListaMarcaDto listaEnvoltorio = convertirAListaMarcaDto(resultadoCrudo);
+
+        List<cr.ac.una.relojuna.ws.MarcaDto> marcasServidor = listaEnvoltorio.getMarcas();
+
+        List<MarcaDto> marcas = new ArrayList<>();
+        for (cr.ac.una.relojuna.ws.MarcaDto marcaServidor : marcasServidor) {
+            marcas.add(convertirAMarcaCliente(marcaServidor));
+        }
+
+        return new Respuesta(true, "", "", "Marcas", marcas);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return new Respuesta(false, "Error buscando las inconsistencias.", "obtenerInconsistencias " + ex.getMessage());
+    }
+}
+
+    //Metodo estatico para que Planilla y Consulta puedan leer todas las marcas de una vez
+    public static List<MarcaDto> obtenerTodasLasMarcas() {
+        try {
+            MarcaService servicioTemporal = new MarcaService();
+            Respuesta respuesta = servicioTemporal.obtenerMarcas();
+
+            if (!respuesta.getEstado()) {
+                return new ArrayList<>();
             }
-        }
 
-        if (ultimaMarca == null) {
-            return null;
+            return (List<MarcaDto>) respuesta.getResultado("Marcas");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ArrayList<>();
         }
-
-        return ultimaMarca.getTipo();
     }
 
-    //Busca las marcas entre dos fechas
+    //Busca las marcas entre dos fechas, filtrando del lado del cliente
     public Respuesta buscarMarcas(LocalDate fechaDesde, LocalDate fechaHasta) {
         try {
-            //Recalculamos los estados de todas las marcas antes de filtrar, asi siempre estan al dia
-            recalcularEstados();
+            Respuesta respuestaTodas = obtenerMarcas();
 
+            if (!respuestaTodas.getEstado()) {
+                return respuestaTodas;
+            }
+
+            List<MarcaDto> todasLasMarcas = (List<MarcaDto>) respuestaTodas.getResultado("Marcas");
             List<MarcaDto> resultado = new ArrayList<>();
 
-            for (MarcaDto marca : marcas) {
+            for (MarcaDto marca : todasLasMarcas) {
                 LocalDate fechaMarca = marca.getFechaHora().toLocalDate();
 
                 boolean despuesDeDesde = fechaMarca.isEqual(fechaDesde) || fechaMarca.isAfter(fechaDesde);
@@ -95,118 +179,102 @@ public class MarcaService {
 
             return new Respuesta(true, "", "", "Marcas", resultado);
         } catch (Exception ex) {
+            ex.printStackTrace();
             return new Respuesta(false, "Error buscando las marcas.", "buscarMarcas " + ex.getMessage());
         }
     }
 
-    //Busca solo las marcas que tienen alguna inconsistencia entre dos fechas
+    //Busca las inconsistencias entre dos fechas, filtrando del lado del cliente
     public Respuesta buscarInconsistencias(LocalDate fechaDesde, LocalDate fechaHasta) {
         try {
-            Respuesta respuestaMarcas = buscarMarcas(fechaDesde, fechaHasta);
-            List<MarcaDto> marcasEnRango = (List<MarcaDto>) respuestaMarcas.getResultado("Marcas");
+            Respuesta respuestaTodas = obtenerInconsistencias();
 
-            List<MarcaDto> inconsistencias = new ArrayList<>();
+            if (!respuestaTodas.getEstado()) {
+                return respuestaTodas;
+            }
 
-            for (MarcaDto marca : marcasEnRango) {
-                if (marca.getEstado().equals("INCONSISTENTE")) {
-                    inconsistencias.add(marca);
+            List<MarcaDto> todasLasInconsistencias = (List<MarcaDto>) respuestaTodas.getResultado("Marcas");
+            List<MarcaDto> resultado = new ArrayList<>();
+
+            for (MarcaDto marca : todasLasInconsistencias) {
+                LocalDate fechaMarca = marca.getFechaHora().toLocalDate();
+
+                boolean despuesDeDesde = fechaMarca.isEqual(fechaDesde) || fechaMarca.isAfter(fechaDesde);
+                boolean antesDeHasta = fechaMarca.isEqual(fechaHasta) || fechaMarca.isBefore(fechaHasta);
+
+                if (despuesDeDesde && antesDeHasta) {
+                    resultado.add(marca);
                 }
             }
 
-            return new Respuesta(true, "", "", "Marcas", inconsistencias);
+            return new Respuesta(true, "", "", "Marcas", resultado);
         } catch (Exception ex) {
+            ex.printStackTrace();
             return new Respuesta(false, "Error buscando las inconsistencias.", "buscarInconsistencias " + ex.getMessage());
         }
     }
 
-    //Revisa todas las marcas de todos los empleados y actualiza el estado de cada una
-    private void recalcularEstados() {
-        //Primero ponemos todo en OK, para no arrastrar inconsistencias viejas ya corregidas
-        for (MarcaDto marca : marcas) {
-            marca.setEstado("OK");
+    //Convierte el dto que llega del servidor al dto que usa el cliente
+    private MarcaDto convertirAMarcaCliente(cr.ac.una.relojuna.ws.MarcaDto marcaServidor) {
+        MarcaDto marca = new MarcaDto();
+        marca.setId(marcaServidor.getId().intValue());
+        marca.setFechaHora(LocalDateTime.parse(marcaServidor.getHora().toString()));
+        marca.setTipo(marcaServidor.getTipo());
+        marca.setEstado("OK");
+
+        if (marcaServidor.getFolioEmpleado() != null) {
+            marca.setFolioEmpleado(Integer.valueOf(marcaServidor.getFolioEmpleado()));
         }
 
-        Map<Integer, List<MarcaDto>> marcasPorEmpleado = new HashMap<>();
+        marca.setNombreEmpleado(marcaServidor.getNombreEmpleado());
 
-        for (MarcaDto marca : marcas) {
-            List<MarcaDto> listaDelEmpleado = marcasPorEmpleado.get(marca.getFolioEmpleado());
-
-            if (listaDelEmpleado == null) {
-                listaDelEmpleado = new ArrayList<>();
-                marcasPorEmpleado.put(marca.getFolioEmpleado(), listaDelEmpleado);
-            }
-
-            listaDelEmpleado.add(marca);
-        }
-
-        for (Integer folio : marcasPorEmpleado.keySet()) {
-            List<MarcaDto> marcasDelEmpleado = marcasPorEmpleado.get(folio);
-
-            List<MarcaDto> marcasOrdenadas = marcasDelEmpleado.stream()
-                    .sorted((marca1, marca2) -> marca1.getFechaHora().compareTo(marca2.getFechaHora()))
-                    .collect(Collectors.toList());
-
-            for (int i = 0; i < marcasOrdenadas.size() - 1; i++) {
-                MarcaDto marcaActual = marcasOrdenadas.get(i);
-                MarcaDto marcaSiguiente = marcasOrdenadas.get(i + 1);
-
-                if (marcaActual.getTipo().equals(marcaSiguiente.getTipo())) {
-                    marcaActual.setEstado("INCONSISTENTE");
-                    marcaSiguiente.setEstado("INCONSISTENTE");
-                }
-            }
-        }
+        return marca;
     }
 
-    //Guarda una marca nueva o actualiza una existente segun el id
-    public Respuesta guardarMarca(MarcaDto marca) {
-        try {
-            if (marca.getId() == null) {
-                marca.setId(siguienteId);
-                siguienteId = siguienteId + 1;
-                marcas.add(marca);
-                return new Respuesta(true, "", "", "Marca", marca);
-            }
-
-            for (int i = 0; i < marcas.size(); i++) {
-                MarcaDto actual = marcas.get(i);
-                if (actual.getId().equals(marca.getId())) {
-                    marcas.set(i, marca);
-                    return new Respuesta(true, "", "", "Marca", marca);
-                }
-            }
-
-            marcas.add(marca);
-            return new Respuesta(true, "", "", "Marca", marca);
-        } catch (Exception ex) {
-            return new Respuesta(false, "Error guardando la marca.", "guardarMarca " + ex.getMessage());
-        }
+ //Convierte el resultado crudo que manda el servidor a un MarcaDto
+//Puede llegar como JAXBElement, como el tipo directo, o como un nodo XML sin procesar
+private cr.ac.una.relojuna.ws.MarcaDto convertirAMarcaDtoServidor(Object resultadoCrudo) throws Exception {
+    if (resultadoCrudo instanceof JAXBElement) {
+        return (cr.ac.una.relojuna.ws.MarcaDto) ((JAXBElement<?>) resultadoCrudo).getValue();
     }
 
-    //Elimina una marca segun su id
-    public Respuesta eliminarMarca(Integer id) {
-        try {
-            MarcaDto marcaAEliminar = null;
-
-            for (MarcaDto marca : marcas) {
-                if (marca.getId().equals(id)) {
-                    marcaAEliminar = marca;
-                    break;
-                }
-            }
-
-            if (marcaAEliminar != null) {
-                marcas.remove(marcaAEliminar);
-            }
-
-            return new Respuesta(true, "", "");
-        } catch (Exception ex) {
-            return new Respuesta(false, "Error eliminando la marca.", "eliminarMarca " + ex.getMessage());
-        }
+    if (resultadoCrudo instanceof cr.ac.una.relojuna.ws.MarcaDto) {
+        return (cr.ac.una.relojuna.ws.MarcaDto) resultadoCrudo;
     }
 
-    //Metodo para que Planilla y Consulta puedan leer todas las marcas sin pasar por fechas
-    public static List<MarcaDto> obtenerTodasLasMarcas() {
-        return marcas;
+    //Si llega como nodo XML crudo, lo desempacamos a mano con un Unmarshaller
+    //Usamos la variante que recibe la clase esperada, asi no importa el nombre del elemento raiz
+    if (resultadoCrudo instanceof Element) {
+        JAXBContext contexto = JAXBContext.newInstance(cr.ac.una.relojuna.ws.MarcaDto.class);
+        Unmarshaller desempacador = contexto.createUnmarshaller();
+        JAXBElement<cr.ac.una.relojuna.ws.MarcaDto> elemento = desempacador.unmarshal((Element) resultadoCrudo, cr.ac.una.relojuna.ws.MarcaDto.class);
+        return elemento.getValue();
     }
+
+    throw new Exception("No se pudo interpretar el resultado del servidor");
+}
+    
+//Convierte el resultado crudo que manda el servidor al envoltorio de la lista de marcas
+//Puede llegar como JAXBElement, como el tipo directo, o como un nodo XML sin procesar
+private cr.ac.una.relojuna.ws.ListaMarcaDto convertirAListaMarcaDto(Object resultadoCrudo) throws Exception {
+    if (resultadoCrudo instanceof JAXBElement) {
+        return (cr.ac.una.relojuna.ws.ListaMarcaDto) ((JAXBElement<?>) resultadoCrudo).getValue();
+    }
+
+    if (resultadoCrudo instanceof cr.ac.una.relojuna.ws.ListaMarcaDto) {
+        return (cr.ac.una.relojuna.ws.ListaMarcaDto) resultadoCrudo;
+    }
+
+    //Si llega como nodo XML crudo, lo desempacamos a mano con un Unmarshaller
+    //Usamos la variante que recibe la clase esperada, asi no importa el nombre del elemento raiz
+    if (resultadoCrudo instanceof org.w3c.dom.Element) {
+        JAXBContext contexto = JAXBContext.newInstance(cr.ac.una.relojuna.ws.ListaMarcaDto.class);
+        Unmarshaller desempacador = contexto.createUnmarshaller();
+        JAXBElement<cr.ac.una.relojuna.ws.ListaMarcaDto> elemento = desempacador.unmarshal((org.w3c.dom.Element) resultadoCrudo, cr.ac.una.relojuna.ws.ListaMarcaDto.class);
+        return elemento.getValue();
+    }
+
+    throw new Exception("No se pudo interpretar el resultado del servidor");
+}
+
 }

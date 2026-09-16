@@ -4,6 +4,8 @@
 
 <xs:element name="eliminarEmpleadoResponse" type="tns:eliminarEmpleadoResponse"/>
 
+<xs:element name="empleadoDto" type="tns:empleadoDto"/>
+
 <xs:element name="guardarEmpleado" type="tns:guardarEmpleado"/>
 
 <xs:element name="guardarEmpleadoResponse" type="tns:guardarEmpleadoResponse"/>
@@ -15,12 +17,6 @@
 <xs:element name="obtenerEmpleados" type="tns:obtenerEmpleados"/>
 
 <xs:element name="obtenerEmpleadosResponse" type="tns:obtenerEmpleadosResponse"/>
-
-<xs:complexType name="guardarEmpleado">
-<xs:sequence>
-<xs:element name="empleado" type="tns:empleadoDto" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
 
 <xs:complexType name="empleadoDto">
 <xs:sequence>
@@ -37,6 +33,18 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="listaEmpleadoDto">
+<xs:sequence>
+<xs:element name="empleados" type="tns:empleadoDto" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="guardarEmpleado">
+<xs:sequence>
+<xs:element name="empleado" type="tns:empleadoDto" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="guardarEmpleadoResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:respuesta" minOccurs="0"/>
@@ -47,7 +55,7 @@
 <xs:sequence>
 <xs:element name="exito" type="xs:boolean"/>
 <xs:element name="mensaje" type="xs:string" minOccurs="0"/>
-<xs:element name="resultado" type="xs:anyType" minOccurs="0"/>
+<xs:any processContents="lax" namespace="##other"/>
 </xs:sequence>
 </xs:complexType>
 

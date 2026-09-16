@@ -4,17 +4,11 @@
 <xsd:import namespace="http://ws.relojservidor.una.ac.cr/" schemaLocation="http://localhost:8080/RelojUNA-Server/EmpleadoWS?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="obtenerEmpleadoPorId">
-<part name="parameters" element="tns:obtenerEmpleadoPorId"/>
+<message name="eliminarEmpleado">
+<part name="parameters" element="tns:eliminarEmpleado"/>
 </message>
-<message name="obtenerEmpleadoPorIdResponse">
-<part name="parameters" element="tns:obtenerEmpleadoPorIdResponse"/>
-</message>
-<message name="obtenerEmpleados">
-<part name="parameters" element="tns:obtenerEmpleados"/>
-</message>
-<message name="obtenerEmpleadosResponse">
-<part name="parameters" element="tns:obtenerEmpleadosResponse"/>
+<message name="eliminarEmpleadoResponse">
+<part name="parameters" element="tns:eliminarEmpleadoResponse"/>
 </message>
 <message name="guardarEmpleado">
 <part name="parameters" element="tns:guardarEmpleado"/>
@@ -22,42 +16,39 @@
 <message name="guardarEmpleadoResponse">
 <part name="parameters" element="tns:guardarEmpleadoResponse"/>
 </message>
-<message name="eliminarEmpleado">
-<part name="parameters" element="tns:eliminarEmpleado"/>
+<message name="obtenerEmpleados">
+<part name="parameters" element="tns:obtenerEmpleados"/>
 </message>
-<message name="eliminarEmpleadoResponse">
-<part name="parameters" element="tns:eliminarEmpleadoResponse"/>
+<message name="obtenerEmpleadosResponse">
+<part name="parameters" element="tns:obtenerEmpleadosResponse"/>
+</message>
+<message name="obtenerEmpleadoPorId">
+<part name="parameters" element="tns:obtenerEmpleadoPorId"/>
+</message>
+<message name="obtenerEmpleadoPorIdResponse">
+<part name="parameters" element="tns:obtenerEmpleadoPorIdResponse"/>
 </message>
 <portType name="EmpleadoWS">
-<operation name="obtenerEmpleadoPorId">
-<input wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/obtenerEmpleadoPorIdRequest" message="tns:obtenerEmpleadoPorId"/>
-<output wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/obtenerEmpleadoPorIdResponse" message="tns:obtenerEmpleadoPorIdResponse"/>
-</operation>
-<operation name="obtenerEmpleados">
-<input wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/obtenerEmpleadosRequest" message="tns:obtenerEmpleados"/>
-<output wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/obtenerEmpleadosResponse" message="tns:obtenerEmpleadosResponse"/>
+<operation name="eliminarEmpleado">
+<input wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/eliminarEmpleadoRequest" message="tns:eliminarEmpleado"/>
+<output wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/eliminarEmpleadoResponse" message="tns:eliminarEmpleadoResponse"/>
 </operation>
 <operation name="guardarEmpleado">
 <input wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/guardarEmpleadoRequest" message="tns:guardarEmpleado"/>
 <output wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/guardarEmpleadoResponse" message="tns:guardarEmpleadoResponse"/>
 </operation>
-<operation name="eliminarEmpleado">
-<input wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/eliminarEmpleadoRequest" message="tns:eliminarEmpleado"/>
-<output wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/eliminarEmpleadoResponse" message="tns:eliminarEmpleadoResponse"/>
+<operation name="obtenerEmpleados">
+<input wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/obtenerEmpleadosRequest" message="tns:obtenerEmpleados"/>
+<output wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/obtenerEmpleadosResponse" message="tns:obtenerEmpleadosResponse"/>
+</operation>
+<operation name="obtenerEmpleadoPorId">
+<input wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/obtenerEmpleadoPorIdRequest" message="tns:obtenerEmpleadoPorId"/>
+<output wsam:Action="http://ws.relojservidor.una.ac.cr/EmpleadoWS/obtenerEmpleadoPorIdResponse" message="tns:obtenerEmpleadoPorIdResponse"/>
 </operation>
 </portType>
 <binding name="EmpleadoWSPortBinding" type="tns:EmpleadoWS">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="obtenerEmpleadoPorId">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="obtenerEmpleados">
+<operation name="eliminarEmpleado">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -75,7 +66,16 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="eliminarEmpleado">
+<operation name="obtenerEmpleados">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="obtenerEmpleadoPorId">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

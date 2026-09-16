@@ -4,17 +4,11 @@
 <xsd:import namespace="http://ws.relojservidor.una.ac.cr/" schemaLocation="http://localhost:8080/RelojUNA-Server/MarcaWS?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="marcar">
-<part name="parameters" element="tns:marcar"/>
+<message name="obtenerMarcas">
+<part name="parameters" element="tns:obtenerMarcas"/>
 </message>
-<message name="marcarResponse">
-<part name="parameters" element="tns:marcarResponse"/>
-</message>
-<message name="buscarInconsistencias">
-<part name="parameters" element="tns:buscarInconsistencias"/>
-</message>
-<message name="buscarInconsistenciasResponse">
-<part name="parameters" element="tns:buscarInconsistenciasResponse"/>
+<message name="obtenerMarcasResponse">
+<part name="parameters" element="tns:obtenerMarcasResponse"/>
 </message>
 <message name="eliminarMarca">
 <part name="parameters" element="tns:eliminarMarca"/>
@@ -22,52 +16,39 @@
 <message name="eliminarMarcaResponse">
 <part name="parameters" element="tns:eliminarMarcaResponse"/>
 </message>
-<message name="obtenerMarcas">
-<part name="parameters" element="tns:obtenerMarcas"/>
+<message name="buscarInconsistencias">
+<part name="parameters" element="tns:buscarInconsistencias"/>
 </message>
-<message name="obtenerMarcasResponse">
-<part name="parameters" element="tns:obtenerMarcasResponse"/>
+<message name="buscarInconsistenciasResponse">
+<part name="parameters" element="tns:buscarInconsistenciasResponse"/>
 </message>
-<message name="guardarMarca">
-<part name="parameters" element="tns:guardarMarca"/>
+<message name="marcar">
+<part name="parameters" element="tns:marcar"/>
 </message>
-<message name="guardarMarcaResponse">
-<part name="parameters" element="tns:guardarMarcaResponse"/>
+<message name="marcarResponse">
+<part name="parameters" element="tns:marcarResponse"/>
 </message>
 <portType name="MarcaWS">
-<operation name="marcar">
-<input wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/marcarRequest" message="tns:marcar"/>
-<output wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/marcarResponse" message="tns:marcarResponse"/>
-</operation>
-<operation name="buscarInconsistencias">
-<input wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/buscarInconsistenciasRequest" message="tns:buscarInconsistencias"/>
-<output wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/buscarInconsistenciasResponse" message="tns:buscarInconsistenciasResponse"/>
+<operation name="obtenerMarcas">
+<input wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/obtenerMarcasRequest" message="tns:obtenerMarcas"/>
+<output wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/obtenerMarcasResponse" message="tns:obtenerMarcasResponse"/>
 </operation>
 <operation name="eliminarMarca">
 <input wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/eliminarMarcaRequest" message="tns:eliminarMarca"/>
 <output wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/eliminarMarcaResponse" message="tns:eliminarMarcaResponse"/>
 </operation>
-<operation name="obtenerMarcas">
-<input wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/obtenerMarcasRequest" message="tns:obtenerMarcas"/>
-<output wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/obtenerMarcasResponse" message="tns:obtenerMarcasResponse"/>
+<operation name="buscarInconsistencias">
+<input wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/buscarInconsistenciasRequest" message="tns:buscarInconsistencias"/>
+<output wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/buscarInconsistenciasResponse" message="tns:buscarInconsistenciasResponse"/>
 </operation>
-<operation name="guardarMarca">
-<input wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/guardarMarcaRequest" message="tns:guardarMarca"/>
-<output wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/guardarMarcaResponse" message="tns:guardarMarcaResponse"/>
+<operation name="marcar">
+<input wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/marcarRequest" message="tns:marcar"/>
+<output wsam:Action="http://ws.relojservidor.una.ac.cr/MarcaWS/marcarResponse" message="tns:marcarResponse"/>
 </operation>
 </portType>
 <binding name="MarcaWSPortBinding" type="tns:MarcaWS">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="marcar">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="buscarInconsistencias">
+<operation name="obtenerMarcas">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -85,7 +66,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="obtenerMarcas">
+<operation name="buscarInconsistencias">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -94,7 +75,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="guardarMarca">
+<operation name="marcar">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

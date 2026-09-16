@@ -1,6 +1,7 @@
 package cr.ac.una.relojservidor.servicio;
 
 import cr.ac.una.relojservidor.dto.EmpleadoDto;
+import cr.ac.una.relojservidor.dto.ListaEmpleadoDto;
 import cr.ac.una.relojservidor.modelo.Empleado;
 import cr.ac.una.relojservidor.util.Respuesta;
 import jakarta.ejb.Stateless;
@@ -51,21 +52,24 @@ public class EmpleadoService {
         }
     }
 
-    public Respuesta obtenerTodos() {
-        try {
-            List<Empleado> empleados = em.createQuery("SELECT e FROM Empleado e", Empleado.class)
-                    .getResultList();
+ public Respuesta obtenerTodos() {
+    try {
+        List<Empleado> empleados = em.createQuery("SELECT e FROM Empleado e", Empleado.class)
+                .getResultList();
 
-            List<EmpleadoDto> dtos = empleados.stream()
-                    .map(this::convertirADto)
-                    .collect(Collectors.toList());
+        List<EmpleadoDto> dtos = empleados.stream()
+                .map(this::convertirADto)
+                .collect(Collectors.toList());
 
-            return new Respuesta(true, "Empleados obtenidos con éxito", dtos);
+        //Metemos la lista dentro del envoltorio para que JAXB la pueda mandar
+        ListaEmpleadoDto listaEnvoltorio = new ListaEmpleadoDto(dtos);
 
-        } catch (Exception e) {
-            return new Respuesta(false, "Error al obtener empleados: " + e.getMessage());
-        }
+        return new Respuesta(true, "Empleados obtenidos con exito", listaEnvoltorio);
+
+    } catch (Exception e) {
+        return new Respuesta(false, "Error al obtener empleados: " + e.getMessage());
     }
+}
 
     public Respuesta obtenerPorId(Long id) {
         try {

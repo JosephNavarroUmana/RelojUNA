@@ -4,13 +4,17 @@ import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.util.Respuesta;
 import cr.ac.una.relojuna.ws.EmpleadoWS;
 import cr.ac.una.relojuna.ws.EmpleadoWS_Service;
+import cr.ac.una.relojuna.ws.ListaEmpleadoDto;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Unmarshaller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.w3c.dom.Element;
 
 public class EmpleadoService {
 
-    //Puerto que se usa para llamar los metodos del servidor por SOAP
     private EmpleadoWS puerto;
 
     public EmpleadoService() {
@@ -27,7 +31,10 @@ public class EmpleadoService {
                 return new Respuesta(false, respuestaServidor.getMensaje(), "");
             }
 
-            List<cr.ac.una.relojuna.ws.EmpleadoDto> empleadosServidor = (List<cr.ac.una.relojuna.ws.EmpleadoDto>) respuestaServidor.getAny();
+            Object resultadoCrudo = respuestaServidor.getAny();
+            ListaEmpleadoDto listaEnvoltorio = convertirAListaEmpleadoDto(resultadoCrudo);
+
+            List<cr.ac.una.relojuna.ws.EmpleadoDto> empleadosServidor = listaEnvoltorio.getEmpleados();
 
             List<EmpleadoDto> resultado = new ArrayList<>();
 
@@ -50,9 +57,34 @@ public class EmpleadoService {
 
             return new Respuesta(true, "", "", "Empleados", resultado);
         } catch (Exception ex) {
+            ex.printStackTrace();
             return new Respuesta(false, "Error buscando los empleados.", "buscarEmpleados " + ex.getMessage());
         }
     }
+
+
+ //Convierte el resultado crudo que manda el servidor al envoltorio de la lista de empleados
+//Puede llegar como JAXBElement, como el tipo directo, o como un nodo XML sin procesar
+private ListaEmpleadoDto convertirAListaEmpleadoDto(Object resultadoCrudo) throws Exception {
+    if (resultadoCrudo instanceof JAXBElement) {
+        return (ListaEmpleadoDto) ((JAXBElement<?>) resultadoCrudo).getValue();
+    }
+
+    if (resultadoCrudo instanceof ListaEmpleadoDto) {
+        return (ListaEmpleadoDto) resultadoCrudo;
+    }
+
+    //Si llega como nodo XML crudo, lo desempacamos a mano con un Unmarshaller
+    //Usamos la variante que recibe la clase esperada, asi no importa el nombre del elemento raiz
+    if (resultadoCrudo instanceof Element) {
+        JAXBContext contexto = JAXBContext.newInstance(ListaEmpleadoDto.class);
+        Unmarshaller desempacador = contexto.createUnmarshaller();
+        JAXBElement<ListaEmpleadoDto> elemento = desempacador.unmarshal((Element) resultadoCrudo, ListaEmpleadoDto.class);
+        return elemento.getValue();
+    }
+
+    throw new Exception("No se pudo interpretar el resultado del servidor");
+}
 
     //Guarda un empleado nuevo o actualiza uno existente en el servidor
     public Respuesta guardarEmpleado(EmpleadoDto empleado) {

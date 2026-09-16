@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <system systemId="http://localhost:8080/RelojUNA-Server/EmpleadoWS?wsdl" uri="wsdl/localhost_8080/RelojUNA-Server/EmpleadoWS.wsdl"/>
-    <system systemId="http://localhost:8080/RelojUNA-Server/EmpleadoWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/EmpleadoWS.xsd_1.xsd"/>
-    <system systemId="http://localhost:8080/RelojUNA-Server/MarcaWS?wsdl" uri="wsdl/localhost_8080/RelojUNA-Server/MarcaWS.wsdl"/>
-    <system systemId="http://localhost:8080/RelojUNA-Server/MarcaWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/MarcaWS.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/RelojUNA-Server/ConsultaWS?wsdl" uri="wsdl/localhost_8080/RelojUNA-Server/ConsultaWS.wsdl"/>
     <system systemId="http://localhost:8080/RelojUNA-Server/ConsultaWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/ConsultaWS.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/RelojUNA-Server/PlanillaWS?wsdl" uri="wsdl/localhost_8080/RelojUNA-Server/PlanillaWS.wsdl"/>
     <system systemId="http://localhost:8080/RelojUNA-Server/PlanillaWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/PlanillaWS.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/RelojUNA-Server/LoginWS?wsdl" uri="wsdl/localhost_8080/RelojUNA-Server/LoginWS.wsdl"/>
     <system systemId="http://localhost:8080/RelojUNA-Server/LoginWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/LoginWS.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/RelojUNA-Server/EmpleadoWS?wsdl" uri="wsdl/localhost_8080/RelojUNA-Server/EmpleadoWS.wsdl"/>
+    <system systemId="http://localhost:8080/RelojUNA-Server/EmpleadoWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/EmpleadoWS.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/RelojUNA-Server/MarcaWS?wsdl" uri="wsdl/localhost_8080/RelojUNA-Server/MarcaWS.wsdl"/>
+    <system systemId="http://localhost:8080/RelojUNA-Server/MarcaWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/MarcaWS.xsd_1.xsd"/>
 </catalog>
