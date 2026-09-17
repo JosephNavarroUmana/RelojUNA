@@ -22,11 +22,11 @@ public class MarcaWS {
     public Respuesta marcar(@WebParam(name = "empleadoId") Long empleadoId) {
         return marcaService.marcar(empleadoId);
     }
-    
-    //    @WebMethod(operationName = "guardarMarca")
-//    public Respuesta guardarMarca(@WebParam(name = "marca") MarcaDto marca) {
-//        return marcaService.guardar(marca);
-//    }
+
+    @WebMethod(operationName = "guardarMarca")
+    public Respuesta guardarMarca(@WebParam(name = "marca") MarcaDto marca) {
+        return marcaService.guardar(marca);
+    }
 
     @WebMethod(operationName = "obtenerMarcas")
     public Respuesta obtenerMarcas() {

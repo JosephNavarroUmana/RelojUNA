@@ -2,10 +2,10 @@ package cr.ac.una.relojuna.controller;
 
 import cr.ac.una.relojuna.model.PlanillaDto;
 import cr.ac.una.relojuna.service.PlanillaService;
-import cr.ac.una.relojuna.util.ExcelExportador;
+import cr.ac.una.relojuna.service.ReporteService;
 import cr.ac.una.relojuna.util.Respuesta;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -40,8 +40,9 @@ public class PlanillaController {
     @FXML
     private Button btnRegresar;
 
-    //Servicio de planillas
+    //Servicios usados en esta pantalla
     private PlanillaService planillaService;
+    private ReporteService reporteService;
 
     //Lista observable que alimenta la tabla
     private ObservableList<PlanillaDto> listaPlanilla;
@@ -55,6 +56,7 @@ public class PlanillaController {
     @FXML
     private void initialize() {
         planillaService = new PlanillaService();
+        reporteService = new ReporteService();
         listaPlanilla = FXCollections.observableArrayList();
 
         colEmpleado.setCellValueFactory(new PropertyValueFactory<>("nombreEmpleado"));
@@ -112,6 +114,7 @@ public class PlanillaController {
         listaPlanilla.addAll(planilla);
     }
 
+    //Pide al servidor que genere el Excel de la planilla y lo guarda donde el usuario elija
     @FXML
     private void handleExportarExcel() {
         if (listaPlanilla.isEmpty()) {
@@ -130,10 +133,19 @@ public class PlanillaController {
             return;
         }
 
-        try {
-            ExcelExportador.exportarPlanilla(listaPlanilla, archivo);
+        Respuesta respuesta = reporteService.exportarPlanillaExcel(listaPlanilla);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        byte[] bytesExcel = (byte[]) respuesta.getResultado("Excel");
+
+        try (FileOutputStream salida = new FileOutputStream(archivo)) {
+            salida.write(bytesExcel);
             mostrarMensaje("Archivo exportado correctamente.");
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             mostrarMensaje("Ocurrio un error al exportar el archivo.");
         }
     }

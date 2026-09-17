@@ -86,26 +86,51 @@ private ListaEmpleadoDto convertirAListaEmpleadoDto(Object resultadoCrudo) throw
     throw new Exception("No se pudo interpretar el resultado del servidor");
 }
 
-    //Guarda un empleado nuevo o actualiza uno existente en el servidor
-    public Respuesta guardarEmpleado(EmpleadoDto empleado) {
-        try {
-            cr.ac.una.relojuna.ws.EmpleadoDto empleadoServidor = convertirAEmpleadoServidor(empleado);
+  //Guarda un empleado nuevo o actualiza uno existente en el servidor
+public Respuesta guardarEmpleado(EmpleadoDto empleado) {
+    try {
+        cr.ac.una.relojuna.ws.EmpleadoDto empleadoServidor = convertirAEmpleadoServidor(empleado);
 
-            cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.guardarEmpleado(empleadoServidor);
+        cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.guardarEmpleado(empleadoServidor);
 
-            if (!respuestaServidor.isExito()) {
-                return new Respuesta(false, respuestaServidor.getMensaje(), "");
-            }
-
-            cr.ac.una.relojuna.ws.EmpleadoDto empleadoGuardado = (cr.ac.una.relojuna.ws.EmpleadoDto) respuestaServidor.getAny();
-            EmpleadoDto empleadoConvertido = convertirAEmpleadoCliente(empleadoGuardado);
-
-            return new Respuesta(true, "", "", "Empleado", empleadoConvertido);
-        } catch (Exception ex) {
-            return new Respuesta(false, "Error guardando el empleado.", "guardarEmpleado " + ex.getMessage());
+        if (!respuestaServidor.isExito()) {
+            return new Respuesta(false, respuestaServidor.getMensaje(), "");
         }
+
+        Object resultadoCrudo = respuestaServidor.getAny();
+        cr.ac.una.relojuna.ws.EmpleadoDto empleadoGuardado = convertirAEmpleadoDtoServidor(resultadoCrudo);
+
+        EmpleadoDto empleadoConvertido = convertirAEmpleadoCliente(empleadoGuardado);
+
+        return new Respuesta(true, "", "", "Empleado", empleadoConvertido);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return new Respuesta(false, "Error guardando el empleado.", "guardarEmpleado " + ex.getMessage());
+    }
+}
+
+//Convierte el resultado crudo que manda el servidor a un EmpleadoDto
+//Puede llegar como JAXBElement, como el tipo directo, o como un nodo XML sin procesar
+private cr.ac.una.relojuna.ws.EmpleadoDto convertirAEmpleadoDtoServidor(Object resultadoCrudo) throws Exception {
+    if (resultadoCrudo instanceof JAXBElement) {
+        return (cr.ac.una.relojuna.ws.EmpleadoDto) ((JAXBElement<?>) resultadoCrudo).getValue();
     }
 
+    if (resultadoCrudo instanceof cr.ac.una.relojuna.ws.EmpleadoDto) {
+        return (cr.ac.una.relojuna.ws.EmpleadoDto) resultadoCrudo;
+    }
+
+    //Si llega como nodo XML crudo, lo desempacamos a mano con un Unmarshaller
+    //Usamos la variante que recibe la clase esperada, asi no importa el nombre del elemento raiz
+    if (resultadoCrudo instanceof Element) {
+        JAXBContext contexto = JAXBContext.newInstance(cr.ac.una.relojuna.ws.EmpleadoDto.class);
+        Unmarshaller desempacador = contexto.createUnmarshaller();
+        JAXBElement<cr.ac.una.relojuna.ws.EmpleadoDto> elemento = desempacador.unmarshal((Element) resultadoCrudo, cr.ac.una.relojuna.ws.EmpleadoDto.class);
+        return elemento.getValue();
+    }
+
+    throw new Exception("No se pudo interpretar el resultado del servidor");
+}
     //Elimina un empleado del servidor, el folio del cliente es el id real en el servidor
     public Respuesta eliminarEmpleado(Integer folio) {
         try {

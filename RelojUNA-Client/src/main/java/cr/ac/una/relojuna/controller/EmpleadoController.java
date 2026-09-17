@@ -139,53 +139,56 @@ public class EmpleadoController {
         limpiarFormulario();
     }
 
-    @FXML
-    private void handleGuardar() {
-        //Validamos los campos obligatorios antes de guardar
-        if (txtNombre.getText().isBlank() || txtApellidos.getText().isBlank() || txtCedula.getText().isBlank()) {
-            mostrarMensaje("Nombre, apellidos y cedula son obligatorios.");
-            return;
-        }
-
-        if (txtSalario.getText().isBlank()) {
-            mostrarMensaje("Debe ingresar el salario por hora.");
-            return;
-        }
-
-        Double salario;
-        try {
-            salario = Double.valueOf(txtSalario.getText());
-        } catch (NumberFormatException ex) {
-            mostrarMensaje("El salario debe ser un numero valido.");
-            return;
-        }
-
-        EmpleadoDto empleado = new EmpleadoDto();
-
-        //Si el campo folio tiene algo, es una modificacion, si no, es un empleado nuevo
-        if (!txtFolio.getText().isBlank()) {
-            empleado.setFolio(Integer.valueOf(txtFolio.getText()));
-        }
-
-        empleado.setNombre(txtNombre.getText());
-        empleado.setApellidos(txtApellidos.getText());
-        empleado.setCedula(txtCedula.getText());
-        empleado.setFechaNacimiento(dpFechaNac.getValue());
-        empleado.setSalarioPorHora(salario);
-        empleado.setFoto(txtFoto.getText());
-        empleado.setClave(txtClave.getText());
-        empleado.setAdministrador(chkAdmin.isSelected());
-
-        Respuesta respuesta = empleadoService.guardarEmpleado(empleado);
-
-        if (!respuesta.getEstado()) {
-            mostrarMensaje(respuesta.getMensaje());
-            return;
-        }
-
-        cargarTabla(txtBuscar.getText());
-        limpiarFormulario();
+   @FXML
+private void handleGuardar() {
+    //Validamos los campos obligatorios antes de guardar
+    if (txtNombre.getText().isBlank() || txtApellidos.getText().isBlank() || txtCedula.getText().isBlank()) {
+        mostrarMensaje("Nombre, apellidos y cedula son obligatorios.");
+        return;
     }
+
+    if (txtSalario.getText().isBlank()) {
+        mostrarMensaje("Debe ingresar el salario por hora.");
+        return;
+    }
+
+    Double salario;
+    try {
+        salario = Double.valueOf(txtSalario.getText());
+    } catch (NumberFormatException ex) {
+        mostrarMensaje("El salario debe ser un numero valido.");
+        return;
+    }
+
+    EmpleadoDto empleado = new EmpleadoDto();
+
+    //Si el campo folio tiene algo, es una modificacion, si no, es un empleado nuevo
+    if (!txtFolio.getText().isBlank()) {
+        empleado.setFolio(Integer.valueOf(txtFolio.getText()));
+    } else {
+        //Forzamos el folio a null, si no queda en 0 por defecto y pisa el empleado con id 0
+        empleado.setFolio(null);
+    }
+
+    empleado.setNombre(txtNombre.getText());
+    empleado.setApellidos(txtApellidos.getText());
+    empleado.setCedula(txtCedula.getText());
+    empleado.setFechaNacimiento(dpFechaNac.getValue());
+    empleado.setSalarioPorHora(salario);
+    empleado.setFoto(txtFoto.getText());
+    empleado.setClave(txtClave.getText());
+    empleado.setAdministrador(chkAdmin.isSelected());
+
+    Respuesta respuesta = empleadoService.guardarEmpleado(empleado);
+
+    if (!respuesta.getEstado()) {
+        mostrarMensaje(respuesta.getMensaje());
+        return;
+    }
+
+    cargarTabla(txtBuscar.getText());
+    limpiarFormulario();
+}
 
     @FXML
     private void handleEliminar() {

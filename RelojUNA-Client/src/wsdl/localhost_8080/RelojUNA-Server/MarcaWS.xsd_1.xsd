@@ -8,6 +8,10 @@
 
 <xs:element name="eliminarMarcaResponse" type="tns:eliminarMarcaResponse"/>
 
+<xs:element name="guardarMarca" type="tns:guardarMarca"/>
+
+<xs:element name="guardarMarcaResponse" type="tns:guardarMarcaResponse"/>
+
 <xs:element name="listaMarcaDto" type="tns:listaMarcaDto"/>
 
 <xs:element name="marcaDto" type="tns:marcaDto"/>
@@ -73,6 +77,18 @@
 </xs:complexType>
 
 <xs:complexType name="marcarResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="guardarMarca">
+<xs:sequence>
+<xs:element name="marca" type="tns:marcaDto" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="guardarMarcaResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:respuesta" minOccurs="0"/>
 </xs:sequence>

@@ -18,5 +18,6 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-maven-jaxws._5f_C_5f_ConsultaWS>http://localhost:8080/RelojUNA-Server/ConsultaWS?wsdl</org-netbeans-modules-maven-jaxws._5f_C_5f_ConsultaWS>
         <org-netbeans-modules-maven-jaxws._5f_C_5f_PlanillaWS>http://localhost:8080/RelojUNA-Server/PlanillaWS?wsdl</org-netbeans-modules-maven-jaxws._5f_C_5f_PlanillaWS>
         <org-netbeans-modules-maven-jaxws._5f_C_5f_LoginWS>http://localhost:8080/RelojUNA-Server/LoginWS?wsdl</org-netbeans-modules-maven-jaxws._5f_C_5f_LoginWS>
+        <org-netbeans-modules-maven-jaxws._5f_C_5f_ReporteWS>http://localhost:8080/RelojUNA-Server/ReporteWS?wsdl</org-netbeans-modules-maven-jaxws._5f_C_5f_ReporteWS>
     </properties>
 </project-shared-configuration>

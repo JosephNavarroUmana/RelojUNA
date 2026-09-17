@@ -26,91 +26,103 @@ public class MarcaService {
     // CRUD basico
     // =========================================================
 
-//    public Respuesta guardar(MarcaDto dto) {
-//        try {
-//            Empleado empleado = buscarEmpleadoPorFolio(dto.getFolioEmpleado());
-//
-//            if (empleado == null) {
-//                return new Respuesta(false, "No se encontro el empleado con folio " + dto.getFolioEmpleado());
-//            }
-//
-//            Marca marca;
-//            if (dto.getId() == null) {
-//                marca = new Marca();
-//            } else {
-//                marca = em.find(Marca.class, dto.getId());
-//                if (marca == null) {
-//                    return new Respuesta(false, "No se encontro la marca con ID " + dto.getId());
-//                }
-//            }
-//
-//            marca.setFecha(dto.getFecha());
-//            marca.setHora(dto.getHora());
-//            marca.setTipo(dto.getTipo());
-//            marca.setEmpleado(empleado);
-//
-//            if (dto.getId() == null) {
-//                em.persist(marca);
-//            } else {
-//                marca = em.merge(marca);
-//            }
-//
-//            return new Respuesta(true, "Marca guardada con exito", convertirADto(marca));
-//
-//        } catch (Exception e) {
-//            return new Respuesta(false, "Error al guardar marca: " + e.getMessage());
-//        }
-//    }
+    //Guarda una marca nueva o actualiza una existente segun el id
+    public Respuesta guardar(MarcaDto dto) {
+        try {
+            Empleado empleado = buscarEmpleadoPorFolio(dto.getFolioEmpleado());
 
- public Respuesta marcar(Long empleadoId) {
-    try {
-        Empleado empleado = em.find(Empleado.class, empleadoId);
-        if (empleado == null) {
-            return new Respuesta(false, "No se encontro el empleado con ID " + empleadoId);
+            if (empleado == null) {
+                return new Respuesta(false, "No se encontro el empleado con folio " + dto.getFolioEmpleado());
+            }
+
+            Marca marca;
+            if (dto.getId() == null) {
+                marca = new Marca();
+            } else {
+                marca = em.find(Marca.class, dto.getId());
+                if (marca == null) {
+                    return new Respuesta(false, "No se encontro la marca con ID " + dto.getId());
+                }
+            }
+
+            marca.setFecha(dto.getFecha());
+            marca.setHora(dto.getHora());
+            marca.setTipo(dto.getTipo());
+            marca.setEmpleado(empleado);
+
+            if (dto.getId() == null) {
+                em.persist(marca);
+            } else {
+                marca = em.merge(marca);
+            }
+
+            return new Respuesta(true, "Marca guardada con exito", convertirADto(marca));
+
+        } catch (Exception e) {
+            return new Respuesta(false, "Error al guardar marca: " + e.getMessage());
         }
-
-        List<Marca> marcasDelEmpleado = em.createQuery(
-                "SELECT m FROM Marca m WHERE m.empleado.id = :empId", Marca.class)
-                .setParameter("empId", empleadoId)
-                .getResultList();
-
-        String tipo = marcasDelEmpleado.stream()
-                .max(Comparator.comparing(Marca::getHora))
-                .map(ultima -> "ENTRADA".equals(ultima.getTipo()) ? "SALIDA" : "ENTRADA")
-                .orElse("ENTRADA");
-
-        Marca marca = new Marca();
-        marca.setEmpleado(empleado);
-        marca.setFecha(LocalDate.now());
-        marca.setHora(java.time.LocalDateTime.now());
-        marca.setTipo(tipo);
-
-        em.persist(marca);
-
-        return new Respuesta(true, "Marca de " + tipo + " registrada con exito", convertirADto(marca));
-
-    } catch (Exception e) {
-        return new Respuesta(false, "Error al marcar: " + e.getMessage());
     }
-}
 
-public Respuesta obtenerTodas() {
-    try {
-        List<Marca> marcas = em.createQuery("SELECT m FROM Marca m", Marca.class).getResultList();
-
-        List<MarcaDto> dtos = marcas.stream()
-                .map(this::convertirADto)
-                .collect(Collectors.toList());
-
-        //Metemos la lista dentro del envoltorio para que JAXB la pueda mandar
-        ListaMarcaDto listaEnvoltorio = new ListaMarcaDto(dtos);
-
-        return new Respuesta(true, "Marcas obtenidas con exito", listaEnvoltorio);
-
-    } catch (Exception e) {
-        return new Respuesta(false, "Error al obtener marcas: " + e.getMessage());
+    //Busca el empleado usando su folio, se usa para relacionar la marca con el empleado correcto
+    private Empleado buscarEmpleadoPorFolio(String folio) {
+        try {
+            return em.createQuery("SELECT e FROM Empleado e WHERE e.folio = :folio", Empleado.class)
+                    .setParameter("folio", folio)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
-}
+
+    public Respuesta marcar(Long empleadoId) {
+        try {
+            Empleado empleado = em.find(Empleado.class, empleadoId);
+            if (empleado == null) {
+                return new Respuesta(false, "No se encontro el empleado con ID " + empleadoId);
+            }
+
+            List<Marca> marcasDelEmpleado = em.createQuery(
+                    "SELECT m FROM Marca m WHERE m.empleado.id = :empId", Marca.class)
+                    .setParameter("empId", empleadoId)
+                    .getResultList();
+
+            String tipo = marcasDelEmpleado.stream()
+                    .max(Comparator.comparing(Marca::getHora))
+                    .map(ultima -> "ENTRADA".equals(ultima.getTipo()) ? "SALIDA" : "ENTRADA")
+                    .orElse("ENTRADA");
+
+            Marca marca = new Marca();
+            marca.setEmpleado(empleado);
+            marca.setFecha(LocalDate.now());
+            marca.setHora(java.time.LocalDateTime.now());
+            marca.setTipo(tipo);
+
+            em.persist(marca);
+
+            return new Respuesta(true, "Marca de " + tipo + " registrada con exito", convertirADto(marca));
+
+        } catch (Exception e) {
+            return new Respuesta(false, "Error al marcar: " + e.getMessage());
+        }
+    }
+
+    public Respuesta obtenerTodas() {
+        try {
+            List<Marca> marcas = em.createQuery("SELECT m FROM Marca m", Marca.class).getResultList();
+
+            List<MarcaDto> dtos = marcas.stream()
+                    .map(this::convertirADto)
+                    .collect(Collectors.toList());
+
+            //Metemos la lista dentro del envoltorio para que JAXB la pueda mandar
+            ListaMarcaDto listaEnvoltorio = new ListaMarcaDto(dtos);
+
+            return new Respuesta(true, "Marcas obtenidas con exito", listaEnvoltorio);
+
+        } catch (Exception e) {
+            return new Respuesta(false, "Error al obtener marcas: " + e.getMessage());
+        }
+    }
 
     public Respuesta eliminar(Long id) {
         try {
@@ -132,31 +144,31 @@ public Respuesta obtenerTodas() {
     // Deteccion de inconsistencias
     // =========================================================
 
-public Respuesta buscarInconsistencias() {
-    try {
-        List<Marca> todasLasMarcas = em.createQuery(
-                "SELECT m FROM Marca m", Marca.class).getResultList();
+    public Respuesta buscarInconsistencias() {
+        try {
+            List<Marca> todasLasMarcas = em.createQuery(
+                    "SELECT m FROM Marca m", Marca.class).getResultList();
 
-        Map<Empleado, List<Marca>> marcasPorEmpleado = todasLasMarcas.stream()
-                .collect(Collectors.groupingBy(Marca::getEmpleado));
+            Map<Empleado, List<Marca>> marcasPorEmpleado = todasLasMarcas.stream()
+                    .collect(Collectors.groupingBy(Marca::getEmpleado));
 
-        List<Marca> inconsistentes = marcasPorEmpleado.values().stream()
-                .flatMap(marcasDeUnEmpleado -> detectarInconsistencias(marcasDeUnEmpleado).stream())
-                .collect(Collectors.toList());
+            List<Marca> inconsistentes = marcasPorEmpleado.values().stream()
+                    .flatMap(marcasDeUnEmpleado -> detectarInconsistencias(marcasDeUnEmpleado).stream())
+                    .collect(Collectors.toList());
 
-        List<MarcaDto> dtos = inconsistentes.stream()
-                .map(this::convertirADto)
-                .collect(Collectors.toList());
+            List<MarcaDto> dtos = inconsistentes.stream()
+                    .map(this::convertirADto)
+                    .collect(Collectors.toList());
 
-        //Metemos la lista dentro del envoltorio para que JAXB la pueda mandar
-        ListaMarcaDto listaEnvoltorio = new ListaMarcaDto(dtos);
+            //Metemos la lista dentro del envoltorio para que JAXB la pueda mandar
+            ListaMarcaDto listaEnvoltorio = new ListaMarcaDto(dtos);
 
-        return new Respuesta(true, "Inconsistencias encontradas: " + dtos.size(), listaEnvoltorio);
+            return new Respuesta(true, "Inconsistencias encontradas: " + dtos.size(), listaEnvoltorio);
 
-    } catch (Exception e) {
-        return new Respuesta(false, "Error al buscar inconsistencias: " + e.getMessage());
+        } catch (Exception e) {
+            return new Respuesta(false, "Error al buscar inconsistencias: " + e.getMessage());
+        }
     }
-}
 
     private List<Marca> detectarInconsistencias(List<Marca> marcasDeUnEmpleado) {
         List<Marca> ordenadas = marcasDeUnEmpleado.stream()

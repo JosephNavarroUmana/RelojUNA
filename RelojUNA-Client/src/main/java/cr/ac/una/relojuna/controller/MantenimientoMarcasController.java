@@ -35,8 +35,7 @@ public class MantenimientoMarcasController {
     @FXML
     private Label lblCantInconsistencias;
     @FXML
-    private Button btnFiltrar, btnVerInconsistencias, btnSiguienteInconsistencia,
-                     btnAgregar, btnModificar, btnEliminar, btnCorregirInconsistencia;
+    private Button btnFiltrar, btnVerInconsistencias, btnSiguienteInconsistencia, btnAgregar, btnModificar, btnEliminar, btnCorregirInconsistencia;
     @FXML
     private Button btnRegresar;
     @FXML
@@ -158,51 +157,7 @@ public class MantenimientoMarcasController {
         tblMarcas.scrollTo(indiceInconsistenciaActual);
     }
 
-    @FXML
-    private void handleAgregar() {
-//        MarcaDto marcaNueva = leerFormulario(null);
-//
-//        if (marcaNueva == null) {
-//            return;
-//        }
-//
-//        Respuesta respuesta = marcaService.guardarMarca(marcaNueva);
-//
-//        if (!respuesta.getEstado()) {
-//            mostrarMensaje(respuesta.getMensaje());
-//            return;
-//        }
-//
-//        cargarTabla();
-//        limpiarFormulario();
-   }
-
-    @FXML
-    private void handleModificar() {
-//        MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
-//
-//        if (seleccionada == null) {
-//            mostrarMensaje("Debe seleccionar una marca de la tabla.");
-//            return;
-//        }
-//
-//        MarcaDto marcaModificada = leerFormulario(seleccionada.getId());
-//
-//        if (marcaModificada == null) {
-//            return;
-//        }
-//
-//        Respuesta respuesta = marcaService.guardarMarca(marcaModificada);
-//
-//        if (!respuesta.getEstado()) {
-//            mostrarMensaje(respuesta.getMensaje());
-//            return;
-//        }
-//
-//        cargarTabla();
-//        limpiarFormulario();
-    }
-
+   
     @FXML
     private void handleEliminar() {
         MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
@@ -223,27 +178,72 @@ public class MantenimientoMarcasController {
         limpiarFormulario();
     }
 
-    @FXML
-   private void handleCorregirInconsistencia() {
-//        MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
-//
-//        if (seleccionada == null) {
-//            mostrarMensaje("Debe seleccionar una marca de la tabla.");
-//            return;
-//        }
-//
-//        //Invertimos el tipo de la marca, si era entrada pasa a salida y viceversa
-//        if (seleccionada.getTipo().equals("ENTRADA")) {
-//            seleccionada.setTipo("SALIDA");
-//        } else {
-//            seleccionada.setTipo("ENTRADA");
-//        }
-//
-//        seleccionada.setEstado("OK");
-//        marcaService.guardarMarca(seleccionada);
-//
-//        handleVerInconsistencias();
+@FXML
+private void handleAgregar() {
+    MarcaDto marcaNueva = leerFormulario(null);
+
+    if (marcaNueva == null) {
+        return;
     }
+
+    Respuesta respuesta = marcaService.guardarMarca(marcaNueva);
+
+    if (!respuesta.getEstado()) {
+        mostrarMensaje(respuesta.getMensaje());
+        return;
+    }
+
+    cargarTabla();
+    limpiarFormulario();
+}
+
+@FXML
+private void handleModificar() {
+    MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
+
+    if (seleccionada == null) {
+        mostrarMensaje("Debe seleccionar una marca de la tabla.");
+        return;
+    }
+
+    MarcaDto marcaModificada = leerFormulario(seleccionada.getId());
+
+    if (marcaModificada == null) {
+        return;
+    }
+
+    Respuesta respuesta = marcaService.guardarMarca(marcaModificada);
+
+    if (!respuesta.getEstado()) {
+        mostrarMensaje(respuesta.getMensaje());
+        return;
+    }
+
+    cargarTabla();
+    limpiarFormulario();
+}
+
+@FXML
+private void handleCorregirInconsistencia() {
+    MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
+
+    if (seleccionada == null) {
+        mostrarMensaje("Debe seleccionar una marca de la tabla.");
+        return;
+    }
+
+    //Invertimos el tipo de la marca, si era entrada pasa a salida y viceversa
+    if (seleccionada.getTipo().equals("ENTRADA")) {
+        seleccionada.setTipo("SALIDA");
+    } else {
+        seleccionada.setTipo("ENTRADA");
+    }
+
+    seleccionada.setEstado("OK");
+    marcaService.guardarMarca(seleccionada);
+
+    handleVerInconsistencias();
+}
 
     //Lee los datos del formulario y arma un MarcaDto, retorna null si hay error de validacion
     private MarcaDto leerFormulario(Integer idExistente) {

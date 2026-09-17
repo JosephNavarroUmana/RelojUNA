@@ -10,4 +10,6 @@
     <system systemId="http://localhost:8080/RelojUNA-Server/EmpleadoWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/EmpleadoWS.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/RelojUNA-Server/MarcaWS?wsdl" uri="wsdl/localhost_8080/RelojUNA-Server/MarcaWS.wsdl"/>
     <system systemId="http://localhost:8080/RelojUNA-Server/MarcaWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/MarcaWS.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/RelojUNA-Server/ReporteWS?wsdl" uri="wsdl/localhost_8080/RelojUNA-Server/ReporteWS.wsdl"/>
+    <system systemId="http://localhost:8080/RelojUNA-Server/ReporteWS?xsd=1" uri="wsdl/localhost_8080/RelojUNA-Server/ReporteWS.xsd_1.xsd"/>
 </catalog>

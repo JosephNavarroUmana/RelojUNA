@@ -1,8 +1,12 @@
 package cr.ac.una.relojservidor.servicio;
 
+import cr.ac.una.relojservidor.dto.ArchivoDto;
+import cr.ac.una.relojservidor.dto.ConsultaFilaDto;
 import cr.ac.una.relojservidor.dto.ConsultaResultadoDto;
 import cr.ac.una.relojservidor.dto.MarcaDto;
+import cr.ac.una.relojservidor.dto.PlanillaFilaDto;
 import cr.ac.una.relojservidor.util.Respuesta;
+import jakarta.ejb.Stateless;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -13,21 +17,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
+@Stateless
 public class ExcelService {
 
-    /**
-     * Genera un Excel con formato a partir del resultado de una consulta
-     * de marcas (punto 8), devolviendo el archivo como arreglo de bytes
-     * para que el cliente lo reciba por SOAP y lo guarde en disco.
-     */
     public Respuesta exportarConsultaExcel(ConsultaResultadoDto consulta) {
         try (XSSFWorkbook libro = new XSSFWorkbook()) {
             XSSFSheet hoja = libro.createSheet("Consulta de Marcas");
 
             CellStyle estiloEncabezado = crearEstiloEncabezado(libro);
 
-            // --- Fila de resumen (totales) ---
             Row filaResumen = hoja.createRow(0);
             filaResumen.createCell(0).setCellValue("Cantidad de empleados:");
             filaResumen.createCell(1).setCellValue(consulta.getCantidadEmpleados());
@@ -40,7 +40,6 @@ public class ExcelService {
             filaResumen3.createCell(0).setCellValue("Total de horas trabajadas:");
             filaResumen3.createCell(1).setCellValue(consulta.getTotalHorasTrabajadas());
 
-            // --- Encabezados de la tabla de detalle ---
             String[] encabezados = {"ID Empleado", "Fecha", "Hora", "Tipo"};
             Row filaEncabezado = hoja.createRow(4);
             for (int i = 0; i < encabezados.length; i++) {
@@ -49,7 +48,6 @@ public class ExcelService {
                 celda.setCellStyle(estiloEncabezado);
             }
 
-            // --- Detalle de marcas ---
             int numeroFila = 5;
             for (MarcaDto marca : consulta.getMarcas()) {
                 Row fila = hoja.createRow(numeroFila);
@@ -67,7 +65,87 @@ public class ExcelService {
             ByteArrayOutputStream salida = new ByteArrayOutputStream();
             libro.write(salida);
 
-            return new Respuesta(true, "Excel generado con éxito", salida.toByteArray());
+            return new Respuesta(true, "Excel generado con exito", new ArchivoDto(salida.toByteArray()));
+
+        } catch (IOException e) {
+            return new Respuesta(false, "Error al generar el Excel: " + e.getMessage());
+        }
+    }
+
+    //Genera el Excel de la pantalla de consultas con streams, una fila por empleado y dia
+    public Respuesta exportarConsultaFilasExcel(List<ConsultaFilaDto> filas) {
+        try (XSSFWorkbook libro = new XSSFWorkbook()) {
+            XSSFSheet hoja = libro.createSheet("Consulta de Marcas");
+
+            CellStyle estiloEncabezado = crearEstiloEncabezado(libro);
+
+            String[] encabezados = {"Empleado", "Fecha", "Hora Entrada", "Hora Salida", "Horas Trabajadas"};
+            Row filaEncabezado = hoja.createRow(0);
+            for (int i = 0; i < encabezados.length; i++) {
+                Cell celda = filaEncabezado.createCell(i);
+                celda.setCellValue(encabezados[i]);
+                celda.setCellStyle(estiloEncabezado);
+            }
+
+            int numeroFila = 1;
+            for (ConsultaFilaDto fila : filas) {
+                Row filaExcel = hoja.createRow(numeroFila);
+                filaExcel.createCell(0).setCellValue(fila.getNombreEmpleado());
+                filaExcel.createCell(1).setCellValue(fila.getFecha().toString());
+                filaExcel.createCell(2).setCellValue(fila.getHoraEntrada().toString());
+                filaExcel.createCell(3).setCellValue(fila.getHoraSalida().toString());
+                filaExcel.createCell(4).setCellValue(fila.getHorasTrabajadas());
+                numeroFila++;
+            }
+
+            for (int i = 0; i < encabezados.length; i++) {
+                hoja.autoSizeColumn(i);
+            }
+
+            ByteArrayOutputStream salida = new ByteArrayOutputStream();
+            libro.write(salida);
+
+            return new Respuesta(true, "Excel generado con exito", new ArchivoDto(salida.toByteArray()));
+
+        } catch (IOException e) {
+            return new Respuesta(false, "Error al generar el Excel: " + e.getMessage());
+        }
+    }
+
+    //Genera el Excel de la planilla, una fila por empleado con sus horas y salario
+    public Respuesta exportarPlanillaExcel(List<PlanillaFilaDto> filas) {
+        try (XSSFWorkbook libro = new XSSFWorkbook()) {
+            XSSFSheet hoja = libro.createSheet("Planilla");
+
+            CellStyle estiloEncabezado = crearEstiloEncabezado(libro);
+
+            String[] encabezados = {"Empleado", "Horas Ordinarias", "Horas Extras", "Horas Dobles", "Salario Mensual"};
+            Row filaEncabezado = hoja.createRow(0);
+            for (int i = 0; i < encabezados.length; i++) {
+                Cell celda = filaEncabezado.createCell(i);
+                celda.setCellValue(encabezados[i]);
+                celda.setCellStyle(estiloEncabezado);
+            }
+
+            int numeroFila = 1;
+            for (PlanillaFilaDto fila : filas) {
+                Row filaExcel = hoja.createRow(numeroFila);
+                filaExcel.createCell(0).setCellValue(fila.getNombreEmpleado());
+                filaExcel.createCell(1).setCellValue(fila.getHorasOrdinarias());
+                filaExcel.createCell(2).setCellValue(fila.getHorasExtras());
+                filaExcel.createCell(3).setCellValue(fila.getHorasDobles());
+                filaExcel.createCell(4).setCellValue(fila.getSalarioMensual());
+                numeroFila++;
+            }
+
+            for (int i = 0; i < encabezados.length; i++) {
+                hoja.autoSizeColumn(i);
+            }
+
+            ByteArrayOutputStream salida = new ByteArrayOutputStream();
+            libro.write(salida);
+
+            return new Respuesta(true, "Excel generado con exito", new ArchivoDto(salida.toByteArray()));
 
         } catch (IOException e) {
             return new Respuesta(false, "Error al generar el Excel: " + e.getMessage());

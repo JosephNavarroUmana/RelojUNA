@@ -6,10 +6,10 @@ import cr.ac.una.relojuna.model.MarcaDto;
 import cr.ac.una.relojuna.service.ConsultaService;
 import cr.ac.una.relojuna.service.EmpleadoService;
 import cr.ac.una.relojuna.service.MarcaService;
-import cr.ac.una.relojuna.util.ExcelExportador;
+import cr.ac.una.relojuna.service.ReporteService;
 import cr.ac.una.relojuna.util.Respuesta;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -52,6 +52,7 @@ public class ConsultaController {
     private ConsultaService consultaService;
     private EmpleadoService empleadoService;
     private MarcaService marcaService;
+    private ReporteService reporteService;
 
     //Lista observable que alimenta la tabla
     private ObservableList<ConsultaResultadoDto> listaResultados;
@@ -66,6 +67,7 @@ public class ConsultaController {
         consultaService = new ConsultaService();
         empleadoService = new EmpleadoService();
         marcaService = new MarcaService();
+        reporteService = new ReporteService();
         listaResultados = FXCollections.observableArrayList();
 
         colEmpleado.setCellValueFactory(new PropertyValueFactory<>("nombreEmpleado"));
@@ -174,6 +176,7 @@ public class ConsultaController {
         lblTotalHoras.setText("Total horas trabajadas: " + String.format("%.2f", totalHoras));
     }
 
+    //Pide al servidor que genere el Excel de la consulta y lo guarda donde el usuario elija
     @FXML
     private void handleExportarExcel() {
         if (listaResultados.isEmpty()) {
@@ -192,10 +195,19 @@ public class ConsultaController {
             return;
         }
 
-        try {
-            ExcelExportador.exportarConsultas(listaResultados, archivo);
+        Respuesta respuesta = reporteService.exportarConsultaExcel(listaResultados);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        byte[] bytesExcel = (byte[]) respuesta.getResultado("Excel");
+
+        try (FileOutputStream salida = new FileOutputStream(archivo)) {
+            salida.write(bytesExcel);
             mostrarMensaje("Archivo exportado correctamente.");
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             mostrarMensaje("Ocurrio un error al exportar el archivo.");
         }
     }

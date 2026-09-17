@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by XML-WS Runtime (https://github.com/eclipse-ee4j/metro-jax-ws). Runtime's version is Eclipse Metro/4.0.4.payara-p1 (FISH-10142-Metro-4.0.4-fa01c0b; 2025-07-11T17:44:37+0100) XMLWS-Impl/4.0.3 XMLWS-API/4.0.2 XMLB-Impl/4.0.5 XMLB-API/4.0.2 git-revision#fa01c0b. --><xs:schema xmlns:tns="http://ws.relojservidor.una.ac.cr/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.relojservidor.una.ac.cr/">
+
+<xs:element name="archivoDto" type="tns:archivoDto"/>
+
+<xs:element name="consultaFilaDto" type="tns:consultaFilaDto"/>
+
+<xs:element name="empleadoDto" type="tns:empleadoDto"/>
+
+<xs:element name="exportarConsultaExcel" type="tns:exportarConsultaExcel"/>
+
+<xs:element name="exportarConsultaExcelResponse" type="tns:exportarConsultaExcelResponse"/>
+
+<xs:element name="exportarPlanillaExcel" type="tns:exportarPlanillaExcel"/>
+
+<xs:element name="exportarPlanillaExcelResponse" type="tns:exportarPlanillaExcelResponse"/>
+
+<xs:element name="generarReporteEmpleadosPdf" type="tns:generarReporteEmpleadosPdf"/>
+
+<xs:element name="generarReporteEmpleadosPdfResponse" type="tns:generarReporteEmpleadosPdfResponse"/>
+
+<xs:element name="generarReporteMarcasPdf" type="tns:generarReporteMarcasPdf"/>
+
+<xs:element name="generarReporteMarcasPdfResponse" type="tns:generarReporteMarcasPdfResponse"/>
+
+<xs:element name="listaConsultaFilaDto" type="tns:listaConsultaFilaDto"/>
+
+<xs:element name="listaEmpleadoDto" type="tns:listaEmpleadoDto"/>
+
+<xs:element name="listaPlanillaFilaDto" type="tns:listaPlanillaFilaDto"/>
+
+<xs:element name="planillaFilaDto" type="tns:planillaFilaDto"/>
+
+<xs:complexType name="archivoDto">
+<xs:sequence>
+<xs:element name="contenido" type="xs:base64Binary" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="listaConsultaFilaDto">
+<xs:sequence>
+<xs:element name="filas" type="tns:consultaFilaDto" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="consultaFilaDto">
+<xs:sequence>
+<xs:element name="folioEmpleado" type="xs:int" minOccurs="0"/>
+<xs:element name="nombreEmpleado" type="xs:string" minOccurs="0"/>
+<xs:element name="fecha" type="xs:string" minOccurs="0"/>
+<xs:element name="horaEntrada" type="xs:string" minOccurs="0"/>
+<xs:element name="horaSalida" type="xs:string" minOccurs="0"/>
+<xs:element name="horasTrabajadas" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="listaPlanillaFilaDto">
+<xs:sequence>
+<xs:element name="filas" type="tns:planillaFilaDto" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="planillaFilaDto">
+<xs:sequence>
+<xs:element name="folioEmpleado" type="xs:int" minOccurs="0"/>
+<xs:element name="nombreEmpleado" type="xs:string" minOccurs="0"/>
+<xs:element name="horasOrdinarias" type="xs:double" minOccurs="0"/>
+<xs:element name="horasExtras" type="xs:double" minOccurs="0"/>
+<xs:element name="horasDobles" type="xs:double" minOccurs="0"/>
+<xs:element name="salarioMensual" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="listaEmpleadoDto">
+<xs:sequence>
+<xs:element name="empleados" type="tns:empleadoDto" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="empleadoDto">
+<xs:sequence>
+<xs:element name="apellidos" type="xs:string" minOccurs="0"/>
+<xs:element name="cedula" type="xs:string" minOccurs="0"/>
+<xs:element name="clave" type="xs:string" minOccurs="0"/>
+<xs:element name="esAdmin" type="xs:int" minOccurs="0"/>
+<xs:element name="fechaNacimiento" type="xs:string" minOccurs="0"/>
+<xs:element name="folio" type="xs:string" minOccurs="0"/>
+<xs:element name="foto" type="xs:base64Binary" minOccurs="0"/>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="nombre" type="xs:string" minOccurs="0"/>
+<xs:element name="salarioHora" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="exportarConsultaExcel">
+<xs:sequence>
+<xs:element name="filas" type="tns:listaConsultaFilaDto" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="exportarConsultaExcelResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="respuesta">
+<xs:sequence>
+<xs:element name="exito" type="xs:boolean"/>
+<xs:element name="mensaje" type="xs:string" minOccurs="0"/>
+<xs:any processContents="lax" namespace="##other"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="exportarPlanillaExcel">
+<xs:sequence>
+<xs:element name="filas" type="tns:listaPlanillaFilaDto" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="exportarPlanillaExcelResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generarReporteMarcasPdf">
+<xs:sequence>
+<xs:element name="filas" type="tns:listaConsultaFilaDto" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generarReporteMarcasPdfResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generarReporteEmpleadosPdf">
+<xs:sequence>
+<xs:element name="empleados" type="tns:listaEmpleadoDto" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generarReporteEmpleadosPdfResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

@@ -201,6 +201,24 @@
                         <id>wsimport-generate-LoginWS</id>
                         <phase>generate-sources</phase>
                     </execution>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>localhost_8080/RelojUNA-Server/ReporteWS.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName>cr.ac.una.relojuna.ws</packageName>
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                            <wsdlLocation>http://localhost:8080/RelojUNA-Server/ReporteWS?wsdl</wsdlLocation>
+                            <staleFile>${project.build.directory}/jaxws/stale/ReporteWS.stale</staleFile>
+                        </configuration>
+                        <id>wsimport-generate-ReporteWS</id>
+                        <phase>generate-sources</phase>
+                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>

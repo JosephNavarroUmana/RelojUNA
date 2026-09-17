@@ -4,9 +4,11 @@ import cr.ac.una.relojuna.model.ConsultaResultadoDto;
 import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.service.ConsultaService;
 import cr.ac.una.relojuna.service.EmpleadoService;
-import cr.ac.una.relojuna.util.JasperExportador;
+import cr.ac.una.relojuna.service.ReporteService;
 import cr.ac.una.relojuna.util.Respuesta;
+import java.awt.Desktop;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -39,11 +41,13 @@ public class ReporteController {
     //Servicios usados en esta pantalla
     private EmpleadoService empleadoService;
     private ConsultaService consultaService;
+    private ReporteService reporteService;
 
     @FXML
     private void initialize() {
         empleadoService = new EmpleadoService();
         consultaService = new ConsultaService();
+        reporteService = new ReporteService();
 
         cargarComboEmpleados();
 
@@ -134,16 +138,35 @@ public class ReporteController {
         return (List<EmpleadoDto>) respuesta.getResultado("Empleados");
     }
 
+    //Pide el pdf al servidor, lo guarda en un archivo temporal y lo abre con el visor del sistema
     @FXML
     private void handleVistaPrevia() {
         try {
+            Respuesta respuesta;
+
             if (rbReporteEmpleados.isSelected()) {
                 List<EmpleadoDto> empleados = obtenerTodosLosEmpleados();
-                JasperExportador.mostrarVistaPreviaEmpleados(empleados);
+                respuesta = reporteService.generarReporteEmpleadosPdf(empleados);
             } else {
                 List<ConsultaResultadoDto> marcas = obtenerMarcasOrdenadas();
-                JasperExportador.mostrarVistaPreviaMarcas(marcas);
+                respuesta = reporteService.generarReporteMarcasPdf(marcas);
             }
+
+            if (!respuesta.getEstado()) {
+                mostrarMensaje(respuesta.getMensaje());
+                return;
+            }
+
+            byte[] bytesPdf = (byte[]) respuesta.getResultado("Pdf");
+
+            File archivoTemporal = File.createTempFile("VistaPrevia", ".pdf");
+            archivoTemporal.deleteOnExit();
+
+            try (FileOutputStream salida = new FileOutputStream(archivoTemporal)) {
+                salida.write(bytesPdf);
+            }
+
+            Desktop.getDesktop().open(archivoTemporal);
         } catch (Exception ex) {
             mostrarMensaje("Error generando la vista previa: " + ex.getMessage());
             ex.printStackTrace();
@@ -159,7 +182,7 @@ public class ReporteController {
         }
     }
 
-    //Genera el PDF del reporte de empleados y lo guarda donde el usuario elija
+    //Pide al servidor el pdf de empleados y lo guarda donde el usuario elija
     private void generarReporteEmpleados() {
         FileChooser selector = new FileChooser();
         selector.setTitle("Guardar reporte de empleados");
@@ -172,17 +195,19 @@ public class ReporteController {
             return;
         }
 
-        try {
-            List<EmpleadoDto> empleados = obtenerTodosLosEmpleados();
-            JasperExportador.exportarEmpleadosAPdf(empleados, archivo);
-            mostrarMensaje("Reporte generado correctamente.");
-        } catch (Exception ex) {
-            mostrarMensaje("Error generando el reporte: " + ex.getMessage());
-            ex.printStackTrace();
+        List<EmpleadoDto> empleados = obtenerTodosLosEmpleados();
+        Respuesta respuesta = reporteService.generarReporteEmpleadosPdf(empleados);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
         }
+
+        byte[] bytesPdf = (byte[]) respuesta.getResultado("Pdf");
+        guardarBytesEnArchivo(bytesPdf, archivo);
     }
 
-    //Genera el PDF del reporte de marcas y lo guarda donde el usuario elija
+    //Pide al servidor el pdf de marcas y lo guarda donde el usuario elija
     private void generarReporteMarcas() {
         FileChooser selector = new FileChooser();
         selector.setTitle("Guardar reporte de marcas");
@@ -195,9 +220,22 @@ public class ReporteController {
             return;
         }
 
-        try {
-            List<ConsultaResultadoDto> marcas = obtenerMarcasOrdenadas();
-            JasperExportador.exportarMarcasAPdf(marcas, archivo);
+        List<ConsultaResultadoDto> marcas = obtenerMarcasOrdenadas();
+        Respuesta respuesta = reporteService.generarReporteMarcasPdf(marcas);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        byte[] bytesPdf = (byte[]) respuesta.getResultado("Pdf");
+        guardarBytesEnArchivo(bytesPdf, archivo);
+    }
+
+    //Escribe un arreglo de bytes en el archivo indicado
+    private void guardarBytesEnArchivo(byte[] bytes, File archivo) {
+        try (FileOutputStream salida = new FileOutputStream(archivo)) {
+            salida.write(bytes);
             mostrarMensaje("Reporte generado correctamente.");
         } catch (Exception ex) {
             mostrarMensaje("Error generando el reporte: " + ex.getMessage());
