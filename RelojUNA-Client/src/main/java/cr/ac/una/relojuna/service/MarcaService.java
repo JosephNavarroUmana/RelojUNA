@@ -22,26 +22,25 @@ public class MarcaService {
         puerto = servicioWS.getMarcaWSPort();
     }
 
-    public Respuesta marcar(Integer folioEmpleado) {
-        try {
-            Long idEmpleado = Long.valueOf(folioEmpleado);
-            cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.marcar(idEmpleado);
+    public Respuesta marcar(Long idEmpleado) {
+    try {
+        cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.marcar(idEmpleado);
 
-            if (!respuestaServidor.isExito()) {
-                return new Respuesta(false, respuestaServidor.getMensaje(), "");
-            }
-
-            Object resultadoCrudo = respuestaServidor.getAny();
-            cr.ac.una.relojuna.ws.MarcaDto marcaServidor = convertirAMarcaDtoServidor(resultadoCrudo);
-
-            MarcaDto marca = convertirAMarcaCliente(marcaServidor);
-
-            return new Respuesta(true, "", "", "Marca", marca);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new Respuesta(false, "Error registrando la marca.", "marcar " + ex.getMessage());
+        if (!respuestaServidor.isExito()) {
+            return new Respuesta(false, respuestaServidor.getMensaje(), "");
         }
+
+        Object resultadoCrudo = respuestaServidor.getAny();
+        cr.ac.una.relojuna.ws.MarcaDto marcaServidor = convertirAMarcaDtoServidor(resultadoCrudo);
+
+        MarcaDto marca = convertirAMarcaCliente(marcaServidor);
+
+        return new Respuesta(true, "", "", "Marca", marca);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return new Respuesta(false, "Error registrando la marca.", "marcar " + ex.getMessage());
     }
+}
 
     //Guarda una marca nueva o actualiza una existente segun el id
     public Respuesta guardarMarca(MarcaDto marca) {
@@ -217,7 +216,7 @@ public class MarcaService {
         marca.setEstado("OK");
 
         if (marcaServidor.getFolioEmpleado() != null) {
-            marca.setFolioEmpleado(Integer.valueOf(marcaServidor.getFolioEmpleado()));
+            marca.setFolioEmpleado(marcaServidor.getFolioEmpleado());
         }
 
         marca.setNombreEmpleado(marcaServidor.getNombreEmpleado());

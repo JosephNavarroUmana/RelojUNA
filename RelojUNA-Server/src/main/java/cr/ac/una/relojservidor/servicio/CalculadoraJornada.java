@@ -74,7 +74,12 @@ public class CalculadoraJornada {
 
             // Si no hay entrada y salida ese dia, no se puede calcular la jornada
             // (esto seria una inconsistencia, ya detectada aparte en el punto 5)
-            if (entrada == null || salida == null) {
+              if (entrada == null || salida == null) {
+                continue;
+            }
+
+            //Si la salida quedo antes de la entrada, las marcas del dia son inconsistentes
+            if (salida.isBefore(entrada)) {
                 continue;
             }
 

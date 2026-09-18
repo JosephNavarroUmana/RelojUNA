@@ -3,6 +3,10 @@ package cr.ac.una.relojuna.controller;
 import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.service.EmpleadoService;
 import cr.ac.una.relojuna.util.Respuesta;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -13,18 +17,22 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class EmpleadoController {
 
     @FXML
-    private TextField txtBuscar, txtFolio, txtNombre, txtApellidos, txtCedula, txtSalario, txtFoto;
+    private TextField txtBuscar, txtFolio, txtNombre, txtApellidos, txtCedula, txtSalario;
     @FXML
     private DatePicker dpFechaNac;
     @FXML
@@ -32,9 +40,13 @@ public class EmpleadoController {
     @FXML
     private CheckBox chkAdmin;
     @FXML
+    private ImageView imgFoto;
+    @FXML
+    private Button btnFoto;
+    @FXML
     private TableView<EmpleadoDto> tblEmpleados;
     @FXML
-    private TableColumn<EmpleadoDto, Integer> colFolio;
+    private TableColumn<EmpleadoDto, String> colFolio;
     @FXML
     private TableColumn<EmpleadoDto, String> colNombre, colApellidos, colCedula;
     @FXML
@@ -50,18 +62,24 @@ public class EmpleadoController {
     @FXML
     private Button btnRegresar;
 
-    //Servicio de empleados
-    private EmpleadoService empleadoService;
+    private static final int EDAD_MINIMA = 18;
 
-    //Lista observable que alimenta la tabla
+    private EmpleadoService empleadoService;
     private ObservableList<EmpleadoDto> listaEmpleados;
+
+    //Id del empleado seleccionado en la tabla; null si estamos creando uno nuevo.
+    //El folio ya no sirve para esto porque ahora es solo texto generado por el servidor.
+    private Long idSeleccionado;
+
+    //Bytes de la foto actualmente cargada en el formulario (nueva o existente).
+    //null significa "sin foto nueva" (en edicion, el servidor no la toca).
+    private byte[] fotoActual;
 
     @FXML
     private void initialize() {
         empleadoService = new EmpleadoService();
         listaEmpleados = FXCollections.observableArrayList();
 
-        //Enlazamos cada columna con el atributo correspondiente del EmpleadoDto
         colFolio.setCellValueFactory(new PropertyValueFactory<>("folio"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
@@ -72,17 +90,40 @@ public class EmpleadoController {
 
         tblEmpleados.setItems(listaEmpleados);
 
-        //Cuando el usuario selecciona una fila, llenamos el formulario con esos datos
         tblEmpleados.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionado) -> {
             if (seleccionado != null) {
                 cargarFormulario(seleccionado);
             }
         });
 
+        //La clave solo tiene sentido si es administrador: deshabilitada y vacia por defecto
+        txtClave.setDisable(!chkAdmin.isSelected());
+        chkAdmin.selectedProperty().addListener((obs, anterior, esAdmin) -> {
+            txtClave.setDisable(!esAdmin);
+            if (!esAdmin) {
+                txtClave.clear();
+            }
+        });
+
+        //No se puede elegir hoy, el futuro, ni una fecha que de menos de 18 anios
+        dpFechaNac.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate fecha, boolean vacio) {
+                super.updateItem(fecha, vacio);
+                if (fecha == null) {
+                    return;
+                }
+                boolean invalida = fecha.isAfter(LocalDate.now().minusYears(EDAD_MINIMA));
+                setDisable(invalida);
+                if (invalida) {
+                    setStyle("-fx-background-color: #ffc0c0;");
+                }
+            }
+        });
+
         cargarTabla("");
     }
 
-    //Trae los empleados desde el servicio y los pone en la tabla
     private void cargarTabla(String textoBusqueda) {
         Respuesta respuesta = empleadoService.buscarEmpleados(textoBusqueda);
 
@@ -96,31 +137,46 @@ public class EmpleadoController {
         listaEmpleados.addAll(empleados);
     }
 
-    //Llena los campos del formulario con los datos de un empleado
     private void cargarFormulario(EmpleadoDto empleado) {
-        txtFolio.setText(empleado.getFolio().toString());
+        idSeleccionado = empleado.getId();
+
+        txtFolio.setText(empleado.getFolio());
         txtNombre.setText(empleado.getNombre());
         txtApellidos.setText(empleado.getApellidos());
         txtCedula.setText(empleado.getCedula());
         dpFechaNac.setValue(empleado.getFechaNacimiento());
         txtSalario.setText(empleado.getSalarioPorHora().toString());
-        txtFoto.setText(empleado.getFoto());
-        txtClave.setText(empleado.getClave());
+
+        //Primero el checkbox: dispara el listener que habilita/limpia txtClave
         chkAdmin.setSelected(empleado.isAdministrador());
+        txtClave.setText(empleado.isAdministrador() ? empleado.getClave() : "");
+
+        fotoActual = empleado.getFoto();
+        mostrarPreviewFoto(fotoActual);
     }
 
-    //Limpia todos los campos del formulario
     private void limpiarFormulario() {
+        idSeleccionado = null;
+        fotoActual = null;
+
         txtFolio.clear();
         txtNombre.clear();
         txtApellidos.clear();
         txtCedula.clear();
         dpFechaNac.setValue(null);
         txtSalario.clear();
-        txtFoto.clear();
         txtClave.clear();
         chkAdmin.setSelected(false);
+        mostrarPreviewFoto(null);
         tblEmpleados.getSelectionModel().clearSelection();
+    }
+
+    private void mostrarPreviewFoto(byte[] foto) {
+        if (foto == null || foto.length == 0) {
+            imgFoto.setImage(null);
+            return;
+        }
+        imgFoto.setImage(new Image(new ByteArrayInputStream(foto)));
     }
 
     @FXML
@@ -139,56 +195,91 @@ public class EmpleadoController {
         limpiarFormulario();
     }
 
-   @FXML
-private void handleGuardar() {
-    //Validamos los campos obligatorios antes de guardar
-    if (txtNombre.getText().isBlank() || txtApellidos.getText().isBlank() || txtCedula.getText().isBlank()) {
-        mostrarMensaje("Nombre, apellidos y cedula son obligatorios.");
-        return;
+    @FXML
+    private void handleSeleccionarFoto() {
+        FileChooser selector = new FileChooser();
+        selector.setTitle("Seleccionar foto del empleado");
+        selector.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Imagenes", "*.png", "*.jpg", "*.jpeg"));
+
+        Stage stage = (Stage) btnFoto.getScene().getWindow();
+        File archivo = selector.showOpenDialog(stage);
+
+        if (archivo == null) {
+            return;
+        }
+
+        try {
+            byte[] bytesFoto = Files.readAllBytes(archivo.toPath());
+            fotoActual = bytesFoto;
+            mostrarPreviewFoto(bytesFoto);
+        } catch (IOException ex) {
+            mostrarMensaje("No se pudo leer el archivo de imagen seleccionado.");
+        }
     }
 
-    if (txtSalario.getText().isBlank()) {
-        mostrarMensaje("Debe ingresar el salario por hora.");
-        return;
+    @FXML
+    private void handleGuardar() {
+        if (txtNombre.getText().isBlank() || txtApellidos.getText().isBlank() || txtCedula.getText().isBlank()) {
+            mostrarMensaje("Nombre, apellidos y cedula son obligatorios.");
+            return;
+        }
+
+        if (txtSalario.getText().isBlank()) {
+            mostrarMensaje("Debe ingresar el salario por hora.");
+            return;
+        }
+
+        Double salario;
+        try {
+            salario = Double.valueOf(txtSalario.getText());
+        } catch (NumberFormatException ex) {
+            mostrarMensaje("El salario debe ser un numero valido.");
+            return;
+        }
+
+        LocalDate fechaNac = dpFechaNac.getValue();
+        if (fechaNac == null) {
+            mostrarMensaje("Debe ingresar la fecha de nacimiento.");
+            return;
+        }
+        if (!fechaNac.isBefore(LocalDate.now())) {
+            mostrarMensaje("La fecha de nacimiento no puede ser hoy ni en el futuro.");
+            return;
+        }
+        if (fechaNac.isAfter(LocalDate.now().minusYears(EDAD_MINIMA))) {
+            mostrarMensaje("El empleado debe ser mayor de edad (al menos " + EDAD_MINIMA + " anios).");
+            return;
+        }
+
+        if (chkAdmin.isSelected() && (txtClave.getText() == null || txtClave.getText().isBlank())) {
+            mostrarMensaje("Debe ingresar una clave para los administradores.");
+            return;
+        }
+
+        EmpleadoDto empleado = new EmpleadoDto();
+        //idSeleccionado es null si es un empleado nuevo; el servidor genera el folio en ese caso
+        empleado.setId(idSeleccionado);
+
+        empleado.setNombre(txtNombre.getText());
+        empleado.setApellidos(txtApellidos.getText());
+        empleado.setCedula(txtCedula.getText());
+        empleado.setFechaNacimiento(fechaNac);
+        empleado.setSalarioPorHora(salario);
+        empleado.setFoto(fotoActual);
+        empleado.setClave(chkAdmin.isSelected() ? txtClave.getText() : null);
+        empleado.setAdministrador(chkAdmin.isSelected());
+
+        Respuesta respuesta = empleadoService.guardarEmpleado(empleado);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+        limpiarFormulario();
+        cargarTabla(txtBuscar.getText());
+
     }
-
-    Double salario;
-    try {
-        salario = Double.valueOf(txtSalario.getText());
-    } catch (NumberFormatException ex) {
-        mostrarMensaje("El salario debe ser un numero valido.");
-        return;
-    }
-
-    EmpleadoDto empleado = new EmpleadoDto();
-
-    //Si el campo folio tiene algo, es una modificacion, si no, es un empleado nuevo
-    if (!txtFolio.getText().isBlank()) {
-        empleado.setFolio(Integer.valueOf(txtFolio.getText()));
-    } else {
-        //Forzamos el folio a null, si no queda en 0 por defecto y pisa el empleado con id 0
-        empleado.setFolio(null);
-    }
-
-    empleado.setNombre(txtNombre.getText());
-    empleado.setApellidos(txtApellidos.getText());
-    empleado.setCedula(txtCedula.getText());
-    empleado.setFechaNacimiento(dpFechaNac.getValue());
-    empleado.setSalarioPorHora(salario);
-    empleado.setFoto(txtFoto.getText());
-    empleado.setClave(txtClave.getText());
-    empleado.setAdministrador(chkAdmin.isSelected());
-
-    Respuesta respuesta = empleadoService.guardarEmpleado(empleado);
-
-    if (!respuesta.getEstado()) {
-        mostrarMensaje(respuesta.getMensaje());
-        return;
-    }
-
-    cargarTabla(txtBuscar.getText());
-    limpiarFormulario();
-}
 
     @FXML
     private void handleEliminar() {
@@ -199,7 +290,7 @@ private void handleGuardar() {
             return;
         }
 
-        Respuesta respuesta = empleadoService.eliminarEmpleado(seleccionado.getFolio());
+        Respuesta respuesta = empleadoService.eliminarEmpleado(seleccionado.getId());
 
         if (!respuesta.getEstado()) {
             mostrarMensaje(respuesta.getMensaje());
@@ -221,7 +312,6 @@ private void handleGuardar() {
         stage.close();
     }
 
-    //Muestra una ventana con un mensaje al usuario
     private void mostrarMensaje(String mensaje) {
         Alert alerta = new Alert(AlertType.WARNING);
         alerta.setTitle("Aviso");

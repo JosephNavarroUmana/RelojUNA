@@ -10,7 +10,7 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PlanillaFilaDto implements Serializable {
 
-    private Integer folioEmpleado;
+    private String folioEmpleado;
     private String nombreEmpleado;
     private Double horasOrdinarias;
     private Double horasExtras;
@@ -20,8 +20,9 @@ public class PlanillaFilaDto implements Serializable {
     public PlanillaFilaDto() {
     }
 
-    public Integer getFolioEmpleado() { return folioEmpleado; }
-    public void setFolioEmpleado(Integer folioEmpleado) { this.folioEmpleado = folioEmpleado; }
+    public String getFolioEmpleado() { return folioEmpleado; }
+    
+    public void setFolioEmpleado(String folioEmpleado) { this.folioEmpleado = folioEmpleado; }
 
     public String getNombreEmpleado() { return nombreEmpleado; }
     public void setNombreEmpleado(String nombreEmpleado) { this.nombreEmpleado = nombreEmpleado; }

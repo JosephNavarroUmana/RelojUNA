@@ -9,13 +9,10 @@ public class App extends Application {
     @Override
     public void start(Stage stagePrincipal) throws Exception {
         FlowController.getInstancia().inicializar(stagePrincipal);
-        FlowController.getInstancia().irAVista("LoginView.fxml", "Reloj Marcador");
+        FlowController.getInstancia().irALogin("LoginView.fxml", "RelojUNA — Inicio de Sesión");
     }
 
     public static void main(String[] args) {
         launch(args);
-  
-
-
     }
 }

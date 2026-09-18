@@ -1,5 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?><!-- Published by XML-WS Runtime (https://github.com/eclipse-ee4j/metro-jax-ws). Runtime's version is Eclipse Metro/4.0.4.payara-p1 (FISH-10142-Metro-4.0.4-fa01c0b; 2025-07-11T17:44:37+0100) XMLWS-Impl/4.0.3 XMLWS-API/4.0.2 XMLB-Impl/4.0.5 XMLB-API/4.0.2 git-revision#fa01c0b. --><xs:schema xmlns:tns="http://ws.relojservidor.una.ac.cr/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.relojservidor.una.ac.cr/">
 
+<xs:element name="generarPlanilla" type="tns:generarPlanilla"/>
+
+<xs:element name="generarPlanillaResponse" type="tns:generarPlanillaResponse"/>
+
 <xs:element name="guardarPlanilla" type="tns:guardarPlanilla"/>
 
 <xs:element name="guardarPlanillaResponse" type="tns:guardarPlanillaResponse"/>
@@ -28,7 +32,7 @@
 <xs:sequence>
 <xs:element name="exito" type="xs:boolean"/>
 <xs:element name="mensaje" type="xs:string" minOccurs="0"/>
-<xs:element name="resultado" type="xs:anyType" minOccurs="0"/>
+<xs:any processContents="lax" namespace="##other"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -61,6 +65,19 @@
 </xs:complexType>
 
 <xs:complexType name="guardarPlanillaResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generarPlanilla">
+<xs:sequence>
+<xs:element name="mes" type="xs:int"/>
+<xs:element name="anio" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="generarPlanillaResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:respuesta" minOccurs="0"/>
 </xs:sequence>

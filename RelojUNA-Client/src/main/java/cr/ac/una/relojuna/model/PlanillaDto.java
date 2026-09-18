@@ -8,15 +8,16 @@ import javafx.beans.property.StringProperty;
 
 public class PlanillaDto {
 
-    private ObjectProperty<Integer> folioEmpleado;
+    private ObjectProperty<String> folioEmpleado;
     private StringProperty nombreEmpleado;
     private ObjectProperty<Double> horasOrdinarias;
     private ObjectProperty<Double> horasExtras;
     private ObjectProperty<Double> horasDobles;
     private ObjectProperty<Double> salarioMensual;
+    
 
     public PlanillaDto() {
-        this.folioEmpleado = new SimpleObjectProperty<>(0);
+        this.folioEmpleado = new SimpleObjectProperty<>("");
         this.nombreEmpleado = new SimpleStringProperty("");
         this.horasOrdinarias = new SimpleObjectProperty<>(0.0);
         this.horasExtras = new SimpleObjectProperty<>(0.0);
@@ -24,11 +25,11 @@ public class PlanillaDto {
         this.salarioMensual = new SimpleObjectProperty<>(0.0);
     }
 
-    public Integer getFolioEmpleado() {
-        return folioEmpleado.get();
-    }
+    public String getFolioEmpleado() {
+    return folioEmpleado.get();
+}
 
-    public void setFolioEmpleado(Integer folioEmpleado) {
+    public void setFolioEmpleado(String folioEmpleado) {
         this.folioEmpleado.set(folioEmpleado);
     }
 
@@ -73,7 +74,7 @@ public class PlanillaDto {
     }
 
     @JsonbTransient
-    public ObjectProperty<Integer> getFolioEmpleadoProperty() {
+    public ObjectProperty<String> getFolioEmpleadoProperty() {
         return folioEmpleado;
     }
 

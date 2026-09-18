@@ -18,26 +18,26 @@ public class LoginService {
         puerto = servicioWS.getLoginWSPort();
     }
 
-    public Respuesta validarLogin(String folio) {
-    try {
-        cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.login(folio);
+   public Respuesta validarLogin(String folio, String clave) {
+        try {
+            cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.login(folio, clave);
 
-        if (!respuestaServidor.isExito()) {
-            return new Respuesta(false, respuestaServidor.getMensaje(), "");
+            if (!respuestaServidor.isExito()) {
+                return new Respuesta(false, respuestaServidor.getMensaje(), "");
+            }
+
+            Object resultadoCrudo = respuestaServidor.getAny();
+            cr.ac.una.relojuna.ws.EmpleadoDto empleadoServidor = convertirAEmpleadoDtoServidor(resultadoCrudo);
+
+            EmpleadoService empleadoService = new EmpleadoService();
+            EmpleadoDto empleado = empleadoService.convertirAEmpleadoCliente(empleadoServidor);
+
+            return new Respuesta(true, "", "", "Usuario", empleado);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new Respuesta(false, "Error validando el ingreso.", "validarLogin " + ex.getMessage());
         }
-
-        Object resultadoCrudo = respuestaServidor.getAny();
-        cr.ac.una.relojuna.ws.EmpleadoDto empleadoServidor = convertirAEmpleadoDtoServidor(resultadoCrudo);
-
-        EmpleadoService empleadoService = new EmpleadoService();
-        EmpleadoDto empleado = empleadoService.convertirAEmpleadoCliente(empleadoServidor);
-
-        return new Respuesta(true, "", "", "Usuario", empleado);
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        return new Respuesta(false, "Error validando el ingreso.", "validarLogin " + ex.getMessage());
     }
-}
 
 //Convierte el resultado crudo que manda el servidor a un EmpleadoDto
 //Puede llegar como JAXBElement, como el tipo directo, o como un nodo XML sin procesar

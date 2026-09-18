@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class ConsultaService {
 
     //Consulta marcas usando streams, el folio es opcional, si viene null trae todos los empleados
-    public Respuesta consultarMarcas(LocalDate fechaDesde, LocalDate fechaHasta, Integer folioEmpleado) {
+    public Respuesta consultarMarcas(LocalDate fechaDesde, LocalDate fechaHasta, String folioEmpleado) {
         try {
             List<MarcaDto> todasLasMarcas = MarcaService.obtenerTodasLasMarcas();
 
@@ -26,7 +26,7 @@ public class ConsultaService {
                         boolean antesDeHasta = fechaMarca.isEqual(fechaHasta) || fechaMarca.isBefore(fechaHasta);
                         return despuesDeDesde && antesDeHasta;
                     })
-                    .filter(marca -> folioEmpleado == null || marca.getFolioEmpleado().equals(folioEmpleado))
+              
                     .sorted((marca1, marca2) -> marca1.getFechaHora().compareTo(marca2.getFechaHora()))
                     .collect(Collectors.toList());
 

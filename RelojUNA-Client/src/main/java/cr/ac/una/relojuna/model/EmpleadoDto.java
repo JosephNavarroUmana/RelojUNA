@@ -11,33 +11,49 @@ import javafx.beans.property.StringProperty;
 
 public class EmpleadoDto {
 
-    private ObjectProperty<Integer> folio;
+    //Id interno de Oracle. No se muestra en la UI, solo se usa para identificar
+    //el empleado en actualizaciones y eliminaciones.
+    private ObjectProperty<Long> id;
+
+    //Folio visible para el usuario (ej. "FJ-0007"). Lo genera el servidor al crear
+    //el empleado y es de solo lectura en el cliente.
+    private StringProperty folio;
+
     private StringProperty nombre;
     private StringProperty apellidos;
     private StringProperty cedula;
     private ObjectProperty<LocalDate> fechaNacimiento;
     private ObjectProperty<Double> salarioPorHora;
-    private StringProperty foto;
+    private byte[] foto;
     private StringProperty clave;
     private BooleanProperty administrador;
 
     public EmpleadoDto() {
-        this.folio = new SimpleObjectProperty<>(0);
+        this.id = new SimpleObjectProperty<>();
+        this.folio = new SimpleStringProperty("");
         this.nombre = new SimpleStringProperty("");
         this.apellidos = new SimpleStringProperty("");
         this.cedula = new SimpleStringProperty("");
         this.fechaNacimiento = new SimpleObjectProperty<>();
         this.salarioPorHora = new SimpleObjectProperty<>(0.0);
-        this.foto = new SimpleStringProperty("");
+        this.foto = null;
         this.clave = new SimpleStringProperty("");
         this.administrador = new SimpleBooleanProperty(false);
     }
 
-    public Integer getFolio() {
+    public Long getId() {
+        return id.get();
+    }
+
+    public void setId(Long id) {
+        this.id.set(id);
+    }
+
+    public String getFolio() {
         return folio.get();
     }
 
-    public void setFolio(Integer folio) {
+    public void setFolio(String folio) {
         this.folio.set(folio);
     }
 
@@ -81,12 +97,12 @@ public class EmpleadoDto {
         this.salarioPorHora.set(salarioPorHora);
     }
 
-    public String getFoto() {
-        return foto.get();
+    public byte[] getFoto() {
+        return foto;
     }
 
-    public void setFoto(String foto) {
-        this.foto.set(foto);
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
     }
 
     public String getClave() {
@@ -105,9 +121,13 @@ public class EmpleadoDto {
         this.administrador.set(administrador);
     }
 
-    //Estos metodos exponen la property para enlazarla con la interfaz grafica
     @JsonbTransient
-    public ObjectProperty<Integer> getFolioProperty() {
+    public ObjectProperty<Long> getIdProperty() {
+        return id;
+    }
+
+    @JsonbTransient
+    public StringProperty getFolioProperty() {
         return folio;
     }
 
@@ -134,11 +154,6 @@ public class EmpleadoDto {
     @JsonbTransient
     public ObjectProperty<Double> getSalarioPorHoraProperty() {
         return salarioPorHora;
-    }
-
-    @JsonbTransient
-    public StringProperty getFotoProperty() {
-        return foto;
     }
 
     @JsonbTransient

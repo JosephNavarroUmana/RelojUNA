@@ -67,61 +67,53 @@ public class MarcaController {
     }
 
     @FXML
-    private void handleMarcar() {
-        String folioTexto = txtFolio.getText();
+private void handleMarcar() {
+    String folioTexto = txtFolio.getText();
 
-        if (folioTexto == null || folioTexto.isBlank()) {
-            lblMensaje.setText("Debe ingresar el folio.");
-            return;
-        }
-
-        Integer folio;
-        try {
-            folio = Integer.valueOf(folioTexto);
-        } catch (NumberFormatException ex) {
-            lblMensaje.setText("El folio debe ser un numero.");
-            return;
-        }
-
-        //Buscamos el empleado para mostrar su nombre y validar que exista
-        Respuesta respuestaEmpleados = empleadoService.buscarEmpleados(folioTexto);
-
-        if (!respuestaEmpleados.getEstado()) {
-            lblMensaje.setText(respuestaEmpleados.getMensaje());
-            return;
-        }
-
-        List<EmpleadoDto> empleados = (List<EmpleadoDto>) respuestaEmpleados.getResultado("Empleados");
-
-        if (empleados.isEmpty()) {
-            lblMensaje.setText("No existe un empleado con ese folio.");
-            limpiarInformacion();
-            return;
-        }
-
-        EmpleadoDto empleado = empleados.get(0);
-
-        //Registramos la marca
-        Respuesta respuestaMarca = marcaService.marcar(folio);
-
-        if (!respuestaMarca.getEstado()) {
-            lblMensaje.setText(respuestaMarca.getMensaje());
-            return;
-        }
-
-        MarcaDto marca = (MarcaDto) respuestaMarca.getResultado("Marca");
-
-        lblNombreEmpleado.setText(empleado.getNombre() + " " + empleado.getApellidos());
-        lblHoraMarca.setText(marca.getTipo() + " registrada a las " + marca.getFechaHora().format(formatoReloj));
-        lblMensaje.setText("Marca registrada correctamente.");
-
-        //Verificamos si hoy es el cumpleanos del empleado
-        if (esCumpleanios(empleado)) {
-            mostrarAnimacionCumpleanios();
-        }
-
-        txtFolio.clear();
+    if (folioTexto == null || folioTexto.isBlank()) {
+        lblMensaje.setText("Debe ingresar el folio.");
+        return;
     }
+
+    //Buscamos el empleado para mostrar su nombre y validar que exista
+    Respuesta respuestaEmpleados = empleadoService.buscarEmpleados(folioTexto);
+
+    if (!respuestaEmpleados.getEstado()) {
+        lblMensaje.setText(respuestaEmpleados.getMensaje());
+        return;
+    }
+
+    List<EmpleadoDto> empleados = (List<EmpleadoDto>) respuestaEmpleados.getResultado("Empleados");
+
+    if (empleados.isEmpty()) {
+        lblMensaje.setText("No existe un empleado con ese folio.");
+        limpiarInformacion();
+        return;
+    }
+
+    EmpleadoDto empleado = empleados.get(0);
+
+    //Registramos la marca usando el id real del empleado, no el folio escrito
+    Respuesta respuestaMarca = marcaService.marcar(empleado.getId());
+
+    if (!respuestaMarca.getEstado()) {
+        lblMensaje.setText(respuestaMarca.getMensaje());
+        return;
+    }
+
+    MarcaDto marca = (MarcaDto) respuestaMarca.getResultado("Marca");
+
+    lblNombreEmpleado.setText(empleado.getNombre() + " " + empleado.getApellidos());
+    lblHoraMarca.setText(marca.getTipo() + " registrada a las " + marca.getFechaHora().format(formatoReloj));
+    lblMensaje.setText("Marca registrada correctamente.");
+
+    //Verificamos si hoy es el cumpleanos del empleado
+    if (esCumpleanios(empleado)) {
+        mostrarAnimacionCumpleanios();
+    }
+
+    txtFolio.clear();
+}
 
     //Compara el dia y mes de nacimiento con la fecha de hoy
     private boolean esCumpleanios(EmpleadoDto empleado) {

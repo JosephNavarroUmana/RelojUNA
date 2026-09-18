@@ -272,13 +272,7 @@ private void handleCorregirInconsistencia() {
             return null;
         }
 
-        Integer folio;
-        try {
-            folio = Integer.valueOf(folioTexto);
-        } catch (NumberFormatException ex) {
-            mostrarMensaje("El folio debe ser un numero.");
-            return null;
-        }
+       String folio = folioTexto.trim();
 
         LocalTime hora;
         try {

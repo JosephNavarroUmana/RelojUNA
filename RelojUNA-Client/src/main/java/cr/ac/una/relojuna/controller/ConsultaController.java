@@ -116,17 +116,14 @@ public class ConsultaController {
         cmbEmpleado.setValue("Todos");
     }
 
-    private Integer obtenerFolioSeleccionado() {
+    private String obtenerFolioSeleccionado() {
         String seleccionado = cmbEmpleado.getValue();
-
         if (seleccionado == null || seleccionado.equals("Todos")) {
             return null;
         }
-
-        String folioTexto = seleccionado.split(" - ")[0];
-        return Integer.valueOf(folioTexto);
+        return seleccionado.split(" - ")[0];
     }
-
+    
     @FXML
     private void handleConsultar() {
         LocalDate fechaDesde = dpFechaDesde.getValue();
@@ -137,8 +134,9 @@ public class ConsultaController {
             return;
         }
 
-        Integer folioEmpleado = obtenerFolioSeleccionado();
-
+//        Integer folioEmpleado = obtenerFolioSeleccionado();
+        String folioEmpleado = obtenerFolioSeleccionado();
+        
         Respuesta respuesta = consultaService.consultarMarcas(fechaDesde, fechaHasta, folioEmpleado);
 
         if (!respuesta.getEstado()) {
@@ -154,7 +152,7 @@ public class ConsultaController {
     }
 
     //Calcula los totales de la consulta usando streams
-    private void actualizarTotales(LocalDate fechaDesde, LocalDate fechaHasta, Integer folioEmpleado, List<ConsultaResultadoDto> resultado) {
+    private void actualizarTotales(LocalDate fechaDesde, LocalDate fechaHasta, String folioEmpleado, List<ConsultaResultadoDto> resultado) {
         long totalEmpleados = resultado.stream()
                 .map(fila -> fila.getFolioEmpleado())
                 .distinct()

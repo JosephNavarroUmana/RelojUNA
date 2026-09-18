@@ -9,7 +9,6 @@ import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-//Le avisamos a JAXB que EmpleadoDto puede viajar escondido dentro de Respuesta.resultado
 @XmlSeeAlso({EmpleadoDto.class})
 @WebService(serviceName = "LoginWS")
 public class LoginWS {
@@ -18,7 +17,8 @@ public class LoginWS {
     private LoginService loginService;
 
     @WebMethod(operationName = "login")
-    public Respuesta login(@WebParam(name = "folio") String folio) {
-        return loginService.login(folio);
+    public Respuesta login(@WebParam(name = "folio") String folio,
+                            @WebParam(name = "clave") String clave) {
+        return loginService.login(folio, clave);
     }
 }

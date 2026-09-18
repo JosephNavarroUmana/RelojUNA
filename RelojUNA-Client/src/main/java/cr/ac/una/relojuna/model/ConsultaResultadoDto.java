@@ -10,7 +10,7 @@ import javafx.beans.property.StringProperty;
 
 public class ConsultaResultadoDto {
 
-    private ObjectProperty<Integer> folioEmpleado;
+    private StringProperty folioEmpleado;
     private StringProperty nombreEmpleado;
     private ObjectProperty<LocalDate> fecha;
     private ObjectProperty<LocalTime> horaEntrada;
@@ -18,7 +18,7 @@ public class ConsultaResultadoDto {
     private ObjectProperty<Double> horasTrabajadas;
 
     public ConsultaResultadoDto() {
-        this.folioEmpleado = new SimpleObjectProperty<>(0);
+        this.folioEmpleado = new SimpleStringProperty("");
         this.nombreEmpleado = new SimpleStringProperty("");
         this.fecha = new SimpleObjectProperty<>();
         this.horaEntrada = new SimpleObjectProperty<>();
@@ -26,11 +26,11 @@ public class ConsultaResultadoDto {
         this.horasTrabajadas = new SimpleObjectProperty<>(0.0);
     }
 
-    public Integer getFolioEmpleado() {
+    public String getFolioEmpleado() {
         return folioEmpleado.get();
     }
 
-    public void setFolioEmpleado(Integer folioEmpleado) {
+    public void setFolioEmpleado(String folioEmpleado) {
         this.folioEmpleado.set(folioEmpleado);
     }
 
@@ -75,7 +75,7 @@ public class ConsultaResultadoDto {
     }
 
     @JsonbTransient
-    public ObjectProperty<Integer> getFolioEmpleadoProperty() {
+    public StringProperty getFolioEmpleadoProperty() {
         return folioEmpleado;
     }
 

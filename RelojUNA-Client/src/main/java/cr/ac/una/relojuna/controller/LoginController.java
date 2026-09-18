@@ -8,12 +8,15 @@ import cr.ac.una.relojuna.util.Respuesta;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class LoginController {
 
     @FXML
     private TextField txtFolio;
+    @FXML
+    private PasswordField txtClave;
     @FXML
     private Button btnLogin;
     @FXML
@@ -22,27 +25,32 @@ public class LoginController {
     @FXML
     private void handleLogin() {
         String folio = txtFolio.getText();
+        String clave = txtClave.getText();
 
-        //Validamos que el campo no venga vacio
         if (folio == null || folio.isBlank()) {
             lblMensaje.setText("Debe ingresar el folio.");
             return;
         }
 
+        if (clave == null || clave.isBlank()) {
+            lblMensaje.setText("Debe ingresar la clave.");
+            return;
+        }
+
         LoginService loginService = new LoginService();
-        Respuesta respuesta = loginService.validarLogin(folio);
+        Respuesta respuesta = loginService.validarLogin(folio, clave);
 
         if (!respuesta.getEstado()) {
             lblMensaje.setText(respuesta.getMensaje());
+            //Limpiamos la clave para que no quede pegada en el campo tras un intento fallido
+            txtClave.clear();
             return;
         }
 
         EmpleadoDto empleado = (EmpleadoDto) respuesta.getResultado("Usuario");
 
-        //Guardamos el empleado en el contexto para usarlo en las demas pantallas
         AppContext.getInstance().set("Usuario", empleado);
 
-        //Cambiamos a la pantalla principal
         FlowController.getInstancia().irAVista("PrincipalView.fxml", "Menu Principal");
     }
 }

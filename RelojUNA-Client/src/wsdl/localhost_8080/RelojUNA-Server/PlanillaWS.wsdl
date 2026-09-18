@@ -10,11 +10,11 @@
 <message name="obtenerPlanillaPorIdResponse">
 <part name="parameters" element="tns:obtenerPlanillaPorIdResponse"/>
 </message>
-<message name="guardarPlanilla">
-<part name="parameters" element="tns:guardarPlanilla"/>
+<message name="generarPlanilla">
+<part name="parameters" element="tns:generarPlanilla"/>
 </message>
-<message name="guardarPlanillaResponse">
-<part name="parameters" element="tns:guardarPlanillaResponse"/>
+<message name="generarPlanillaResponse">
+<part name="parameters" element="tns:generarPlanillaResponse"/>
 </message>
 <message name="obtenerPlanillas">
 <part name="parameters" element="tns:obtenerPlanillas"/>
@@ -22,18 +22,28 @@
 <message name="obtenerPlanillasResponse">
 <part name="parameters" element="tns:obtenerPlanillasResponse"/>
 </message>
+<message name="guardarPlanilla">
+<part name="parameters" element="tns:guardarPlanilla"/>
+</message>
+<message name="guardarPlanillaResponse">
+<part name="parameters" element="tns:guardarPlanillaResponse"/>
+</message>
 <portType name="PlanillaWS">
 <operation name="obtenerPlanillaPorId">
 <input wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/obtenerPlanillaPorIdRequest" message="tns:obtenerPlanillaPorId"/>
 <output wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/obtenerPlanillaPorIdResponse" message="tns:obtenerPlanillaPorIdResponse"/>
 </operation>
-<operation name="guardarPlanilla">
-<input wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/guardarPlanillaRequest" message="tns:guardarPlanilla"/>
-<output wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/guardarPlanillaResponse" message="tns:guardarPlanillaResponse"/>
+<operation name="generarPlanilla">
+<input wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/generarPlanillaRequest" message="tns:generarPlanilla"/>
+<output wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/generarPlanillaResponse" message="tns:generarPlanillaResponse"/>
 </operation>
 <operation name="obtenerPlanillas">
 <input wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/obtenerPlanillasRequest" message="tns:obtenerPlanillas"/>
 <output wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/obtenerPlanillasResponse" message="tns:obtenerPlanillasResponse"/>
+</operation>
+<operation name="guardarPlanilla">
+<input wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/guardarPlanillaRequest" message="tns:guardarPlanilla"/>
+<output wsam:Action="http://ws.relojservidor.una.ac.cr/PlanillaWS/guardarPlanillaResponse" message="tns:guardarPlanillaResponse"/>
 </operation>
 </portType>
 <binding name="PlanillaWSPortBinding" type="tns:PlanillaWS">
@@ -47,7 +57,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="guardarPlanilla">
+<operation name="generarPlanilla">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -57,6 +67,15 @@
 </output>
 </operation>
 <operation name="obtenerPlanillas">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="guardarPlanilla">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

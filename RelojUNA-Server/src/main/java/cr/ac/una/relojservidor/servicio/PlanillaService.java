@@ -2,6 +2,7 @@ package cr.ac.una.relojservidor.servicio;
 
 import cr.ac.una.relojservidor.dto.DetallePlanillaDto;
 import cr.ac.una.relojservidor.dto.PlanillaDto;
+import cr.ac.una.relojservidor.dto.PlanillaFilaDto;
 import cr.ac.una.relojservidor.modelo.DetallePlanilla;
 import cr.ac.una.relojservidor.modelo.Empleado;
 import cr.ac.una.relojservidor.modelo.Marca;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import cr.ac.una.relojservidor.dto.ListaPlanillaFilaDto;
 
 @Stateless
 public class PlanillaService {
@@ -165,7 +167,51 @@ public class PlanillaService {
             return new Respuesta(false, "Error al generar planilla: " + e.getMessage());
         }
     }
+    public Respuesta generarPlanillaFilas(int mes, int anio) {
+    try {
+        //Reutiliza el metodo que ya calcula y guarda la planilla
+        Respuesta respuestaGeneracion = generarPlanilla(mes, anio);
 
+        if (!respuestaGeneracion.isExito()) {
+            return respuestaGeneracion;
+        }
+
+        PlanillaDto planillaDto = (PlanillaDto) respuestaGeneracion.getResultado();
+
+        List<PlanillaFilaDto> filas = new ArrayList<>();
+
+        for (DetallePlanillaDto detalleDto : planillaDto.getDetalles()) {
+            Empleado empleado = em.find(Empleado.class, detalleDto.getEmpleadoId());
+
+            PlanillaFilaDto fila = new PlanillaFilaDto();
+            fila.setFolioEmpleado(empleado.getFolio());
+            fila.setNombreEmpleado(empleado.getNombre() + " " + empleado.getApellidos());
+
+            //Los horas vienen como Integer en el detalle, aqui se pasan a Double
+            if (detalleDto.getHorasOrdinarias() != null) {
+                fila.setHorasOrdinarias(detalleDto.getHorasOrdinarias().doubleValue());
+            }
+            if (detalleDto.getHorasExtras() != null) {
+                fila.setHorasExtras(detalleDto.getHorasExtras().doubleValue());
+            }
+            if (detalleDto.getHorasDobles() != null) {
+                fila.setHorasDobles(detalleDto.getHorasDobles().doubleValue());
+            }
+
+            fila.setSalarioMensual(detalleDto.getSalarioTotal());
+
+            filas.add(fila);
+        }
+
+        //Se envuelve la lista en el DTO envoltorio, JAXB no puede mandar una lista cruda
+        ListaPlanillaFilaDto listaEnvoltorio = new ListaPlanillaFilaDto(filas);
+
+        return new Respuesta(true, "Planilla generada con exito", listaEnvoltorio);
+
+    } catch (Exception e) {
+        return new Respuesta(false, "Error al generar planilla: " + e.getMessage());
+    }
+}
     /**
      * Cálculo temporal y muy básico: cuenta cuántas horas pasaron entre
      * cada ENTRADA y su SALIDA correspondiente, sumando todo el mes.

@@ -10,6 +10,8 @@
 
 <xs:element name="guardarEmpleadoResponse" type="tns:guardarEmpleadoResponse"/>
 
+<xs:element name="listaEmpleadoDto" type="tns:listaEmpleadoDto"/>
+
 <xs:element name="obtenerEmpleadoPorId" type="tns:obtenerEmpleadoPorId"/>
 
 <xs:element name="obtenerEmpleadoPorIdResponse" type="tns:obtenerEmpleadoPorIdResponse"/>

@@ -96,22 +96,19 @@ public class ReporteController {
         dpFechaHasta.setDisable(!esReporteMarcas);
     }
 
-    private Integer obtenerFolioSeleccionado() {
+    private String obtenerFolioSeleccionado() {
         String seleccionado = cmbEmpleado.getValue();
-
         if (seleccionado == null || seleccionado.equals("Todos")) {
             return null;
         }
-
-        String folioTexto = seleccionado.split(" - ")[0];
-        return Integer.valueOf(folioTexto);
+        return seleccionado.split(" - ")[0];
     }
 
     //Trae las marcas segun los filtros de la pantalla y las ordena por empleado para que el reporte agrupe bien
     private List<ConsultaResultadoDto> obtenerMarcasOrdenadas() {
         LocalDate fechaDesde = dpFechaDesde.getValue();
         LocalDate fechaHasta = dpFechaHasta.getValue();
-        Integer folioEmpleado = obtenerFolioSeleccionado();
+        String folioEmpleado = obtenerFolioSeleccionado();
 
         Respuesta respuesta = consultaService.consultarMarcas(fechaDesde, fechaHasta, folioEmpleado);
 

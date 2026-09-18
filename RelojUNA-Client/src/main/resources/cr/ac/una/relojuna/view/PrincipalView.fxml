@@ -1,29 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" spacing="25" styleClass="fondo-app" stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.PrincipalController">
-    <padding>
-        <Insets bottom="30" left="30" right="30" top="30" />
-    </padding>
+<BorderPane styleClass="vista-root"
+            stylesheets="@/cr/ac/una/relojuna/css/estilos.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cr.ac.una.relojuna.controller.PrincipalController">
 
-    <VBox alignment="CENTER" spacing="5">
-        <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #26456b;" text="Menu Principal - Reloj Marcador" />
-        <Label fx:id="lblUsuario" style="-fx-font-size: 14px; -fx-text-fill: #555555;" text="Bienvenido: " />
-    </VBox>
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="app-header">
+            <Label styleClass="app-header-titulo" text="RelojUNA" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="lblUsuario" styleClass="app-header-usuario" text="Bienvenido" />
+            <Button fx:id="btnCerrarSesion" onAction="#handleCerrarSesion"
+                    styleClass="boton-header" text="Cerrar sesión" />
+        </HBox>
+    </top>
 
-    <FlowPane alignment="CENTER" hgap="20" prefWrapLength="500" vgap="20">
-        <Button fx:id="btnEmpleados" onAction="#handleEmpleados" styleClass="menu-boton" text="Mantenimiento de Empleados" />
-        <Button fx:id="btnMarcas" onAction="#handleMarcas" styleClass="menu-boton" text="Pantalla de Marcas" />
-        <Button fx:id="btnMantenimientoMarcas" onAction="#handleMantenimientoMarcas" styleClass="menu-boton" text="Mantenimiento de Marcas" />
-        <Button fx:id="btnPlanilla" onAction="#handlePlanilla" styleClass="menu-boton" text="Generacion de Planillas" />
-        <Button fx:id="btnConsulta" onAction="#handleConsulta" styleClass="menu-boton" text="Consultas (Streams)" />
-        <Button fx:id="btnReportes" onAction="#handleReportes" styleClass="menu-boton" text="Modulo de Reportes" />
-    </FlowPane>
+    <center>
+        <StackPane styleClass="contenido-pagina">
+            <VBox alignment="CENTER" spacing="28" maxWidth="900">
 
-    <Button fx:id="btnCerrarSesion" onAction="#handleCerrarSesion" styleClass="boton-peligro" text="Cerrar Sesion" />
-</VBox>
+                <VBox alignment="CENTER" spacing="4">
+                    <Label styleClass="titulo-pagina" text="Menú Principal" />
+                    <Label styleClass="subtitulo-pagina"
+                           text="Seleccione un módulo para continuar" />
+                </VBox>
+
+                <TilePane alignment="CENTER" hgap="18" vgap="18">
+
+                    <Button fx:id="btnEmpleados" onAction="#handleEmpleados"
+                            styleClass="tarjeta-modulo" text="Mantenimiento de Empleados" />
+
+                    <Button fx:id="btnMarcas" onAction="#handleMarcas"
+                            styleClass="tarjeta-modulo" text="Pantalla de Marcas" />
+
+                    <Button fx:id="btnMantenimientoMarcas" onAction="#handleMantenimientoMarcas"
+                            styleClass="tarjeta-modulo" text="Mantenimiento de Marcas" />
+
+                    <Button fx:id="btnPlanilla" onAction="#handlePlanilla"
+                            styleClass="tarjeta-modulo" text="Generación de Planillas" />
+
+                    <Button fx:id="btnConsulta" onAction="#handleConsulta"
+                            styleClass="tarjeta-modulo" text="Consultas" />
+
+                    <Button fx:id="btnReportes" onAction="#handleReportes"
+                            styleClass="tarjeta-modulo" text="Módulo de Reportes" />
+
+                </TilePane>
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>

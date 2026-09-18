@@ -9,14 +9,23 @@ import javafx.stage.Stage;
 
 public class FlowController {
 
-    // Instancia unica de la clase (patron singleton)
-    private static FlowController instancia;
+    // Login: ventana chica, no redimensionable
+    private static final double LOGIN_ANCHO = 480;
+    private static final double LOGIN_ALTO  = 620;
 
-    // Ventana principal de la aplicacion
+    // App: ventana estándar de vistas internas
+    private static final double APP_ANCHO     = 1180;
+    private static final double APP_ALTO      = 760;
+    private static final double APP_MIN_ANCHO = 1000;
+    private static final double APP_MIN_ALTO  = 660;
+
+    private static FlowController instancia;
     private Stage stagePrincipal;
 
-    private FlowController() {
-    }
+    // Bandera: ¿ya dimensionamos la app para las vistas internas?
+    private boolean appDimensionada = false;
+
+    private FlowController() { }
 
     public static FlowController getInstancia() {
         if (instancia == null) {
@@ -25,46 +34,100 @@ public class FlowController {
         return instancia;
     }
 
-    // Guarda la referencia del stage principal, se llama una sola vez desde MainApp
     public void inicializar(Stage stage) {
         this.stagePrincipal = stage;
     }
 
-    // Cambia la escena completa del stage principal por una vista nueva
-    public void irAVista(String nombreFxml, String titulo) {
+    // ------------------------------------------------------------------
+    // LOGIN: ventana chica, fija, centrada
+    // ------------------------------------------------------------------
+    public void irALogin(String nombreFxml, String titulo) {
         try {
-            String ruta = "/cr/ac/una/relojuna/view/" + nombreFxml;
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
-            Parent raiz = loader.load();
+            Parent raiz = cargarFxml(nombreFxml);
+            reemplazarRoot(raiz);
 
-            Scene escena = new Scene(raiz);
-            stagePrincipal.setScene(escena);
             stagePrincipal.setTitle(titulo);
-            stagePrincipal.show();
+            stagePrincipal.setResizable(false);
+            stagePrincipal.setMinWidth(LOGIN_ANCHO);
+            stagePrincipal.setMinHeight(LOGIN_ALTO);
+            stagePrincipal.setWidth(LOGIN_ANCHO);
+            stagePrincipal.setHeight(LOGIN_ALTO);
+            stagePrincipal.centerOnScreen();
+
+            if (!stagePrincipal.isShowing()) {
+                stagePrincipal.show();
+            }
+
+            appDimensionada = false;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    // Abre una vista en una ventana modal, bloquea la ventana de atras hasta que la cierren
+    // ------------------------------------------------------------------
+    // VISTAS INTERNAS: cambia solo el root, dimensiona UNA sola vez
+    // ------------------------------------------------------------------
+    public void irAVista(String nombreFxml, String titulo) {
+        try {
+            Parent raiz = cargarFxml(nombreFxml);
+            reemplazarRoot(raiz);
+
+            if (!appDimensionada) {
+                stagePrincipal.setResizable(true);
+                stagePrincipal.setMinWidth(APP_MIN_ANCHO);
+                stagePrincipal.setMinHeight(APP_MIN_ALTO);
+                stagePrincipal.setWidth(APP_ANCHO);
+                stagePrincipal.setHeight(APP_ALTO);
+                stagePrincipal.centerOnScreen();
+                appDimensionada = true;
+            }
+
+            stagePrincipal.setTitle(titulo);
+
+            if (!stagePrincipal.isShowing()) {
+                stagePrincipal.show();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // MODAL: ventana independiente, centrada, bloquea la principal
+    // ------------------------------------------------------------------
     public void abrirVistaModal(String nombreFxml, String titulo) {
         try {
-            String ruta = "/cr/ac/una/relojuna/view/" + nombreFxml;
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
-            Parent raiz = loader.load();
+            Parent raiz = cargarFxml(nombreFxml);
 
             Stage stageModal = new Stage();
             stageModal.setTitle(titulo);
             stageModal.setScene(new Scene(raiz));
-
-            // Bloquea la interaccion con la ventana principal mientras esta abierta
             stageModal.initModality(Modality.WINDOW_MODAL);
             stageModal.initOwner(stagePrincipal);
+            stageModal.centerOnScreen();
+            stageModal.sizeToScene();
 
-            // Espera a que la cierren antes de continuar
             stageModal.showAndWait();
         } catch (IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Helpers
+    // ------------------------------------------------------------------
+    private Parent cargarFxml(String nombreFxml) throws IOException {
+        String ruta = "/cr/ac/una/relojuna/view/" + nombreFxml;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+        return loader.load();
+    }
+
+    /** Reemplaza el contenido del Stage sin recrear el Scene (conserva tamaño/posición). */
+    private void reemplazarRoot(Parent raiz) {
+        if (stagePrincipal.getScene() == null) {
+            stagePrincipal.setScene(new Scene(raiz));
+        } else {
+            stagePrincipal.getScene().setRoot(raiz);
         }
     }
 }

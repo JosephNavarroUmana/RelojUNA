@@ -10,7 +10,7 @@ import javafx.beans.property.StringProperty;
 public class MarcaDto {
 
     private ObjectProperty<Integer> id;
-    private ObjectProperty<Integer> folioEmpleado;
+    private StringProperty folioEmpleado;
     private StringProperty nombreEmpleado;
     private ObjectProperty<LocalDateTime> fechaHora;
     private StringProperty tipo;
@@ -18,7 +18,7 @@ public class MarcaDto {
 
     public MarcaDto() {
         this.id = new SimpleObjectProperty<>(0);
-        this.folioEmpleado = new SimpleObjectProperty<>(0);
+        this.folioEmpleado = new SimpleStringProperty("");
         this.nombreEmpleado = new SimpleStringProperty("");
         this.fechaHora = new SimpleObjectProperty<>();
         this.tipo = new SimpleStringProperty("");
@@ -33,11 +33,11 @@ public class MarcaDto {
         this.id.set(id);
     }
 
-    public Integer getFolioEmpleado() {
+    public String getFolioEmpleado() {
         return folioEmpleado.get();
     }
 
-    public void setFolioEmpleado(Integer folioEmpleado) {
+    public void setFolioEmpleado(String folioEmpleado) {
         this.folioEmpleado.set(folioEmpleado);
     }
 
@@ -79,7 +79,7 @@ public class MarcaDto {
     }
 
     @JsonbTransient
-    public ObjectProperty<Integer> getFolioEmpleadoProperty() {
+    public StringProperty getFolioEmpleadoProperty() {
         return folioEmpleado;
     }
 

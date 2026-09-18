@@ -14,7 +14,7 @@ import java.time.LocalTime;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ConsultaFilaDto implements Serializable {
 
-    private Integer folioEmpleado;
+    private String folioEmpleado;
     private String nombreEmpleado;
 
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
@@ -31,8 +31,8 @@ public class ConsultaFilaDto implements Serializable {
     public ConsultaFilaDto() {
     }
 
-    public Integer getFolioEmpleado() { return folioEmpleado; }
-    public void setFolioEmpleado(Integer folioEmpleado) { this.folioEmpleado = folioEmpleado; }
+    public String getFolioEmpleado() { return folioEmpleado; }
+    public void setFolioEmpleado(String folioEmpleado) { this.folioEmpleado = folioEmpleado; }
 
     public String getNombreEmpleado() { return nombreEmpleado; }
     public void setNombreEmpleado(String nombreEmpleado) { this.nombreEmpleado = nombreEmpleado; }

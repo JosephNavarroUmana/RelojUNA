@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
@@ -10,73 +9,92 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane styleClass="fondo-app" stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.MantenimientoMarcasController">
+<BorderPane styleClass="vista-root"
+            stylesheets="@/cr/ac/una/relojuna/css/estilos.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cr.ac.una.relojuna.controller.MantenimientoMarcasController">
 
     <top>
-        <VBox styleClass="barra-titulo">
-            <Label styleClass="titulo-pantalla" text="Mantenimiento de Marcas" />
-        </VBox>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="app-header">
+            <Label styleClass="app-header-titulo" text="RelojUNA" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label styleClass="app-header-usuario" text="Mantenimiento de Marcas" />
+            <Button fx:id="btnRegresar" onAction="#handleRegresar"
+                    styleClass="boton-header" text="Regresar" />
+        </HBox>
     </top>
 
     <center>
-        <VBox spacing="15" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets bottom="15" left="20" right="20" top="15" />
-            </padding>
+        <StackPane styleClass="contenido-pagina">
+            <VBox spacing="16" maxWidth="1100">
 
-            <HBox alignment="CENTER_LEFT" spacing="10">
-                <Label styleClass="etiqueta-campo" text="Fecha desde:" />
-                <DatePicker fx:id="dpFechaDesde" />
-                <Label styleClass="etiqueta-campo" text="Fecha hasta:" />
-                <DatePicker fx:id="dpFechaHasta" />
-                <Button fx:id="btnFiltrar" onAction="#handleFiltrar" styleClass="boton-primario" text="Filtrar" />
-                <Button fx:id="btnVerInconsistencias" onAction="#handleVerInconsistencias" styleClass="boton-secundario" text="Ver Inconsistencias" />
-                <Label fx:id="lblCantInconsistencias" text="Inconsistencias: 0" />
-                <Button fx:id="btnSiguienteInconsistencia" onAction="#handleSiguienteInconsistencia" styleClass="boton-secundario" text="Siguiente" />
-            </HBox>
+                <VBox spacing="4">
+                    <Label styleClass="titulo-pagina" text="Mantenimiento de Marcas" />
+                    <Label styleClass="subtitulo-pagina"
+                           text="Filtre, corrija y administre las marcas registradas" />
+                </VBox>
 
-            <TableView fx:id="tblMarcas" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colEmpleado" prefWidth="120" text="Empleado" />
-                    <TableColumn fx:id="colFechaHora" prefWidth="150" text="Fecha / Hora" />
-                    <TableColumn fx:id="colTipo" prefWidth="80" text="Tipo" />
-                    <TableColumn fx:id="colEstado" prefWidth="100" text="Estado" />
-                </columns>
-            </TableView>
-
-            <VBox spacing="10" styleClass="panel-tarjeta">
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label styleClass="etiqueta-campo" text="Folio empleado:" />
-                    <TextField fx:id="txtFolioMarca" promptText="Folio" HBox.hgrow="ALWAYS" />
-                    <Label styleClass="etiqueta-campo" text="Fecha:" />
-                    <DatePicker fx:id="dpFechaMarca" />
-                </HBox>
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label styleClass="etiqueta-campo" text="Hora (HH:mm):" />
-                    <TextField fx:id="txtHoraMarca" promptText="08:00" HBox.hgrow="ALWAYS" />
-                    <Label styleClass="etiqueta-campo" text="Tipo:" />
-                    <ComboBox fx:id="cmbTipoMarca" />
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="panel-tarjeta">
+                    <Label styleClass="etiqueta-campo" text="Fecha desde" />
+                    <DatePicker fx:id="dpFechaDesde" />
+                    <Label styleClass="etiqueta-campo" text="Fecha hasta" />
+                    <DatePicker fx:id="dpFechaHasta" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="btnFiltrar" onAction="#handleFiltrar"
+                            styleClass="boton-primario" text="Filtrar" />
+                    <Button fx:id="btnVerInconsistencias" onAction="#handleVerInconsistencias"
+                            styleClass="boton-secundario" text="Ver Inconsistencias" />
+                    <Label fx:id="lblCantInconsistencias" styleClass="etiqueta-campo"
+                           text="Inconsistencias: 0" />
+                    <Button fx:id="btnSiguienteInconsistencia" onAction="#handleSiguienteInconsistencia"
+                            styleClass="boton-secundario" text="Siguiente" />
                 </HBox>
 
-                <HBox spacing="10" styleClass="barra-botones">
-                    <Button fx:id="btnAgregar" onAction="#handleAgregar" styleClass="boton-primario" text="Agregar Marca" />
-                    <Button fx:id="btnModificar" onAction="#handleModificar" styleClass="boton-secundario" text="Modificar" />
-                    <Button fx:id="btnEliminar" onAction="#handleEliminar" styleClass="boton-peligro" text="Eliminar" />
-                    <Button fx:id="btnCorregirInconsistencia" onAction="#handleCorregirInconsistencia" styleClass="boton-secundario" text="Corregir Seleccionada" />
-                </HBox>
+                <TableView fx:id="tblMarcas" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colEmpleado" prefWidth="120" text="Empleado" />
+                        <TableColumn fx:id="colFechaHora" prefWidth="150" text="Fecha / Hora" />
+                        <TableColumn fx:id="colTipo" prefWidth="80" text="Tipo" />
+                        <TableColumn fx:id="colEstado" prefWidth="100" text="Estado" />
+                    </columns>
+                </TableView>
+
+                <VBox spacing="12" styleClass="panel-tarjeta">
+                    <Label styleClass="titulo-seccion" text="Registro de marca" />
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label styleClass="etiqueta-campo" text="Folio empleado" />
+                        <TextField fx:id="txtFolioMarca" promptText="Folio" HBox.hgrow="ALWAYS" />
+                        <Label styleClass="etiqueta-campo" text="Fecha" />
+                        <DatePicker fx:id="dpFechaMarca" />
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label styleClass="etiqueta-campo" text="Hora (HH:mm)" />
+                        <TextField fx:id="txtHoraMarca" promptText="08:00" HBox.hgrow="ALWAYS" />
+                        <Label styleClass="etiqueta-campo" text="Tipo" />
+                        <ComboBox fx:id="cmbTipoMarca" />
+                    </HBox>
+
+                    <HBox spacing="10" styleClass="barra-botones">
+                        <Button fx:id="btnAgregar" onAction="#handleAgregar"
+                                styleClass="boton-primario" text="Agregar Marca" />
+                        <Button fx:id="btnModificar" onAction="#handleModificar"
+                                styleClass="boton-secundario" text="Modificar" />
+                        <Button fx:id="btnCorregirInconsistencia" onAction="#handleCorregirInconsistencia"
+                                styleClass="boton-secundario" text="Corregir Seleccionada" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnEliminar" onAction="#handleEliminar"
+                                styleClass="boton-peligro" text="Eliminar" />
+                    </HBox>
+                </VBox>
+
             </VBox>
-        </VBox>
+        </StackPane>
     </center>
-
-    <bottom>
-        <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="barra-botones">
-            <padding>
-                <Insets bottom="15" left="20" right="20" top="0" />
-            </padding>
-            <Button fx:id="btnRegresar" onAction="#handleRegresar" styleClass="boton-secundario" text="Regresar" />
-        </HBox>
-    </bottom>
-
 </BorderPane>
