@@ -10,17 +10,16 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane styleClass="vista-root"
+<BorderPane styleClass="vista-root,ventana-modulo"
             stylesheets="@/cr/ac/una/relojuna/css/estilos.css"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="cr.ac.una.relojuna.controller.MantenimientoMarcasController">
 
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="app-header">
+        <HBox alignment="CENTER_LEFT" styleClass="app-header">
             <Label styleClass="app-header-titulo" text="RelojUNA" />
             <Region HBox.hgrow="ALWAYS" />
             <Label styleClass="app-header-usuario" text="Mantenimiento de Marcas" />
@@ -30,71 +29,69 @@
     </top>
 
     <center>
-        <StackPane styleClass="contenido-pagina">
-            <VBox spacing="16" maxWidth="1100">
+        <VBox styleClass="contenedor-modulo">
 
-                <VBox spacing="4">
-                    <Label styleClass="titulo-pagina" text="Mantenimiento de Marcas" />
-                    <Label styleClass="subtitulo-pagina"
-                           text="Filtre, corrija y administre las marcas registradas" />
-                </VBox>
+            <VBox styleClass="encabezado-modulo">
+                <Label styleClass="titulo-pagina" text="Mantenimiento de Marcas" />
+                <Label styleClass="subtitulo-pagina"
+                       text="Filtre, corrija y administre las marcas registradas" />
+            </VBox>
 
-                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="panel-tarjeta">
-                    <Label styleClass="etiqueta-campo" text="Fecha desde" />
-                    <DatePicker fx:id="dpFechaDesde" />
-                    <Label styleClass="etiqueta-campo" text="Fecha hasta" />
-                    <DatePicker fx:id="dpFechaHasta" />
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Button fx:id="btnFiltrar" onAction="#handleFiltrar"
-                            styleClass="boton-primario" text="Filtrar" />
-                    <Button fx:id="btnVerInconsistencias" onAction="#handleVerInconsistencias"
-                            styleClass="boton-secundario" text="Ver Inconsistencias" />
-                    <Label fx:id="lblCantInconsistencias" styleClass="etiqueta-campo"
-                           text="Inconsistencias: 0" />
-                    <Button fx:id="btnSiguienteInconsistencia" onAction="#handleSiguienteInconsistencia"
-                            styleClass="boton-secundario" text="Siguiente" />
+            <HBox styleClass="panel-tarjeta,barra-filtros">
+                <Label styleClass="etiqueta-campo" text="Fecha desde" />
+                <DatePicker fx:id="dpFechaDesde" />
+                <Label styleClass="etiqueta-campo" text="Fecha hasta" />
+                <DatePicker fx:id="dpFechaHasta" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnFiltrar" onAction="#handleFiltrar"
+                        styleClass="boton-primario" text="Filtrar" />
+                <Button fx:id="btnVerInconsistencias" onAction="#handleVerInconsistencias"
+                        styleClass="boton-secundario" text="Ver Inconsistencias" />
+                <Label fx:id="lblCantInconsistencias" styleClass="etiqueta-campo"
+                       text="Inconsistencias: 0" />
+                <Button fx:id="btnSiguienteInconsistencia" onAction="#handleSiguienteInconsistencia"
+                        styleClass="boton-secundario" text="Siguiente" />
+            </HBox>
+
+            <TableView fx:id="tblMarcas" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colEmpleado" prefWidth="120" text="Empleado" />
+                    <TableColumn fx:id="colFechaHora" prefWidth="150" text="Fecha / Hora" />
+                    <TableColumn fx:id="colTipo" prefWidth="80" text="Tipo" />
+                    <TableColumn fx:id="colEstado" prefWidth="100" text="Estado" />
+                </columns>
+            </TableView>
+
+            <VBox styleClass="panel-tarjeta,tarjeta-registro-marca">
+                <Label styleClass="titulo-seccion" text="Registro de marca" />
+
+                <HBox styleClass="fila-campo">
+                    <Label styleClass="etiqueta-campo" text="Folio empleado" />
+                    <TextField fx:id="txtFolioMarca" promptText="Folio" HBox.hgrow="ALWAYS" />
+                    <Label styleClass="etiqueta-campo" text="Fecha" />
+                    <DatePicker fx:id="dpFechaMarca" />
                 </HBox>
 
-                <TableView fx:id="tblMarcas" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
-                    <columns>
-                        <TableColumn fx:id="colEmpleado" prefWidth="120" text="Empleado" />
-                        <TableColumn fx:id="colFechaHora" prefWidth="150" text="Fecha / Hora" />
-                        <TableColumn fx:id="colTipo" prefWidth="80" text="Tipo" />
-                        <TableColumn fx:id="colEstado" prefWidth="100" text="Estado" />
-                    </columns>
-                </TableView>
+                <HBox styleClass="fila-campo">
+                    <Label styleClass="etiqueta-campo" text="Hora (HH:mm)" />
+                    <TextField fx:id="txtHoraMarca" promptText="08:00" HBox.hgrow="ALWAYS" />
+                    <Label styleClass="etiqueta-campo" text="Tipo" />
+                    <ComboBox fx:id="cmbTipoMarca" />
+                </HBox>
 
-                <VBox spacing="12" styleClass="panel-tarjeta">
-                    <Label styleClass="titulo-seccion" text="Registro de marca" />
-
-                    <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Label styleClass="etiqueta-campo" text="Folio empleado" />
-                        <TextField fx:id="txtFolioMarca" promptText="Folio" HBox.hgrow="ALWAYS" />
-                        <Label styleClass="etiqueta-campo" text="Fecha" />
-                        <DatePicker fx:id="dpFechaMarca" />
-                    </HBox>
-
-                    <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Label styleClass="etiqueta-campo" text="Hora (HH:mm)" />
-                        <TextField fx:id="txtHoraMarca" promptText="08:00" HBox.hgrow="ALWAYS" />
-                        <Label styleClass="etiqueta-campo" text="Tipo" />
-                        <ComboBox fx:id="cmbTipoMarca" />
-                    </HBox>
-
-                    <HBox spacing="10" styleClass="barra-botones">
-                        <Button fx:id="btnAgregar" onAction="#handleAgregar"
-                                styleClass="boton-primario" text="Agregar Marca" />
-                        <Button fx:id="btnModificar" onAction="#handleModificar"
-                                styleClass="boton-secundario" text="Modificar" />
-                        <Button fx:id="btnCorregirInconsistencia" onAction="#handleCorregirInconsistencia"
-                                styleClass="boton-secundario" text="Corregir Seleccionada" />
-                        <Region HBox.hgrow="ALWAYS" />
-                        <Button fx:id="btnEliminar" onAction="#handleEliminar"
-                                styleClass="boton-peligro" text="Eliminar" />
-                    </HBox>
-                </VBox>
-
+                <HBox styleClass="barra-botones">
+                    <Button fx:id="btnAgregar" onAction="#handleAgregar"
+                            styleClass="boton-primario" text="Agregar Marca" />
+                    <Button fx:id="btnModificar" onAction="#handleModificar"
+                            styleClass="boton-secundario" text="Modificar" />
+                    <Button fx:id="btnCorregirInconsistencia" onAction="#handleCorregirInconsistencia"
+                            styleClass="boton-secundario" text="Corregir Seleccionada" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="btnEliminar" onAction="#handleEliminar"
+                            styleClass="boton-peligro" text="Eliminar" />
+                </HBox>
             </VBox>
-        </StackPane>
+
+        </VBox>
     </center>
 </BorderPane>

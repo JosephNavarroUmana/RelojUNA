@@ -4,27 +4,37 @@ import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.model.MarcaDto;
 import cr.ac.una.relojuna.service.EmpleadoService;
 import cr.ac.una.relojuna.service.MarcaService;
+import cr.ac.una.relojuna.util.AnimacionCumpleanos;
 import cr.ac.una.relojuna.util.Respuesta;
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class MarcaController {
 
     @FXML
-    private Label lblReloj, lblNombreEmpleado, lblHoraMarca, lblMensaje;
+    private Label lblReloj, lblFecha, lblNombreEmpleado, lblHoraMarca, lblMensaje, lblFelicitacion;
     @FXML
     private TextField txtFolio;
     @FXML
@@ -33,18 +43,36 @@ public class MarcaController {
     private Button btnMarcar;
     @FXML
     private Button btnRegresar;
+    @FXML
+    private VBox panelResultado;
+    @FXML
+    private StackPane panelAnimacion;
 
     //Servicios que se usan en esta pantalla
-    private EmpleadoService empleadoService;
-    private MarcaService marcaService;
+//    private EmpleadoService empleadoService;
+//    private MarcaService marcaService;
+//
+//    //Formatos para mostrar la hora y la fecha en el reloj digital
+//    private DateTimeFormatter formatoReloj = DateTimeFormatter.ofPattern("HH:mm:ss");
+//    private DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "CR"));
 
-    //Formato para mostrar la hora en el reloj digital
+        private EmpleadoService empleadoService = new EmpleadoService();
+    private MarcaService marcaService = new MarcaService();
+
+    //Formatos para mostrar la hora y la fecha en el reloj digital
     private DateTimeFormatter formatoReloj = DateTimeFormatter.ofPattern("HH:mm:ss");
-
+    private DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "CR"));
+    
     @FXML
     private void initialize() {
         empleadoService = new EmpleadoService();
         marcaService = new MarcaService();
+
+        //El circulo de recorte deja la foto redonda dentro del marco del FXML
+//         Circle recorteFoto = new Circle(45, 45, 45);
+//        imgFoto.setClip(recorteFoto);
+
+//        iniciarReloj();
 
         iniciarReloj();
     }
@@ -64,56 +92,71 @@ public class MarcaController {
     private void actualizarReloj() {
         LocalDateTime ahora = LocalDateTime.now();
         lblReloj.setText(ahora.format(formatoReloj));
+        lblFecha.setText(ahora.format(formatoFecha));
     }
 
     @FXML
-private void handleMarcar() {
-    String folioTexto = txtFolio.getText();
+    private void handleMarcar() {
+        String folioTexto = txtFolio.getText();
 
-    if (folioTexto == null || folioTexto.isBlank()) {
-        lblMensaje.setText("Debe ingresar el folio.");
-        return;
+        if (folioTexto == null || folioTexto.isBlank()) {
+            lblMensaje.setText("Debe ingresar el folio.");
+            return;
+        }
+
+        //Buscamos el empleado para mostrar su nombre y validar que exista
+        Respuesta respuestaEmpleados = empleadoService.buscarEmpleados(folioTexto);
+
+        if (!respuestaEmpleados.getEstado()) {
+            lblMensaje.setText(respuestaEmpleados.getMensaje());
+            return;
+        }
+
+        List<EmpleadoDto> empleados = (List<EmpleadoDto>) respuestaEmpleados.getResultado("Empleados");
+
+        if (empleados.isEmpty()) {
+            lblMensaje.setText("No existe un empleado con ese folio.");
+            limpiarInformacion();
+            return;
+        }
+
+        EmpleadoDto empleado = empleados.get(0);
+
+        //Registramos la marca usando el id real del empleado, no el folio escrito
+        Respuesta respuestaMarca = marcaService.marcar(empleado.getId());
+
+        if (!respuestaMarca.getEstado()) {
+            lblMensaje.setText(respuestaMarca.getMensaje());
+            return;
+        }
+
+        MarcaDto marca = (MarcaDto) respuestaMarca.getResultado("Marca");
+
+        mostrarFoto(empleado);
+        lblNombreEmpleado.setText(empleado.getNombre() + " " + empleado.getApellidos());
+        lblHoraMarca.setText(marca.getTipo() + " registrada a las " + marca.getFechaHora().format(formatoReloj));
+        lblMensaje.setText("Marca registrada correctamente.");
+
+        //Verificamos si hoy es el cumpleanios del empleado
+        if (esCumpleanios(empleado)) {
+            mostrarAnimacionCumpleanios(empleado);
+        }
+
+        txtFolio.clear();
     }
 
-    //Buscamos el empleado para mostrar su nombre y validar que exista
-    Respuesta respuestaEmpleados = empleadoService.buscarEmpleados(folioTexto);
+    //Convierte el arreglo de bytes de la BD en una imagen para el ImageView
+    private void mostrarFoto(EmpleadoDto empleado) {
+        byte[] datosFoto = empleado.getFoto();
 
-    if (!respuestaEmpleados.getEstado()) {
-        lblMensaje.setText(respuestaEmpleados.getMensaje());
-        return;
+        if (datosFoto == null || datosFoto.length == 0) {
+            imgFoto.setImage(null);
+            return;
+        }
+
+        Image imagen = new Image(new ByteArrayInputStream(datosFoto));
+        imgFoto.setImage(imagen);
     }
-
-    List<EmpleadoDto> empleados = (List<EmpleadoDto>) respuestaEmpleados.getResultado("Empleados");
-
-    if (empleados.isEmpty()) {
-        lblMensaje.setText("No existe un empleado con ese folio.");
-        limpiarInformacion();
-        return;
-    }
-
-    EmpleadoDto empleado = empleados.get(0);
-
-    //Registramos la marca usando el id real del empleado, no el folio escrito
-    Respuesta respuestaMarca = marcaService.marcar(empleado.getId());
-
-    if (!respuestaMarca.getEstado()) {
-        lblMensaje.setText(respuestaMarca.getMensaje());
-        return;
-    }
-
-    MarcaDto marca = (MarcaDto) respuestaMarca.getResultado("Marca");
-
-    lblNombreEmpleado.setText(empleado.getNombre() + " " + empleado.getApellidos());
-    lblHoraMarca.setText(marca.getTipo() + " registrada a las " + marca.getFechaHora().format(formatoReloj));
-    lblMensaje.setText("Marca registrada correctamente.");
-
-    //Verificamos si hoy es el cumpleanos del empleado
-    if (esCumpleanios(empleado)) {
-        mostrarAnimacionCumpleanios();
-    }
-
-    txtFolio.clear();
-}
 
     //Compara el dia y mes de nacimiento con la fecha de hoy
     private boolean esCumpleanios(EmpleadoDto empleado) {
@@ -130,23 +173,14 @@ private void handleMarcar() {
         return mismoMes && mismoDia;
     }
 
-    //Animacion simple, la foto crece y vuelve a su tamano varias veces
-    private void mostrarAnimacionCumpleanios() {
-        lblMensaje.setText("Feliz cumpleanios " + lblNombreEmpleado.getText() + "!");
-
-        ScaleTransition animacion = new ScaleTransition(Duration.millis(400), imgFoto);
-        animacion.setFromX(1.0);
-        animacion.setFromY(1.0);
-        animacion.setToX(1.3);
-        animacion.setToY(1.3);
-        animacion.setCycleCount(4);
-        animacion.setAutoReverse(true);
-        animacion.play();
+   private void mostrarAnimacionCumpleanios(EmpleadoDto empleado) {
+        AnimacionCumpleanos.reproducir(panelAnimacion, lblFelicitacion, empleado.getNombre());
     }
 
     private void limpiarInformacion() {
         lblNombreEmpleado.setText("");
         lblHoraMarca.setText("");
+        imgFoto.setImage(null);
     }
 
     @FXML

@@ -133,17 +133,21 @@ private String generarFolio(Empleado empleado) {
         }
     }
 
-    public Respuesta eliminar(Long id) {
+   public Respuesta eliminar(Long id) {
         try {
             Empleado empleado = em.find(Empleado.class, id);
             if (empleado == null) {
                 return new Respuesta(false, "No se encontró el empleado con ID " + id);
             }
-
+            Long cantidadDetalles = em.createQuery(
+                    "SELECT COUNT(d) FROM DetallePlanilla d WHERE d.empleado.id = :id", Long.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+            if (cantidadDetalles > 0) {
+                return new Respuesta(false, "No se puede eliminar: el empleado tiene planillas registradas.");
+            }
             em.remove(empleado);
-
             return new Respuesta(true, "Empleado eliminado con éxito");
-
         } catch (Exception e) {
             return new Respuesta(false, "Error al eliminar empleado: " + e.getMessage());
         }

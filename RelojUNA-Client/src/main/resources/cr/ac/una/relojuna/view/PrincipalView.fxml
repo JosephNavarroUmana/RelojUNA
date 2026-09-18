@@ -16,26 +16,29 @@
             fx:controller="cr.ac.una.relojuna.controller.PrincipalController">
 
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="app-header">
-            <Label styleClass="app-header-titulo" text="RelojUNA" />
-            <Region HBox.hgrow="ALWAYS" />
-            <Label fx:id="lblUsuario" styleClass="app-header-usuario" text="Bienvenido" />
-            <Button fx:id="btnCerrarSesion" onAction="#handleCerrarSesion"
-                    styleClass="boton-header" text="Cerrar sesión" />
-        </HBox>
+        <VBox>
+            <HBox alignment="CENTER_LEFT" styleClass="app-header">
+                <Label styleClass="app-header-titulo" text="RelojUNA" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="lblUsuario" styleClass="app-header-usuario" text="Bienvenido" />
+                <Button fx:id="btnCerrarSesion" onAction="#handleCerrarSesion"
+                        styleClass="boton-header" text="Cerrar sesion" />
+            </HBox>
+            <Region styleClass="franja-institucional" />
+        </VBox>
     </top>
 
     <center>
         <StackPane styleClass="contenido-pagina">
-            <VBox alignment="CENTER" spacing="28" maxWidth="900">
+            <VBox styleClass="contenedor-principal" alignment="CENTER">
 
-                <VBox alignment="CENTER" spacing="4">
-                    <Label styleClass="titulo-pagina" text="Menú Principal" />
+                <VBox styleClass="encabezado-pagina">
+                    <Label styleClass="titulo-pagina" text="Menu Principal" />
                     <Label styleClass="subtitulo-pagina"
-                           text="Seleccione un módulo para continuar" />
+                           text="Seleccione un modulo para continuar" />
                 </VBox>
 
-                <TilePane alignment="CENTER" hgap="18" vgap="18">
+                <TilePane styleClass="grilla-modulos">
 
                     <Button fx:id="btnEmpleados" onAction="#handleEmpleados"
                             styleClass="tarjeta-modulo" text="Mantenimiento de Empleados" />
@@ -47,13 +50,13 @@
                             styleClass="tarjeta-modulo" text="Mantenimiento de Marcas" />
 
                     <Button fx:id="btnPlanilla" onAction="#handlePlanilla"
-                            styleClass="tarjeta-modulo" text="Generación de Planillas" />
+                            styleClass="tarjeta-modulo" text="Generacion de Planillas" />
 
                     <Button fx:id="btnConsulta" onAction="#handleConsulta"
                             styleClass="tarjeta-modulo" text="Consultas" />
 
                     <Button fx:id="btnReportes" onAction="#handleReportes"
-                            styleClass="tarjeta-modulo" text="Módulo de Reportes" />
+                            styleClass="tarjeta-modulo" text="Modulo de Reportes" />
 
                 </TilePane>
             </VBox>

@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -13,22 +14,24 @@
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cr.ac.una.relojuna.controller.LoginController">
 
-    <VBox alignment="CENTER" spacing="26" maxWidth="420">
+    <VBox styleClass="contenedor-login">
 
-        <VBox alignment="CENTER" spacing="6">
+        <VBox styleClass="encabezado-login">
+            <Label styleClass="insignia-login" text="RU" />
             <Label styleClass="titulo-app" text="RelojUNA" />
+            <Region styleClass="divisor-acento" />
             <Label styleClass="subtitulo-app"
                    text="Sistema corporativo de control de asistencia" />
         </VBox>
 
-        <VBox spacing="16" styleClass="panel-tarjeta,panel-tarjeta-acento">
+        <VBox styleClass="panel-tarjeta,panel-tarjeta-acento,tarjeta-login">
 
-            <VBox spacing="6">
+            <VBox styleClass="grupo-campo">
                 <Label styleClass="etiqueta-campo" text="Folio" />
                 <TextField fx:id="txtFolio" promptText="Ingrese su folio" />
             </VBox>
 
-            <VBox spacing="6">
+            <VBox styleClass="grupo-campo">
                 <Label styleClass="etiqueta-campo" text="Clave" />
                 <PasswordField fx:id="txtClave" promptText="Ingrese su clave" />
             </VBox>
@@ -40,6 +43,8 @@
 
             <Label fx:id="lblMensaje" styleClass="mensaje-error" text="" />
         </VBox>
+
+        <Label styleClass="texto-pie" text="Universidad Nacional - Sede Brunca" />
 
     </VBox>
 </StackPane>
