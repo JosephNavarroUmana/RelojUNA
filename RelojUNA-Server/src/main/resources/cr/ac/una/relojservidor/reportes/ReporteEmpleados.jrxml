@@ -6,57 +6,93 @@
 	<field name="cedula" class="java.lang.String"/>
 	<field name="fechaNacimiento" class="java.lang.String"/>
 	<field name="salarioHora" class="java.lang.Double"/>
+
+	<style name="TitleStyle" fontSize="20" bold="true" forecolor="#2C3E50"/>
+	<style name="SubtitleStyle" fontSize="9" forecolor="#7F8C8D" italic="true"/>
+	<style name="HeaderStyle" fontSize="10" bold="true" forecolor="#FFFFFF"/>
+	<style name="DetailStyle" fontSize="9" forecolor="#2C3E50"/>
+	<style name="FooterStyle" fontSize="8" forecolor="#7F8C8D"/>
+
 	<background splitType="Stretch"/>
-	<title height="79" splitType="Stretch">
-		<element kind="staticText" uuid="cac84f87-d27a-4d11-853d-a62c093c0673" x="222" y="30" width="120" height="30">
-			<text><![CDATA[Reporte de empleados]]></text>
+
+	<title height="70" splitType="Stretch">
+		<element kind="staticText" uuid="cac84f87-d27a-4d11-853d-a62c093c0673" style="TitleStyle" x="0" y="10" width="555" height="30" hTextAlign="Center">
+			<text><![CDATA[Reporte de Empleados]]></text>
+		</element>
+		<element kind="textField" uuid="9a1d3b3c-1111-4a2b-9c3d-111111111111" style="SubtitleStyle" x="0" y="42" width="555" height="14" hTextAlign="Center">
+			<expression><![CDATA["Generado el " + new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date())]]></expression>
+		</element>
+		<element kind="line" uuid="a1111111-2222-3333-4444-555555555555" x="0" y="64" width="555" height="1">
+			<pen lineWidth="1.5" lineColor="#2C3E50"/>
 		</element>
 	</title>
-	<pageHeader height="35" splitType="Stretch"/>
-	<columnHeader height="61" splitType="Stretch">
-		<element kind="staticText" uuid="0eff6d90-f21d-43c9-b708-483e326e81ef" x="20" y="30" width="40" height="15" stretchType="NoStretch">
+
+	<pageHeader height="20" splitType="Stretch"/>
+
+	<columnHeader height="26" splitType="Stretch">
+		<element kind="rectangle" uuid="b2222222-3333-4444-5555-666666666666" x="0" y="0" width="555" height="26" backcolor="#2C3E50">
 			<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+			<pen lineWidth="0"/>
+		</element>
+		<element kind="staticText" uuid="0eff6d90-f21d-43c9-b708-483e326e81ef" style="HeaderStyle" x="10" y="0" width="40" height="26" vTextAlign="Middle">
 			<text><![CDATA[Folio]]></text>
 		</element>
-		<element kind="staticText" uuid="eba8cf2b-c6bb-4879-aa06-741bfb14e4ae" x="80" y="26" width="70" height="22">
+		<element kind="staticText" uuid="eba8cf2b-c6bb-4879-aa06-741bfb14e4ae" style="HeaderStyle" x="50" y="0" width="110" height="26" vTextAlign="Middle">
 			<text><![CDATA[Nombre]]></text>
 		</element>
-		<element kind="staticText" uuid="a69e7fe6-2276-42a6-bc6d-110e06ad0d2a" x="170" y="24" width="52" height="14">
+		<element kind="staticText" uuid="a69e7fe6-2276-42a6-bc6d-110e06ad0d2a" style="HeaderStyle" x="160" y="0" width="110" height="26" vTextAlign="Middle">
 			<text><![CDATA[Apellidos]]></text>
 		</element>
-		<element kind="staticText" uuid="7b778772-a636-4809-a521-3fa7f930a7ce" x="246" y="24" width="62" height="23">
-			<text><![CDATA[Cedula]]></text>
+		<element kind="staticText" uuid="7b778772-a636-4809-a521-3fa7f930a7ce" style="HeaderStyle" x="270" y="0" width="90" height="26" vTextAlign="Middle">
+			<text><![CDATA[Cédula]]></text>
 		</element>
-		<element kind="staticText" uuid="4a14ff23-7fd9-494e-904a-6b331ffca766" x="340" y="20" width="100" height="30">
+		<element kind="staticText" uuid="4a14ff23-7fd9-494e-904a-6b331ffca766" style="HeaderStyle" x="360" y="0" width="100" height="26" vTextAlign="Middle">
 			<text><![CDATA[Fecha Nacimiento]]></text>
 		</element>
-		<element kind="staticText" uuid="a4b5428a-0968-472d-a602-752225bc3c81" x="480" y="30" width="75" height="14">
+		<element kind="staticText" uuid="a4b5428a-0968-472d-a602-752225bc3c81" style="HeaderStyle" x="460" y="0" width="85" height="26" vTextAlign="Middle" hTextAlign="Right">
 			<text><![CDATA[Salario/Hora]]></text>
 		</element>
 	</columnHeader>
+
 	<detail>
-		<band height="71" splitType="Stretch">
-			<element kind="textField" uuid="033f67e9-ad3d-4bcd-8555-7ea10c870fa2" x="10" y="10" width="59" height="19">
+		<band height="28" splitType="Stretch">
+			<element kind="textField" uuid="033f67e9-ad3d-4bcd-8555-7ea10c870fa2" style="DetailStyle" x="10" y="5" width="40" height="18" vTextAlign="Middle">
 				<expression><![CDATA[$F{folio}]]></expression>
 			</element>
-			<element kind="textField" uuid="f7d71ae4-4230-4159-af3a-aaaf1b488ddb" x="90" y="10" width="70" height="18">
+			<element kind="textField" uuid="f7d71ae4-4230-4159-af3a-aaaf1b488ddb" style="DetailStyle" x="50" y="5" width="110" height="18" vTextAlign="Middle">
 				<expression><![CDATA[$F{nombre}]]></expression>
 			</element>
-			<element kind="textField" uuid="776a8184-d6fc-4b4d-b25d-4b068b681e09" x="180" y="10" width="66" height="18">
+			<element kind="textField" uuid="776a8184-d6fc-4b4d-b25d-4b068b681e09" style="DetailStyle" x="160" y="5" width="110" height="18" vTextAlign="Middle">
 				<expression><![CDATA[$F{apellidos}]]></expression>
 			</element>
-			<element kind="textField" uuid="20812349-45de-4dd1-b0ab-24b844a4a609" x="250" y="10" width="66" height="18">
+			<element kind="textField" uuid="20812349-45de-4dd1-b0ab-24b844a4a609" style="DetailStyle" x="270" y="5" width="90" height="18" vTextAlign="Middle">
 				<expression><![CDATA[$F{cedula}]]></expression>
 			</element>
-			<element kind="textField" uuid="1539d27b-c937-4e46-8adf-8d49131b752a" x="316" y="10" width="154" height="18">
+			<element kind="textField" uuid="1539d27b-c937-4e46-8adf-8d49131b752a" style="DetailStyle" x="360" y="5" width="100" height="18" vTextAlign="Middle">
 				<expression><![CDATA[$F{fechaNacimiento}.toString()]]></expression>
 			</element>
-			<element kind="textField" uuid="f8c4b774-a189-4f4d-b342-8be9b4948791" x="472" y="10" width="90" height="18">
+			<element kind="textField" uuid="f8c4b774-a189-4f4d-b342-8be9b4948791" style="DetailStyle" x="460" y="5" width="85" height="18" vTextAlign="Middle" hTextAlign="Right" pattern="₡#,##0.00">
 				<expression><![CDATA[$F{salarioHora}]]></expression>
+			</element>
+			<element kind="line" uuid="c3333333-4444-5555-6666-777777777777" x="0" y="27" width="555" height="1">
+				<pen lineWidth="0.5" lineColor="#D5D8DC"/>
 			</element>
 		</band>
 	</detail>
-	<columnFooter height="45" splitType="Stretch"/>
-	<pageFooter height="54" splitType="Stretch"/>
-	<summary height="42" splitType="Stretch"/>
+
+	<columnFooter height="10" splitType="Stretch"/>
+
+	<pageFooter height="24" splitType="Stretch">
+		<element kind="line" uuid="d4444444-5555-6666-7777-888888888888" x="0" y="0" width="555" height="1">
+			<pen lineWidth="0.5" lineColor="#D5D8DC"/>
+		</element>
+		<element kind="textField" uuid="e5555555-6666-7777-8888-999999999999" style="FooterStyle" x="0" y="6" width="277" height="14">
+			<expression><![CDATA["RelojUNA - Reporte de Empleados"]]></expression>
+		</element>
+		<element kind="textField" uuid="f6666666-7777-8888-9999-aaaaaaaaaaaa" style="FooterStyle" x="277" y="6" width="278" height="14" hTextAlign="Right">
+			<expression><![CDATA["Página " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+
+	<summary height="30" splitType="Stretch"/>
 </jasperReport>

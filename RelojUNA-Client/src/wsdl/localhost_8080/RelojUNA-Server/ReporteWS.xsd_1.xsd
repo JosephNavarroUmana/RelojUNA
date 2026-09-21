@@ -61,7 +61,7 @@
 
 <xs:complexType name="planillaFilaDto">
 <xs:sequence>
-<xs:element name="folioEmpleado" type="xs:int" minOccurs="0"/>
+<xs:element name="folioEmpleado" type="xs:string" minOccurs="0"/>
 <xs:element name="nombreEmpleado" type="xs:string" minOccurs="0"/>
 <xs:element name="horasOrdinarias" type="xs:double" minOccurs="0"/>
 <xs:element name="horasExtras" type="xs:double" minOccurs="0"/>

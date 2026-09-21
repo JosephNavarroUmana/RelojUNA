@@ -35,7 +35,7 @@ public class MantenimientoMarcasController {
     @FXML
     private Label lblCantInconsistencias;
     @FXML
-    private Button btnFiltrar, btnVerInconsistencias, btnSiguienteInconsistencia, btnAgregar, btnModificar, btnEliminar, btnCorregirInconsistencia;
+    private Button btnFiltrar, btnVerInconsistencias, btnSiguienteInconsistencia, btnAgregar, btnModificar, btnEliminar, btnCorregirInconsistencia, btnLimpiar;
     @FXML
     private Button btnRegresar;
     @FXML
@@ -58,6 +58,9 @@ public class MantenimientoMarcasController {
     //Formato para mostrar la fecha y hora en la tabla
     private DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    //Formato para mostrar y leer la hora en el campo de texto
+    private DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
+
     @FXML
     private void initialize() {
         marcaService = new MarcaService();
@@ -77,33 +80,61 @@ public class MantenimientoMarcasController {
 
         tblMarcas.setItems(listaMarcas);
 
+        tblMarcas.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionada) -> {
+            if (seleccionada != null) {
+                cargarFormulario(seleccionada);
+            }
+        });
+
         dpFechaDesde.setValue(LocalDate.now().minusDays(30));
         dpFechaHasta.setValue(LocalDate.now());
 
         cargarTabla();
     }
 
-    //Trae las marcas del rango de fechas seleccionado y las pone en la tabla
-    private void cargarTabla() {
-        LocalDate fechaDesde = dpFechaDesde.getValue();
-        LocalDate fechaHasta = dpFechaHasta.getValue();
+   //Trae las marcas del rango de fechas seleccionado y las pone en la tabla
+private void cargarTabla() {
+    LocalDate fechaDesde = dpFechaDesde.getValue();
+    LocalDate fechaHasta = dpFechaHasta.getValue();
 
-        if (fechaDesde == null || fechaHasta == null) {
-            mostrarMensaje("Debe seleccionar la fecha desde y la fecha hasta.");
-            return;
-        }
-
-        Respuesta respuesta = marcaService.buscarMarcas(fechaDesde, fechaHasta);
-
-        if (!respuesta.getEstado()) {
-            mostrarMensaje(respuesta.getMensaje());
-            return;
-        }
-
-        List<MarcaDto> marcas = (List<MarcaDto>) respuesta.getResultado("Marcas");
-        listaMarcas.clear();
-        listaMarcas.addAll(marcas);
+    if (fechaDesde == null || fechaHasta == null) {
+        mostrarMensaje("Debe seleccionar la fecha desde y la fecha hasta.");
+        return;
     }
+
+    Respuesta respuesta = marcaService.buscarMarcas(fechaDesde, fechaHasta);
+
+    if (!respuesta.getEstado()) {
+        mostrarMensaje(respuesta.getMensaje());
+        return;
+    }
+
+    List<MarcaDto> marcas = (List<MarcaDto>) respuesta.getResultado("Marcas");
+
+    marcarInconsistencias(marcas, fechaDesde, fechaHasta);
+
+    listaMarcas.clear();
+    listaMarcas.addAll(marcas);
+}
+
+//Consulta las inconsistencias del mismo rango y marca en la lista cuales marcas lo son
+private void marcarInconsistencias(List<MarcaDto> marcas, LocalDate fechaDesde, LocalDate fechaHasta) {
+    Respuesta respuestaInconsistencias = marcaService.buscarInconsistencias(fechaDesde, fechaHasta);
+
+    if (!respuestaInconsistencias.getEstado()) {
+        return;
+    }
+
+    List<MarcaDto> inconsistentes = (List<MarcaDto>) respuestaInconsistencias.getResultado("Marcas");
+
+    for (MarcaDto marca : marcas) {
+        for (MarcaDto inconsistente : inconsistentes) {
+            if (marca.getId().equals(inconsistente.getId())) {
+                marca.setEstado("Inconsistente");
+            }
+        }
+    }
+}
 
     @FXML
     private void handleFiltrar() {
@@ -157,7 +188,6 @@ public class MantenimientoMarcasController {
         tblMarcas.scrollTo(indiceInconsistenciaActual);
     }
 
-   
     @FXML
     private void handleEliminar() {
         MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
@@ -178,72 +208,72 @@ public class MantenimientoMarcasController {
         limpiarFormulario();
     }
 
-@FXML
-private void handleAgregar() {
-    MarcaDto marcaNueva = leerFormulario(null);
+    @FXML
+    private void handleAgregar() {
+        MarcaDto marcaNueva = leerFormulario(null);
 
-    if (marcaNueva == null) {
-        return;
+        if (marcaNueva == null) {
+            return;
+        }
+
+        Respuesta respuesta = marcaService.guardarMarca(marcaNueva);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        cargarTabla();
+        limpiarFormulario();
     }
 
-    Respuesta respuesta = marcaService.guardarMarca(marcaNueva);
+    @FXML
+    private void handleModificar() {
+        MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
 
-    if (!respuesta.getEstado()) {
-        mostrarMensaje(respuesta.getMensaje());
-        return;
+        if (seleccionada == null) {
+            mostrarMensaje("Debe seleccionar una marca de la tabla.");
+            return;
+        }
+
+        MarcaDto marcaModificada = leerFormulario(seleccionada.getId());
+
+        if (marcaModificada == null) {
+            return;
+        }
+
+        Respuesta respuesta = marcaService.guardarMarca(marcaModificada);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        cargarTabla();
+        limpiarFormulario();
     }
 
-    cargarTabla();
-    limpiarFormulario();
-}
+    @FXML
+    private void handleCorregirInconsistencia() {
+        MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
 
-@FXML
-private void handleModificar() {
-    MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
+        if (seleccionada == null) {
+            mostrarMensaje("Debe seleccionar una marca de la tabla.");
+            return;
+        }
 
-    if (seleccionada == null) {
-        mostrarMensaje("Debe seleccionar una marca de la tabla.");
-        return;
+        //Invertimos el tipo de la marca, si era entrada pasa a salida y viceversa
+        if (seleccionada.getTipo().equals("ENTRADA")) {
+            seleccionada.setTipo("SALIDA");
+        } else {
+            seleccionada.setTipo("ENTRADA");
+        }
+
+        seleccionada.setEstado("OK");
+        marcaService.guardarMarca(seleccionada);
+
+        handleVerInconsistencias();
     }
-
-    MarcaDto marcaModificada = leerFormulario(seleccionada.getId());
-
-    if (marcaModificada == null) {
-        return;
-    }
-
-    Respuesta respuesta = marcaService.guardarMarca(marcaModificada);
-
-    if (!respuesta.getEstado()) {
-        mostrarMensaje(respuesta.getMensaje());
-        return;
-    }
-
-    cargarTabla();
-    limpiarFormulario();
-}
-
-@FXML
-private void handleCorregirInconsistencia() {
-    MarcaDto seleccionada = tblMarcas.getSelectionModel().getSelectedItem();
-
-    if (seleccionada == null) {
-        mostrarMensaje("Debe seleccionar una marca de la tabla.");
-        return;
-    }
-
-    //Invertimos el tipo de la marca, si era entrada pasa a salida y viceversa
-    if (seleccionada.getTipo().equals("ENTRADA")) {
-        seleccionada.setTipo("SALIDA");
-    } else {
-        seleccionada.setTipo("ENTRADA");
-    }
-
-    seleccionada.setEstado("OK");
-    marcaService.guardarMarca(seleccionada);
-
-    handleVerInconsistencias();
-}
 
     //Lee los datos del formulario y arma un MarcaDto, retorna null si hay error de validacion
     private MarcaDto leerFormulario(Integer idExistente) {
@@ -272,7 +302,7 @@ private void handleCorregirInconsistencia() {
             return null;
         }
 
-       String folio = folioTexto.trim();
+        String folio = folioTexto.trim();
 
         LocalTime hora;
         try {
@@ -291,6 +321,14 @@ private void handleCorregirInconsistencia() {
         marca.setEstado("OK");
 
         return marca;
+    }
+
+    //Llena el formulario con los datos de la marca seleccionada en la tabla
+    private void cargarFormulario(MarcaDto marca) {
+        txtFolioMarca.setText(marca.getFolioEmpleado());
+        dpFechaMarca.setValue(marca.getFechaHora().toLocalDate());
+        txtHoraMarca.setText(marca.getFechaHora().toLocalTime().format(formatoHora));
+        cmbTipoMarca.setValue(marca.getTipo());
     }
 
     private void limpiarFormulario() {
@@ -313,5 +351,10 @@ private void handleCorregirInconsistencia() {
     private void handleRegresar(ActionEvent event) {
         Stage stage = (Stage) btnRegresar.getScene().getWindow();
         stage.close();
+    }
+
+    @FXML
+    private void handleLimpiar() {
+        limpiarFormulario();
     }
 }

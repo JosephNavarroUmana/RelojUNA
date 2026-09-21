@@ -18,20 +18,30 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.pdf.JRPdfExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import jakarta.ejb.EJB;
+
+
 
 //Genera los reportes en PDF con JasperReports, ahora del lado del servidor
 @Stateless
 public class JasperService {
 
-    public Respuesta generarReporteEmpleadosPdf(List<EmpleadoDto> empleados) {
-        try {
-            JasperPrint reporteLleno = llenarReporteEmpleados(empleados);
-            byte[] bytesPdf = exportarAPdf(reporteLleno);
-            return new Respuesta(true, "Reporte generado con exito", new ArchivoDto(bytesPdf));
-        } catch (Exception ex) {
-            return new Respuesta(false, "Error al generar el reporte de empleados: " + ex.getMessage());
-        }
+    
+    @EJB
+private EmpleadoService empleadoService;
+    
+    
+  public Respuesta generarReporteEmpleadosPdf(List<EmpleadoDto> empleados) {
+    try {
+        //Se ignora la lista del cliente, se leen los empleados de la BD para que el folio venga completo
+        List<EmpleadoDto> empleadosBD = empleadoService.obtenerTodosLosDtos();
+        JasperPrint reporteLleno = llenarReporteEmpleados(empleadosBD);
+        byte[] bytesPdf = exportarAPdf(reporteLleno);
+        return new Respuesta(true, "Reporte generado con exito", new ArchivoDto(bytesPdf));
+    } catch (Exception ex) {
+        return new Respuesta(false, "Error al generar el reporte de empleados: " + ex.getMessage());
     }
+}
 
     public Respuesta generarReporteMarcasPdf(List<ConsultaFilaDto> filas) {
         try {

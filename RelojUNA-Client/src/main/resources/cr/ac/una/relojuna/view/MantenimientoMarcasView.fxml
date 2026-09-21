@@ -80,6 +80,7 @@
                 </HBox>
 
                 <HBox styleClass="barra-botones">
+                    <Button fx:id="btnLimpiar" onAction="#handleLimpiar" styleClass="boton-secundario" text="Limpiar" />
                     <Button fx:id="btnAgregar" onAction="#handleAgregar"
                             styleClass="boton-primario" text="Agregar Marca" />
                     <Button fx:id="btnModificar" onAction="#handleModificar"

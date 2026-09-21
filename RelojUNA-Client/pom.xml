@@ -9,14 +9,27 @@
     <artifactId>RelojUNA-Client</artifactId>
     <dependencies>
         <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture</artifactId>
+            <version>0.3.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>26</version>
+             <classifier>win</classifier>
+        </dependency>
+        <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>25.0.2</version>
+             <classifier>win</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>25.0.2</version>
+             <classifier>win</classifier>
         </dependency>
         <dependency>
             <groupId>io.github.palexdev</groupId>
@@ -96,6 +109,14 @@
                 <configuration>
                     <mainClass>cr.ac.una.relojuna.App</mainClass>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>acceso-directo-marca</id>
+                        <configuration>
+                            <mainClass>cr.ac.una.relojuna.AccesoDirectoMarcaApp</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

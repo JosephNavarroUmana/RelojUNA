@@ -101,6 +101,16 @@ private String generarFolio(Empleado empleado) {
     return "F" + inicial + "-" + String.format("%04d", empleado.getId());
 }
 
+//Devuelve los empleados como dto, se usa para el reporte
+public List<EmpleadoDto> obtenerTodosLosDtos() {
+    List<Empleado> empleados = em.createQuery("SELECT e FROM Empleado e ORDER BY e.id", Empleado.class)
+            .getResultList();
+
+    return empleados.stream()
+            .map(this::convertirADto)
+            .collect(Collectors.toList());
+}
+
  public Respuesta obtenerTodos() {
     try {
         List<Empleado> empleados = em.createQuery("SELECT e FROM Empleado e", Empleado.class)

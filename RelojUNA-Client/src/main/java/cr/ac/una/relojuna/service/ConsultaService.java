@@ -24,9 +24,15 @@ public class ConsultaService {
                         LocalDate fechaMarca = marca.getFechaHora().toLocalDate();
                         boolean despuesDeDesde = fechaMarca.isEqual(fechaDesde) || fechaMarca.isAfter(fechaDesde);
                         boolean antesDeHasta = fechaMarca.isEqual(fechaHasta) || fechaMarca.isBefore(fechaHasta);
-                        return despuesDeDesde && antesDeHasta;
+
+                        //Si no se selecciono un empleado especifico se dejan pasar todos
+                        boolean coincideEmpleado = true;
+                        if (folioEmpleado != null) {
+                            coincideEmpleado = marca.getFolioEmpleado().equals(folioEmpleado);
+                        }
+
+                        return despuesDeDesde && antesDeHasta && coincideEmpleado;
                     })
-              
                     .sorted((marca1, marca2) -> marca1.getFechaHora().compareTo(marca2.getFechaHora()))
                     .collect(Collectors.toList());
 

@@ -63,20 +63,17 @@ public class MarcaController {
     private DateTimeFormatter formatoReloj = DateTimeFormatter.ofPattern("HH:mm:ss");
     private DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "CR"));
     
-    @FXML
-    private void initialize() {
-        empleadoService = new EmpleadoService();
-        marcaService = new MarcaService();
+  @FXML
+private void initialize() {
+    empleadoService = new EmpleadoService();
+    marcaService = new MarcaService();
 
-        //El circulo de recorte deja la foto redonda dentro del marco del FXML
-//         Circle recorteFoto = new Circle(45, 45, 45);
-//        imgFoto.setClip(recorteFoto);
+    //El circulo de recorte deja la foto redonda dentro del marco del FXML
+    Circle recorteFoto = new Circle(45, 45, 45);
+    imgFoto.setClip(recorteFoto);
 
-//        iniciarReloj();
-
-        iniciarReloj();
-    }
-
+    iniciarReloj();
+}
     //Arranca un timeline que actualiza el label del reloj cada segundo
     private void iniciarReloj() {
         Timeline timeline = new Timeline(

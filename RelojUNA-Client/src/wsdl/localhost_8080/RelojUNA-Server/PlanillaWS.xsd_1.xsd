@@ -8,6 +8,8 @@
 
 <xs:element name="guardarPlanillaResponse" type="tns:guardarPlanillaResponse"/>
 
+<xs:element name="listaPlanillaFilaDto" type="tns:listaPlanillaFilaDto"/>
+
 <xs:element name="obtenerPlanillaPorId" type="tns:obtenerPlanillaPorId"/>
 
 <xs:element name="obtenerPlanillaPorIdResponse" type="tns:obtenerPlanillaPorIdResponse"/>
@@ -15,6 +17,25 @@
 <xs:element name="obtenerPlanillas" type="tns:obtenerPlanillas"/>
 
 <xs:element name="obtenerPlanillasResponse" type="tns:obtenerPlanillasResponse"/>
+
+<xs:element name="planillaFilaDto" type="tns:planillaFilaDto"/>
+
+<xs:complexType name="listaPlanillaFilaDto">
+<xs:sequence>
+<xs:element name="filas" type="tns:planillaFilaDto" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="planillaFilaDto">
+<xs:sequence>
+<xs:element name="folioEmpleado" type="xs:string" minOccurs="0"/>
+<xs:element name="nombreEmpleado" type="xs:string" minOccurs="0"/>
+<xs:element name="horasOrdinarias" type="xs:double" minOccurs="0"/>
+<xs:element name="horasExtras" type="xs:double" minOccurs="0"/>
+<xs:element name="horasDobles" type="xs:double" minOccurs="0"/>
+<xs:element name="salarioMensual" type="xs:double" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
 
 <xs:complexType name="obtenerPlanillaPorId">
 <xs:sequence>
@@ -70,6 +91,16 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="obtenerPlanillas">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="obtenerPlanillasResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="generarPlanilla">
 <xs:sequence>
 <xs:element name="mes" type="xs:int"/>
@@ -78,16 +109,6 @@
 </xs:complexType>
 
 <xs:complexType name="generarPlanillaResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="obtenerPlanillas">
-<xs:sequence/>
-</xs:complexType>
-
-<xs:complexType name="obtenerPlanillasResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:respuesta" minOccurs="0"/>
 </xs:sequence>

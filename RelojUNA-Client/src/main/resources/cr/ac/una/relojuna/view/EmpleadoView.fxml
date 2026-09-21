@@ -83,6 +83,7 @@
                             <Label styleClass="etiqueta-campo,etiqueta-campo-ancha" text="Foto:" />
                             <ImageView fx:id="imgFoto" fitHeight="60" fitWidth="60" preserveRatio="true" />
                             <Button fx:id="btnFoto" onAction="#handleSeleccionarFoto" styleClass="boton-secundario" text="Seleccionar foto..." />
+                            <Button fx:id="btnCamara" onAction="#handleAbrirCamara" styleClass="boton-secundario" text="Usar camara" />
                         </HBox>
                     </VBox>
                 </HBox>
@@ -90,7 +91,6 @@
                 <CheckBox fx:id="chkAdmin" text="Administrador del sistema" />
 
                 <HBox styleClass="barra-botones">
-                    <Button fx:id="btnNuevo" onAction="#handleNuevo" styleClass="boton-secundario" text="Nuevo" />
                     <Button fx:id="btnGuardar" onAction="#handleGuardar" styleClass="boton-primario" text="Guardar" />
                     <Button fx:id="btnEliminar" onAction="#handleEliminar" styleClass="boton-peligro" text="Eliminar" />
                     <Button fx:id="btnLimpiar" onAction="#handleLimpiar" styleClass="boton-secundario" text="Limpiar" />
