@@ -21,21 +21,13 @@ public class ConsultaService {
     @PersistenceContext(unitName = "RelojUNAPU")
     private EntityManager em;
 
-    /**
-     * Consulta las marcas de un rango de fechas, opcionalmente filtradas
-     * por un empleado especifico. Trae TODAS las marcas con JPQL (unica
-     * consulta permitida) y hace el resto (filtro por fecha/empleado,
-     * conteos, totales) solo con streams, como exige el punto 7.
-     *
-     * @param empleadoId opcional; si es null, se consideran todos los empleados
-     */
     public Respuesta consultarMarcas(LocalDate desde, LocalDate hasta, Long empleadoId) {
         try {
-            // Única consulta JPQL permitida: traer TODAS las marcas
+            //Consulta principal y unica
             List<Marca> todasLasMarcas = em.createQuery(
                     "SELECT m FROM Marca m", Marca.class).getResultList();
 
-            // Todo lo demás, con streams
+            //Strems
             List<Marca> marcasFiltradas = todasLasMarcas.stream()
                     .filter(m -> !m.getFecha().isBefore(desde) && !m.getFecha().isAfter(hasta))
                     .filter(m -> empleadoId == null || m.getEmpleado().getId().equals(empleadoId))
@@ -63,12 +55,6 @@ public class ConsultaService {
         }
     }
 
-    /**
-     * Calcula el total de horas trabajadas sumando la diferencia entre
-     * cada ENTRADA y su SALIDA correspondiente (por empleado, por dia),
-     * usando solo streams. Las marcas que no tienen su par (inconsistentes)
-     * no se cuentan, ya que no se puede calcular una duracion real.
-     */
     private double calcularTotalHorasTrabajadas(List<Marca> marcas) {
         Map<Long, List<Marca>> marcasPorEmpleado = marcas.stream()
                 .collect(Collectors.groupingBy(m -> m.getEmpleado().getId()));
@@ -79,8 +65,7 @@ public class ConsultaService {
                 .sum();
     }
 
-    // Agrupa las marcas de UN empleado por dia, y para cada dia calcula
-    // las horas entre su primera entrada y su ultima salida.
+    //Juntar las marcas de un empleado y calcular las horas entre la primera entrada y la ultima salida.
     private List<Double> sumarHorasPorDia(List<Marca> marcasDeUnEmpleado) {
         Map<LocalDate, List<Marca>> porDia = marcasDeUnEmpleado.stream()
                 .collect(Collectors.groupingBy(Marca::getFecha));

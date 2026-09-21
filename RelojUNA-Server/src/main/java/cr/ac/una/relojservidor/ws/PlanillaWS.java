@@ -14,7 +14,6 @@ import jakarta.jws.WebService;
 @WebService(serviceName = "PlanillaWS")
 public class PlanillaWS {
 
-//    private final PlanillaService planillaService = new PlanillaService();
     @EJB
     private PlanillaService planillaService;
 

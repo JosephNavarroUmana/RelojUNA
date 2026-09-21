@@ -6,7 +6,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.List;
 
-//Envoltorio para poder mandar una lista de filas de planilla por SOAP
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ListaPlanillaFilaDto implements Serializable {

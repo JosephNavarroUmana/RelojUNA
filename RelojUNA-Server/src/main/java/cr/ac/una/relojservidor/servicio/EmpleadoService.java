@@ -19,8 +19,7 @@ public class EmpleadoService {
 
    public Respuesta guardar(EmpleadoDto dto) {
     try {
-        //--- Validaciones de negocio (defensa en profundidad: el cliente ya valida esto,
-        //pero el servidor no deberia confiar ciegamente en el cliente) ---
+        //Validaciones extras
 
         LocalDate fechaNac = LocalDate.parse(dto.getFechaNacimiento());
         if (!fechaNac.isBefore(LocalDate.now())) {
@@ -49,17 +48,12 @@ public class EmpleadoService {
             empleado.setEsAdmin(esAdmin ? 1 : 0);
             empleado.setClave(esAdmin ? dto.getClave() : null);
 
-            //Folio temporal unico solo para no violar la restriccion NOT NULL/UNIQUE
-            //durante el instante entre el persist y el flush; se sobreescribe abajo.
+            //Folio temporal 
             empleado.setFolio("TMP-" + System.nanoTime());
-
             em.persist(empleado);
-            //Forzamos el INSERT ahora para que Oracle asigne el id via secuencia,
-            //necesario porque el folio depende del id.
             em.flush();
 
             empleado.setFolio(generarFolio(empleado));
-            //No hace falta merge: la entidad sigue managed, el cambio se sincroniza al hacer commit.
 
         } else {
             empleado = em.find(Empleado.class, dto.getId());
@@ -74,10 +68,7 @@ public class EmpleadoService {
             empleado.setSalarioHora(dto.getSalarioHora());
             empleado.setEsAdmin(esAdmin ? 1 : 0);
             empleado.setClave(esAdmin ? dto.getClave() : null);
-            //El folio NO se toca aqui: una vez generado, es inmutable.
 
-            //La foto solo se actualiza si el cliente mando una nueva; null/vacio
-            //significa "no tocar la foto existente"
             if (dto.getFoto() != null && dto.getFoto().length > 0) {
                 empleado.setFoto(dto.getFoto());
             }
@@ -92,8 +83,7 @@ public class EmpleadoService {
     }
 }
 
-//Genera el folio visible del empleado, ej: "FJ-0007"
-//F fijo + primera letra del nombre (mayuscula) + id con 4 digitos de relleno
+//Genera el folio
 private String generarFolio(Empleado empleado) {
     char inicial = empleado.getNombre() != null && !empleado.getNombre().isBlank()
             ? Character.toUpperCase(empleado.getNombre().charAt(0))
@@ -101,7 +91,7 @@ private String generarFolio(Empleado empleado) {
     return "F" + inicial + "-" + String.format("%04d", empleado.getId());
 }
 
-//Devuelve los empleados como dto, se usa para el reporte
+//Devuelve los empleados
 public List<EmpleadoDto> obtenerTodosLosDtos() {
     List<Empleado> empleados = em.createQuery("SELECT e FROM Empleado e ORDER BY e.id", Empleado.class)
             .getResultList();
@@ -120,7 +110,6 @@ public List<EmpleadoDto> obtenerTodosLosDtos() {
                 .map(this::convertirADto)
                 .collect(Collectors.toList());
 
-        //Metemos la lista dentro del envoltorio para que JAXB la pueda mandar
         ListaEmpleadoDto listaEnvoltorio = new ListaEmpleadoDto(dtos);
 
         return new Respuesta(true, "Empleados obtenidos con exito", listaEnvoltorio);
@@ -163,7 +152,6 @@ public List<EmpleadoDto> obtenerTodosLosDtos() {
         }
     }
 
-    // --- Método auxiliar de conversión Entidad -> DTO ---
     private EmpleadoDto convertirADto(Empleado empleado) {
         EmpleadoDto dto = new EmpleadoDto();
         dto.setId(empleado.getId());

@@ -23,10 +23,6 @@ public class PlanillaService {
     @PersistenceContext(unitName = "RelojUNAPU")
     private EntityManager em;
 
-    // =========================================================
-    // CRUD básico
-    // =========================================================
-
     public Respuesta guardar(PlanillaDto dto) {
         try {
             Planilla planilla;
@@ -101,7 +97,7 @@ public class PlanillaService {
                 return new Respuesta(false, "No se encontró la planilla con ID " + id);
             }
 
-            em.remove(planilla); // el orphanRemoval/cascade limpia los detalles
+            em.remove(planilla);
 
             return new Respuesta(true, "Planilla eliminada con éxito");
 
@@ -169,7 +165,7 @@ public class PlanillaService {
     }
     public Respuesta generarPlanillaFilas(int mes, int anio) {
     try {
-        //Reutiliza el metodo que ya calcula y guarda la planilla
+
         Respuesta respuestaGeneracion = generarPlanilla(mes, anio);
 
         if (!respuestaGeneracion.isExito()) {
@@ -187,7 +183,6 @@ public class PlanillaService {
             fila.setFolioEmpleado(empleado.getFolio());
             fila.setNombreEmpleado(empleado.getNombre() + " " + empleado.getApellidos());
 
-            //Los horas vienen como Integer en el detalle, aqui se pasan a Double
             if (detalleDto.getHorasOrdinarias() != null) {
                 fila.setHorasOrdinarias(detalleDto.getHorasOrdinarias().doubleValue());
             }
@@ -203,7 +198,6 @@ public class PlanillaService {
             filas.add(fila);
         }
 
-        //Se envuelve la lista en el DTO envoltorio, JAXB no puede mandar una lista cruda
         ListaPlanillaFilaDto listaEnvoltorio = new ListaPlanillaFilaDto(filas);
 
         return new Respuesta(true, "Planilla generada con exito", listaEnvoltorio);
@@ -237,11 +231,7 @@ public class PlanillaService {
 
         return totalMinutos / 60;
     }
-
-    // =========================================================
-    // Helpers privados
-    // =========================================================
-
+    
     private Respuesta sincronizarDetalles(EntityManager em, Planilla planilla, List<DetallePlanillaDto> detallesDto) {
         planilla.getDetalles().clear();
 
@@ -275,7 +265,7 @@ public class PlanillaService {
             planilla.getDetalles().add(detalle);
         }
 
-        return null; // sin errores
+        return null; 
     }
 
     private PlanillaDto convertirADto(Planilla planilla) {

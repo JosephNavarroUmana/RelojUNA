@@ -20,20 +20,14 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import jakarta.ejb.EJB;
 
-
-
-//Genera los reportes en PDF con JasperReports, ahora del lado del servidor
 @Stateless
-public class JasperService {
-
-    
-    @EJB
+public class JasperService {    
+@EJB
 private EmpleadoService empleadoService;
-    
     
   public Respuesta generarReporteEmpleadosPdf(List<EmpleadoDto> empleados) {
     try {
-        //Se ignora la lista del cliente, se leen los empleados de la BD para que el folio venga completo
+        //leen los empleados para que el folio venga completo
         List<EmpleadoDto> empleadosBD = empleadoService.obtenerTodosLosDtos();
         JasperPrint reporteLleno = llenarReporteEmpleados(empleadosBD);
         byte[] bytesPdf = exportarAPdf(reporteLleno);
@@ -53,12 +47,11 @@ private EmpleadoService empleadoService;
         }
     }
 
-  // Carga el jasper ya compilado de empleados y lo llena con la lista
+  //Carga el jasper ya compilado de empleados y lo llena con la lista
 private JasperPrint llenarReporteEmpleados(List<EmpleadoDto> empleados) throws Exception {
     String rutaReporte = "/cr/ac/una/relojservidor/reportes/ReporteEmpleados.jasper";
     InputStream flujoReporte = JasperService.class.getResourceAsStream(rutaReporte);
 
-    // Si esto es null, el jasper no esta empacado en esa ruta dentro del servidor
     if (flujoReporte == null) {
         throw new Exception("No se encontro el archivo " + rutaReporte + " en el classpath del servidor");
     }
@@ -69,12 +62,10 @@ private JasperPrint llenarReporteEmpleados(List<EmpleadoDto> empleados) throws E
     return JasperFillManager.fillReport(flujoReporte, parametros, fuenteDatos);
 }
 
-// Carga el jasper ya compilado de marcas y lo llena con la lista de filas
 private JasperPrint llenarReporteMarcas(List<ConsultaFilaDto> filas) throws Exception {
     String rutaReporte = "/cr/ac/una/relojservidor/reportes/ReporteMarcas.jasper";
     InputStream flujoReporte = JasperService.class.getResourceAsStream(rutaReporte);
 
-    // Si esto es null, el jasper no esta empacado en esa ruta dentro del servidor
     if (flujoReporte == null) {
         throw new Exception("No se encontro el archivo " + rutaReporte + " en el classpath del servidor");
     }

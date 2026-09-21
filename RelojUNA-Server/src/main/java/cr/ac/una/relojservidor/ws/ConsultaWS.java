@@ -16,7 +16,6 @@ public class ConsultaWS {
     @EJB
     private ConsultaService consultaService;
 
-    //Recibimos las fechas como texto porque LocalDate no tiene constructor vacio y JAXB no lo puede armar solo
     @WebMethod(operationName = "consultarMarcas")
     public Respuesta consultarMarcas(
             @WebParam(name = "desde") String desdeTexto,

@@ -5,7 +5,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
-//Representa una fila del reporte de planilla, un empleado con sus horas y salario del mes
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PlanillaFilaDto implements Serializable {

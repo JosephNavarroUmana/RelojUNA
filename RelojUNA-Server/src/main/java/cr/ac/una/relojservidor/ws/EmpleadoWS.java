@@ -11,7 +11,6 @@ import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
-//Le avisamos a JAXB que estas clases pueden viajar escondidas dentro de Respuesta.resultado
 @XmlSeeAlso({EmpleadoDto.class, ListaEmpleadoDto.class})
 @WebService(serviceName = "EmpleadoWS")
 public class EmpleadoWS {

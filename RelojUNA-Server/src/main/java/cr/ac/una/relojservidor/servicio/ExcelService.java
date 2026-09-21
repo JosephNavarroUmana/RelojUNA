@@ -72,7 +72,7 @@ public class ExcelService {
         }
     }
 
-    //Genera el Excel de la pantalla de consultas con streams, una fila por empleado y dia
+    //Generar el excel de la pantalla de consultas una fila por empleado y dia
     public Respuesta exportarConsultaFilasExcel(List<ConsultaFilaDto> filas) {
         try (XSSFWorkbook libro = new XSSFWorkbook()) {
             XSSFSheet hoja = libro.createSheet("Consulta de Marcas");
@@ -112,7 +112,7 @@ public class ExcelService {
         }
     }
 
-    //Genera el Excel de la planilla, una fila por empleado con sus horas y salario
+    //Generar el excel de la planilla una fila
     public Respuesta exportarPlanillaExcel(List<PlanillaFilaDto> filas) {
         try (XSSFWorkbook libro = new XSSFWorkbook()) {
             XSSFSheet hoja = libro.createSheet("Planilla");

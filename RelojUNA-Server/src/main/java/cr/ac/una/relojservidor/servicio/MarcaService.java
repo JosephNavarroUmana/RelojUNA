@@ -22,11 +22,6 @@ public class MarcaService {
     @PersistenceContext(unitName = "RelojUNAPU")
     private EntityManager em;
 
-    // =========================================================
-    // CRUD basico
-    // =========================================================
-
-    //Guarda una marca nueva o actualiza una existente segun el id
     public Respuesta guardar(MarcaDto dto) {
         try {
             Empleado empleado = buscarEmpleadoPorFolio(dto.getFolioEmpleado());
@@ -63,7 +58,6 @@ public class MarcaService {
         }
     }
 
-    //Busca el empleado usando su folio, se usa para relacionar la marca con el empleado correcto
     private Empleado buscarEmpleadoPorFolio(String folio) {
         try {
             return em.createQuery("SELECT e FROM Empleado e WHERE e.folio = :folio", Empleado.class)
@@ -86,10 +80,17 @@ public class MarcaService {
                     .setParameter("empId", empleadoId)
                     .getResultList();
 
-            String tipo = marcasDelEmpleado.stream()
+            Marca ultima = marcasDelEmpleado.stream()
                     .max(Comparator.comparing(Marca::getHora))
-                    .map(ultima -> "ENTRADA".equals(ultima.getTipo()) ? "SALIDA" : "ENTRADA")
-                    .orElse("ENTRADA");
+                    .orElse(null);
+
+            String tipo = "ENTRADA";
+            if (ultima != null && "ENTRADA".equals(ultima.getTipo())) {
+                long horas = java.time.Duration.between(ultima.getHora(), java.time.LocalDateTime.now()).toHours();
+                if (horas <= 16) {
+                    tipo = "SALIDA";
+                }
+            }
 
             Marca marca = new Marca();
             marca.setEmpleado(empleado);
@@ -114,7 +115,6 @@ public class MarcaService {
                     .map(this::convertirADto)
                     .collect(Collectors.toList());
 
-            //Metemos la lista dentro del envoltorio para que JAXB la pueda mandar
             ListaMarcaDto listaEnvoltorio = new ListaMarcaDto(dtos);
 
             return new Respuesta(true, "Marcas obtenidas con exito", listaEnvoltorio);
@@ -140,10 +140,6 @@ public class MarcaService {
         }
     }
 
-    // =========================================================
-    // Deteccion de inconsistencias
-    // =========================================================
-
     public Respuesta buscarInconsistencias() {
         try {
             List<Marca> todasLasMarcas = em.createQuery(
@@ -160,7 +156,6 @@ public class MarcaService {
                     .map(this::convertirADto)
                     .collect(Collectors.toList());
 
-            //Metemos la lista dentro del envoltorio para que JAXB la pueda mandar
             ListaMarcaDto listaEnvoltorio = new ListaMarcaDto(dtos);
 
             return new Respuesta(true, "Inconsistencias encontradas: " + dtos.size(), listaEnvoltorio);
@@ -190,7 +185,7 @@ public class MarcaService {
         return inconsistentes.stream().distinct().collect(Collectors.toList());
     }
 
-    //Convierte la entidad a dto, y ya deja el folio y el nombre listos para el cliente
+    //Convierte la entidad a dto
     private MarcaDto convertirADto(Marca marca) {
         MarcaDto dto = new MarcaDto();
         dto.setId(marca.getId());

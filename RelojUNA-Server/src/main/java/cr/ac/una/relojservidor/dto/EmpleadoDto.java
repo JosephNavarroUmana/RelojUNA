@@ -3,7 +3,6 @@ package cr.ac.una.relojservidor.dto;
 import java.io.Serializable;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-//import java.time.LocalDate;
 
 @XmlRootElement
 public class EmpleadoDto implements Serializable {
@@ -19,11 +18,9 @@ public class EmpleadoDto implements Serializable {
     private Integer esAdmin;
     private String clave;
 
-    // --- Constructores ---
     public EmpleadoDto() {
     }
 
-    // --- Getters y Setters ---
     public Long getId() {
         return id;
     }

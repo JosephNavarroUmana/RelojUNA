@@ -5,7 +5,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
-//Envoltorio para poder mandar un archivo (excel o pdf) dentro de Respuesta.resultado
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ArchivoDto implements Serializable {

@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-//Representa una fila del reporte de consultas, un empleado en un dia especifico
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ConsultaFilaDto implements Serializable {
@@ -49,7 +48,7 @@ public class ConsultaFilaDto implements Serializable {
     public Double getHorasTrabajadas() { return horasTrabajadas; }
     public void setHorasTrabajadas(Double horasTrabajadas) { this.horasTrabajadas = horasTrabajadas; }
 
-    //Adaptador para que jaxb pueda mandar la fecha como texto
+    //Conversor de fecha a texto
     static class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
         @Override
         public LocalDate unmarshal(String v) {
@@ -67,7 +66,7 @@ public class ConsultaFilaDto implements Serializable {
         }
     }
 
-    //Adaptador para que jaxb pueda mandar la hora como texto
+    //conversor de hora a texto
     static class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
         @Override
         public LocalTime unmarshal(String v) {

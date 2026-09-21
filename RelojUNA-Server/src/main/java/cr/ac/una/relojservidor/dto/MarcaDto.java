@@ -52,7 +52,7 @@ public class MarcaDto implements Serializable {
     public String getNombreEmpleado() { return nombreEmpleado; }
     public void setNombreEmpleado(String nombreEmpleado) { this.nombreEmpleado = nombreEmpleado; }
 
-    // --- Adapters anidados ---
+    //Conversor a texto
     static class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
         @Override
         public LocalDate unmarshal(String v) {

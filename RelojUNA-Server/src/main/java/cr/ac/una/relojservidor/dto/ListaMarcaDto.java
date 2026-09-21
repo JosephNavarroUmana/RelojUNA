@@ -6,8 +6,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.List;
 
-//Esta clase es solo un envoltorio para poder mandar una lista de marcas por SOAP
-//JAXB no puede mandar una lista sola, necesita una clase conocida que la contenga
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ListaMarcaDto implements Serializable {

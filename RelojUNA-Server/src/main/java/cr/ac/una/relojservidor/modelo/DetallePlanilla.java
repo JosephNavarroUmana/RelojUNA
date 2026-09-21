@@ -1,6 +1,5 @@
 package cr.ac.una.relojservidor.modelo;
 
-//import cr.ac.una.relojuna.model.Planilla;
 import jakarta.persistence.*;
 import java.io.Serializable;
 
@@ -8,11 +7,7 @@ import java.io.Serializable;
 @Table(name = "DETALLE_PLANILLA")
 public class DetallePlanilla implements Serializable {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "DPL_ID")
-//    private Long id;
-    @Id
+@Id
 @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_detalle_planilla")
 @SequenceGenerator(name = "seq_detalle_planilla", sequenceName = "SEQ_DPL_ID", allocationSize = 1)
 @Column(name = "DPL_ID")

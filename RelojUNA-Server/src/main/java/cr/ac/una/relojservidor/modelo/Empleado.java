@@ -8,12 +8,12 @@ import java.time.LocalDate;
 @Table(name = "EMPLEADO")
 public class Empleado implements Serializable {
 
-   @Id
+@Id
 @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_empleado")
 @SequenceGenerator(name = "seq_empleado", sequenceName = "SEQ_EMP_ID", allocationSize = 1)
 @Column(name = "EMP_ID")
 private Long id;
-//    private Long id;
+
 
     @Column(name = "EMP_NOMBRE", length = 50, nullable = false)
     private String nombre;
@@ -43,11 +43,9 @@ private Long id;
     @Column(name = "EMP_CLAVE", length = 100)
     private String clave;
 
-    // --- Constructores ---
     public Empleado() {
     }
 
-    // --- Getters y Setters ---
     public Long getId() {
         return id;
     }
