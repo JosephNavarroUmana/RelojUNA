@@ -106,19 +106,6 @@ public class PlanillaService {
         }
     }
 
-    // =========================================================
-    // Generación automática de planilla (punto 6 del enunciado)
-    // =========================================================
-
-    /**
-     * Genera una planilla nueva para el mes/año indicado, calculando
-     * automáticamente las horas de cada empleado a partir de sus marcas.
-     *
-     * NOTA: el cálculo de horas ordinarias/extras/dobles usado aquí es
-     * un primer borrador simple. Cuando esté lista CalculadoraJornada,
-     * hay que reemplazar el bloque marcado más abajo para que aplique
-     * las reglas reales de diurna/nocturna/domingo/feriado.
-     */
     public Respuesta generarPlanilla(int mes, int anio) {
         try {
             Planilla planilla = new Planilla();
@@ -164,53 +151,49 @@ public class PlanillaService {
         }
     }
     public Respuesta generarPlanillaFilas(int mes, int anio) {
-    try {
+        try {
 
-        Respuesta respuestaGeneracion = generarPlanilla(mes, anio);
+            Respuesta respuestaGeneracion = generarPlanilla(mes, anio);
 
-        if (!respuestaGeneracion.isExito()) {
-            return respuestaGeneracion;
+            if (!respuestaGeneracion.isExito()) {
+                return respuestaGeneracion;
+            }
+
+            PlanillaDto planillaDto = (PlanillaDto) respuestaGeneracion.getResultado();
+
+            List<PlanillaFilaDto> filas = new ArrayList<>();
+
+            for (DetallePlanillaDto detalleDto : planillaDto.getDetalles()) {
+                Empleado empleado = em.find(Empleado.class, detalleDto.getEmpleadoId());
+
+                PlanillaFilaDto fila = new PlanillaFilaDto();
+                fila.setFolioEmpleado(empleado.getFolio());
+                fila.setNombreEmpleado(empleado.getNombre() + " " + empleado.getApellidos());
+
+                if (detalleDto.getHorasOrdinarias() != null) {
+                    fila.setHorasOrdinarias(detalleDto.getHorasOrdinarias().doubleValue());
+                }
+                if (detalleDto.getHorasExtras() != null) {
+                    fila.setHorasExtras(detalleDto.getHorasExtras().doubleValue());
+                }
+                if (detalleDto.getHorasDobles() != null) {
+                    fila.setHorasDobles(detalleDto.getHorasDobles().doubleValue());
+                }
+
+                fila.setSalarioMensual(detalleDto.getSalarioTotal());
+
+                filas.add(fila);
+            }
+
+            ListaPlanillaFilaDto listaEnvoltorio = new ListaPlanillaFilaDto(filas);
+
+            return new Respuesta(true, "Planilla generada con exito", listaEnvoltorio);
+
+        } catch (Exception e) {
+            return new Respuesta(false, "Error al generar planilla: " + e.getMessage());
         }
-
-        PlanillaDto planillaDto = (PlanillaDto) respuestaGeneracion.getResultado();
-
-        List<PlanillaFilaDto> filas = new ArrayList<>();
-
-        for (DetallePlanillaDto detalleDto : planillaDto.getDetalles()) {
-            Empleado empleado = em.find(Empleado.class, detalleDto.getEmpleadoId());
-
-            PlanillaFilaDto fila = new PlanillaFilaDto();
-            fila.setFolioEmpleado(empleado.getFolio());
-            fila.setNombreEmpleado(empleado.getNombre() + " " + empleado.getApellidos());
-
-            if (detalleDto.getHorasOrdinarias() != null) {
-                fila.setHorasOrdinarias(detalleDto.getHorasOrdinarias().doubleValue());
-            }
-            if (detalleDto.getHorasExtras() != null) {
-                fila.setHorasExtras(detalleDto.getHorasExtras().doubleValue());
-            }
-            if (detalleDto.getHorasDobles() != null) {
-                fila.setHorasDobles(detalleDto.getHorasDobles().doubleValue());
-            }
-
-            fila.setSalarioMensual(detalleDto.getSalarioTotal());
-
-            filas.add(fila);
-        }
-
-        ListaPlanillaFilaDto listaEnvoltorio = new ListaPlanillaFilaDto(filas);
-
-        return new Respuesta(true, "Planilla generada con exito", listaEnvoltorio);
-
-    } catch (Exception e) {
-        return new Respuesta(false, "Error al generar planilla: " + e.getMessage());
     }
-}
-    /**
-     * Cálculo temporal y muy básico: cuenta cuántas horas pasaron entre
-     * cada ENTRADA y su SALIDA correspondiente, sumando todo el mes.
-     * Se debe reemplazar por la lógica real de CalculadoraJornada.
-     */
+
     private long contarHorasBasico(List<Marca> marcas) {
         List<Marca> ordenadas = marcas.stream()
                 .sorted((a, b) -> a.getHora().compareTo(b.getHora()))
