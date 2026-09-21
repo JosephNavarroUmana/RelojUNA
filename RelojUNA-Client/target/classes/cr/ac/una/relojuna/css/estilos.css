@@ -1,0 +1,815 @@
+/* =====================================================================
+   RelojUNA - Hoja de estilos corporativa
+   Paleta: vino institucional UNA + acento ambar + marino de apoyo
+   ===================================================================== */
+
+.root {
+    -color-fondo:            #E9E7E8;
+    -color-superficie:       #FFFFFF;
+    -color-superficie-alt:   #F7F5F5;
+    -color-texto:            #241417;
+    -color-texto-sec:        #6B5A5D;
+    -color-borde:            #D8CFD1;
+
+    -color-primario:         #7A1F2E;
+    -color-primario-hover:   #5E1622;
+    -color-primario-suave:   #F3E4E6;
+
+    -color-secundario:       #1C2B45;
+    -color-secundario-hover: #142032;
+
+    -color-acento:           #C89B5A;
+    -color-acento-hover:     #A67F42;
+    -color-acento-suave:     #F6EEDF;
+
+    -color-error:            #B23A3A;
+    -color-exito:            #2E7D5B;
+
+    /* Nota: los radios de esquina NO se guardan como variable.        */
+    /* JavaFX no convierte bien un numero de variable a Size cuando    */
+    /* se usa en -fx-background-radius o -fx-border-radius, por eso    */
+    /* aca se escriben literales (6, 10, 14) en cada regla.            */
+
+    /* Anchos minimos reutilizables para que el texto de botones no se corte */
+    -ancho-boton-sm: 90;
+    -ancho-boton-md: 130;
+    -ancho-boton-lg: 170;
+
+    -fx-font-family: "Segoe UI", "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-fill: -color-texto;
+    -fx-background-color: -color-fondo;
+}
+
+.root {
+    -ancho-ventana-md: 900;
+    -alto-ventana-md: 700;
+    -ancho-ventana-marcaje: 520;
+    -alto-ventana-marcaje: 760;
+}
+
+/* ---------------------------------------------------------------------
+   Raices de vistas
+   --------------------------------------------------------------------- */
+.login-root,
+.vista-root,
+.border-pane {
+    -fx-background-color: linear-gradient(to bottom, #F0ECED 0%, #E3DDDE 100%);
+}
+
+.login-root {
+    -fx-padding: 24;
+}
+
+/* ---------------------------------------------------------------------
+   Contenedor del login
+   --------------------------------------------------------------------- */
+.contenedor-login {
+    -fx-alignment: center;
+    -fx-spacing: 26;
+    -fx-max-width: 400;
+}
+
+.encabezado-login {
+    -fx-alignment: center;
+    -fx-spacing: 14;
+}
+
+.campo-login-contenedor {
+    -fx-spacing: 16;
+}
+
+.grupo-campo {
+    -fx-spacing: 6;
+}
+
+.insignia-login {
+    -fx-min-width: 60;
+    -fx-min-height: 60;
+    -fx-max-width: 60;
+    -fx-max-height: 60;
+    -fx-background-color: -color-primario;
+    -fx-background-radius: 50;
+    -fx-alignment: center;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(122, 31, 46, 0.35), 10, 0, 0, 3);
+}
+
+.divisor-acento {
+    -fx-min-height: 3;
+    -fx-max-height: 3;
+    -fx-min-width: 56;
+    -fx-max-width: 56;
+    -fx-background-color: -color-acento;
+    -fx-background-radius: 3;
+}
+
+/* ---------------------------------------------------------------------
+   Tarjetas
+   --------------------------------------------------------------------- */
+.panel-tarjeta {
+    -fx-background-color: -color-superficie;
+    -fx-background-radius: 10;
+    -fx-border-color: -color-borde;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 28;
+    -fx-effect: dropshadow(gaussian, rgba(36, 20, 23, 0.10), 16, 0, 0, 6);
+}
+
+.panel-tarjeta-acento {
+    -fx-background-color:
+        -color-acento,
+        -color-superficie;
+    -fx-background-insets: 0, 4 0 0 0;
+    -fx-background-radius: 10, 0 10 10 10;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-padding: 32 28 28 28;
+}
+
+.tarjeta-login {
+    -fx-spacing: 18;
+}
+
+/* ---------------------------------------------------------------------
+   Tipografia
+   --------------------------------------------------------------------- */
+.titulo-app {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-primario;
+}
+
+.subtitulo-app {
+    -fx-font-size: 13px;
+    -fx-text-fill: -color-texto-sec;
+}
+
+.etiqueta-campo {
+    -fx-text-fill: -color-texto-sec;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-min-width: 60px;
+}
+
+.texto-pie {
+    -fx-text-fill: -color-texto-sec;
+    -fx-font-size: 11px;
+}
+
+/* ---------------------------------------------------------------------
+   Inputs
+   --------------------------------------------------------------------- */
+.text-field,
+.password-field,
+.text-area {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: -color-borde;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 9 12 9 12;
+    -fx-text-fill: -color-texto;
+    -fx-prompt-text-fill: -color-texto-sec;
+    -fx-font-size: 13px;
+    -fx-highlight-fill: -color-primario;
+    -fx-highlight-text-fill: white;
+}
+
+.text-field:hover,
+.password-field:hover,
+.text-area:hover {
+    -fx-border-color: -color-primario;
+}
+
+.text-field:focused,
+.password-field:focused,
+.text-area:focused {
+    -fx-border-color: -color-primario;
+    -fx-border-width: 2;
+    -fx-background-color: -color-superficie;
+    -fx-effect: dropshadow(gaussian, rgba(122, 31, 46, 0.25), 8, 0, 0, 0);
+}
+
+.text-field:disabled,
+.password-field:disabled {
+    -fx-background-color: -color-superficie-alt;
+    -fx-text-fill: -color-texto-sec;
+}
+
+/* ---------------------------------------------------------------------
+   Botones
+   --------------------------------------------------------------------- */
+.button {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-padding: 9 18 9 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-background-color: -color-superficie;
+    -fx-border-color: -color-borde;
+    -fx-text-fill: -color-texto;
+    -fx-min-width: -ancho-boton-sm;
+}
+
+.button:hover {
+    -fx-background-color: -color-superficie-alt;
+    -fx-border-color: -color-texto-sec;
+}
+
+.boton-primario {
+    -fx-background-color: -color-primario;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-padding: 11 22 11 22;
+    -fx-font-size: 14px;
+    -fx-min-width: -ancho-boton-md;
+    -fx-effect: dropshadow(gaussian, rgba(122, 31, 46, 0.30), 8, 0, 0, 2);
+}
+
+.boton-primario:hover {
+    -fx-background-color: -color-primario-hover;
+    -fx-effect: dropshadow(gaussian, rgba(94, 22, 34, 0.40), 10, 0, 0, 3);
+}
+
+.boton-primario:pressed {
+    -fx-background-color: derive(-color-primario-hover, -10%);
+    -fx-effect: none;
+}
+
+.boton-secundario {
+    -fx-background-color: -color-primario-suave;
+    -fx-border-color: transparent;
+    -fx-text-fill: -color-primario;
+    -fx-min-width: -ancho-boton-md;
+}
+
+.boton-secundario:hover {
+    -fx-background-color: derive(-color-primario-suave, -8%);
+}
+
+.boton-acento {
+    -fx-background-color: -color-acento;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-min-width: -ancho-boton-md;
+}
+
+.boton-acento:hover {
+    -fx-background-color: -color-acento-hover;
+}
+
+.boton-marino {
+    -fx-background-color: -color-secundario;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-min-width: -ancho-boton-md;
+}
+
+.boton-marino:hover {
+    -fx-background-color: -color-secundario-hover;
+}
+
+/* ---------------------------------------------------------------------
+   Mensajes
+   --------------------------------------------------------------------- */
+.mensaje-error {
+    -fx-text-fill: -color-error;
+    -fx-font-size: 12px;
+}
+
+.mensaje-exito {
+    -fx-text-fill: -color-exito;
+    -fx-font-size: 12px;
+}
+
+/* ---------------------------------------------------------------------
+   Header de la aplicacion
+   --------------------------------------------------------------------- */
+.app-header {
+    -fx-background-color: -color-primario;
+    -fx-padding: 14 24 14 24;
+    -fx-effect: dropshadow(gaussian, rgba(36, 20, 23, 0.15), 8, 0, 0, 2);
+}
+
+.app-header-titulo {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.app-header-usuario {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(255, 255, 255, 0.80);
+}
+
+.boton-header {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255, 255, 255, 0.40);
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: white;
+    -fx-padding: 6 14 6 14;
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+    -fx-min-width: -ancho-boton-sm;
+}
+
+.boton-header:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+    -fx-border-color: rgba(255, 255, 255, 0.70);
+}
+
+/* ---------------------------------------------------------------------
+   Pagina de contenido
+   --------------------------------------------------------------------- */
+.contenido-pagina {
+    -fx-padding: 40;
+    -fx-background-color: transparent;
+}
+
+.titulo-pagina {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-texto;
+    -fx-border-color: transparent transparent -color-acento transparent;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 0 0 8 0;
+}
+
+.subtitulo-pagina {
+    -fx-font-size: 13px;
+    -fx-text-fill: -color-texto-sec;
+}
+
+/* ---------------------------------------------------------------------
+   Grilla de modulos
+   --------------------------------------------------------------------- */
+.tarjeta-modulo {
+    -fx-background-color:
+        -color-acento,
+        -color-superficie;
+    -fx-background-insets: 0, 4 0 0 0;
+    -fx-background-radius: 10, 0 10 10 10;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-padding: 26 20 22 20;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-texto;
+    -fx-cursor: hand;
+    -fx-pref-width: 260;
+    -fx-pref-height: 120;
+    -fx-alignment: CENTER;
+    -fx-wrap-text: true;
+    -fx-text-alignment: CENTER;
+    -fx-effect: dropshadow(gaussian, rgba(36, 20, 23, 0.06), 8, 0, 0, 2);
+}
+
+.tarjeta-modulo:hover {
+    -fx-background-color:
+        -color-primario,
+        -color-primario-suave;
+    -fx-background-insets: 0, 4 0 0 0;
+    -fx-background-radius: 10, 0 10 10 10;
+    -fx-border-color: -color-primario;
+    -fx-text-fill: -color-primario;
+    -fx-effect: dropshadow(gaussian, rgba(122, 31, 46, 0.25), 14, 0, 0, 4);
+}
+
+.tarjeta-modulo:pressed {
+    -fx-background-color:
+        -color-primario-hover,
+        derive(-color-primario-suave, -8%);
+    -fx-background-insets: 0, 4 0 0 0;
+    -fx-background-radius: 10, 0 10 10 10;
+    -fx-effect: dropshadow(gaussian, rgba(122, 31, 46, 0.15), 6, 0, 0, 1);
+}
+
+.tarjeta-modulo:focused {
+    -fx-border-color: -color-primario;
+    -fx-effect: dropshadow(gaussian, rgba(122, 31, 46, 0.35), 10, 0, 0, 0);
+}
+
+/* ---------------------------------------------------------------------
+   Tabla de datos
+   --------------------------------------------------------------------- */
+.tabla-datos {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, rgba(36, 20, 23, 0.06), 8, 0, 0, 2);
+}
+
+.tabla-datos .column-header-background {
+    -fx-background-color: -color-primario-suave;
+    -fx-background-radius: 10 10 0 0;
+    -fx-padding: 4 0 4 0;
+}
+
+.tabla-datos .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -color-borde transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-size: 38;
+}
+
+.tabla-datos .column-header .label {
+    -fx-text-fill: -color-primario;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 12 0 12;
+}
+
+.tabla-datos .table-row-cell {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: transparent transparent -color-borde transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 34;
+}
+
+.tabla-datos .table-row-cell:odd {
+    -fx-background-color: -color-superficie-alt;
+}
+
+.tabla-datos .table-row-cell:hover {
+    -fx-background-color: -color-primario-suave;
+}
+
+.tabla-datos .table-row-cell:selected {
+    -fx-background-color: -color-primario;
+}
+
+.tabla-datos .table-row-cell:selected .text {
+    -fx-fill: white;
+}
+
+.tabla-datos .table-cell {
+    -fx-text-fill: -color-texto;
+    -fx-padding: 0 12 0 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: transparent;
+}
+
+.tabla-datos .placeholder .label {
+    -fx-text-fill: -color-texto-sec;
+    -fx-font-size: 13px;
+}
+
+.tabla-datos .table-row-cell.fila-inconsistente {
+    -fx-background-color: -color-acento-suave;
+}
+
+.tabla-datos .table-row-cell.fila-inconsistente:hover {
+    -fx-background-color: derive(-color-acento-suave, -8%);
+}
+
+/* ---------------------------------------------------------------------
+   Seccion dentro de tarjeta
+   --------------------------------------------------------------------- */
+.titulo-seccion {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-primario;
+    -fx-border-color: transparent transparent -color-acento transparent;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 0 0 6 0;
+}
+
+/* ---------------------------------------------------------------------
+   Barra de botones
+   --------------------------------------------------------------------- */
+.barra-botones {
+    -fx-padding: 4 0 0 0;
+    -fx-spacing: 12;
+}
+
+/* ---------------------------------------------------------------------
+   Boton de peligro
+   --------------------------------------------------------------------- */
+.boton-peligro {
+    -fx-background-color: transparent;
+    -fx-border-color: -color-error;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: -color-error;
+    -fx-padding: 9 18 9 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-min-width: -ancho-boton-sm;
+}
+
+.boton-peligro:hover {
+    -fx-background-color: -color-error;
+    -fx-text-fill: white;
+}
+
+/* ---------------------------------------------------------------------
+   DatePicker
+   --------------------------------------------------------------------- */
+.date-picker {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: -color-borde;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-border-width: 1;
+}
+
+.date-picker:hover {
+    -fx-border-color: -color-primario;
+}
+
+.date-picker:focused {
+    -fx-border-color: -color-primario;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(122, 31, 46, 0.25), 8, 0, 0, 0);
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 6 6 0;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: -color-primario-suave;
+}
+
+.date-picker .arrow-button .arrow {
+    -fx-background-color: -color-primario;
+}
+
+/* ---------------------------------------------------------------------
+   ComboBox
+   --------------------------------------------------------------------- */
+.combo-box {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: -color-borde;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 0;
+}
+
+.combo-box:hover {
+    -fx-border-color: -color-primario;
+}
+
+.combo-box:focused {
+    -fx-border-color: -color-primario;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(122, 31, 46, 0.25), 8, 0, 0, 0);
+}
+
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-texto;
+    -fx-padding: 8 10 8 10;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: -color-primario;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -color-superficie;
+    -fx-border-color: -color-borde;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(36, 20, 23, 0.15), 12, 0, 0, 4);
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-texto;
+    -fx-padding: 8 12 8 12;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: -color-primario-suave;
+    -fx-text-fill: -color-primario;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: -color-primario;
+    -fx-text-fill: white;
+}
+
+/* ---------------------------------------------------------------------
+   Ventanas de modulo (Empleados, Marcas, Planillas, etc.)
+   --------------------------------------------------------------------- */
+.ventana-modulo {
+    -fx-min-width: -ancho-ventana-md;
+    -fx-min-height: -alto-ventana-md;
+    -fx-pref-width: -ancho-ventana-md;
+    -fx-pref-height: -alto-ventana-md;
+}
+
+.contenedor-modulo {
+    -fx-spacing: 15;
+    -fx-padding: 20;
+}
+
+.barra-busqueda {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10;
+}
+
+.tarjeta-formulario {
+    -fx-spacing: 16;
+}
+
+.formulario-modulo {
+    -fx-spacing: 20;
+}
+
+.columna-formulario {
+    -fx-spacing: 10;
+}
+
+.fila-campo {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10;
+}
+
+.etiqueta-campo-ancha {
+    -fx-min-width: 120;
+}
+
+/* ---------------------------------------------------------------------
+   Mantenimiento de Marcas
+   --------------------------------------------------------------------- */
+.encabezado-modulo {
+    -fx-spacing: 4;
+}
+
+.barra-filtros {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10;
+}
+
+.tarjeta-registro-marca {
+    -fx-spacing: 12;
+}
+
+/* ---------------------------------------------------------------------
+   Pantalla de Consultas
+   --------------------------------------------------------------------- */
+.panel-resumen {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 40;
+}
+
+.bloque-resumen {
+    -fx-spacing: 2;
+}
+
+.etiqueta-resumen {
+    -fx-text-fill: -color-texto-sec;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.valor-resumen {
+    -fx-text-fill: -color-primario;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* ---------------------------------------------------------------------
+   Modulo de Reportes
+   --------------------------------------------------------------------- */
+.contenedor-modulo-centrado {
+    -fx-alignment: TOP_CENTER;
+    -fx-padding: 20;
+}
+
+.tarjeta-formulario-angosta {
+    -fx-max-width: 480;
+    -fx-spacing: 20;
+}
+
+/* ---------------------------------------------------------------------
+   Pantalla de Marcas (marcador de entrada y salida)
+   --------------------------------------------------------------------- */
+.ventana-marcaje {
+    -fx-min-width: -ancho-ventana-marcaje;
+    -fx-min-height: -alto-ventana-marcaje;
+    -fx-pref-width: -ancho-ventana-marcaje;
+    -fx-pref-height: -alto-ventana-marcaje;
+}
+
+.contenedor-marcaje {
+    -fx-alignment: TOP_CENTER;
+    -fx-spacing: 24;
+    -fx-padding: 24;
+}
+
+.panel-reloj {
+    -fx-alignment: center;
+    -fx-spacing: 4;
+    -fx-background-color: -color-secundario;
+    -fx-background-radius: 14;
+    -fx-padding: 22 30 22 30;
+    -fx-effect: dropshadow(gaussian, rgba(28, 43, 69, 0.35), 14, 0, 0, 4);
+}
+
+.reloj-digital {
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-size: 52px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-acento;
+}
+
+.fecha-reloj {
+    -fx-text-fill: rgba(255, 255, 255, 0.75);
+    -fx-font-size: 13px;
+}
+
+.tarjeta-marcaje-folio {
+    -fx-alignment: center;
+    -fx-spacing: 12;
+    -fx-max-width: 440;
+}
+
+.campo-folio-grande {
+    -fx-font-size: 16px;
+    -fx-padding: 12 14 12 14;
+}
+
+.panel-resultado-marca {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-max-width: 440;
+}
+
+.marco-foto {
+    -fx-min-width: 100;
+    -fx-min-height: 100;
+    -fx-max-width: 100;
+    -fx-max-height: 100;
+    -fx-background-color: -color-primario-suave;
+    -fx-background-radius: 50;
+    -fx-border-color: -color-primario;
+    -fx-border-radius: 50;
+    -fx-border-width: 2;
+    -fx-alignment: center;
+}
+
+.nombre-empleado-marca {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-texto;
+}
+
+.hora-marca {
+    -fx-font-size: 14px;
+    -fx-text-fill: -color-texto-sec;
+}
+
+.mensaje-cumpleanos {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-acento-hover;
+}
+
+.panel-animacion-cumple {
+    -fx-background-color: transparent;
+}
+
+.grilla-modulos {
+    -fx-alignment: center;
+    -fx-hgap: 24;
+    -fx-vgap: 24;
+    -fx-pref-columns: 4;
+    -fx-tile-alignment: center;
+}
+
+.contenedor-principal {
+    -fx-alignment: center;
+    -fx-max-width: 1100;
+}
+
+.encabezado-pagina {
+    -fx-alignment: center;
+}

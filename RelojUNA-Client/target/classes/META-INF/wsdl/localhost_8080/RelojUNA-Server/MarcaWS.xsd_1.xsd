@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by XML-WS Runtime (https://github.com/eclipse-ee4j/metro-jax-ws). Runtime's version is Eclipse Metro/4.0.4.payara-p1 (FISH-10142-Metro-4.0.4-fa01c0b; 2025-07-11T17:44:37+0100) XMLWS-Impl/4.0.3 XMLWS-API/4.0.2 XMLB-Impl/4.0.5 XMLB-API/4.0.2 git-revision#fa01c0b. --><xs:schema xmlns:tns="http://ws.relojservidor.una.ac.cr/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ws.relojservidor.una.ac.cr/">
+
+<xs:element name="buscarInconsistencias" type="tns:buscarInconsistencias"/>
+
+<xs:element name="buscarInconsistenciasResponse" type="tns:buscarInconsistenciasResponse"/>
+
+<xs:element name="eliminarMarca" type="tns:eliminarMarca"/>
+
+<xs:element name="eliminarMarcaResponse" type="tns:eliminarMarcaResponse"/>
+
+<xs:element name="guardarMarca" type="tns:guardarMarca"/>
+
+<xs:element name="guardarMarcaResponse" type="tns:guardarMarcaResponse"/>
+
+<xs:element name="listaMarcaDto" type="tns:listaMarcaDto"/>
+
+<xs:element name="marcaDto" type="tns:marcaDto"/>
+
+<xs:element name="marcar" type="tns:marcar"/>
+
+<xs:element name="marcarResponse" type="tns:marcarResponse"/>
+
+<xs:element name="obtenerMarcas" type="tns:obtenerMarcas"/>
+
+<xs:element name="obtenerMarcasResponse" type="tns:obtenerMarcasResponse"/>
+
+<xs:complexType name="marcaDto">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+<xs:element name="fecha" type="xs:string" minOccurs="0"/>
+<xs:element name="hora" type="xs:string" minOccurs="0"/>
+<xs:element name="tipo" type="xs:string" minOccurs="0"/>
+<xs:element name="empleadoId" type="xs:long" minOccurs="0"/>
+<xs:element name="folioEmpleado" type="xs:string" minOccurs="0"/>
+<xs:element name="nombreEmpleado" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="listaMarcaDto">
+<xs:sequence>
+<xs:element name="marcas" type="tns:marcaDto" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="obtenerMarcas">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="obtenerMarcasResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="respuesta">
+<xs:sequence>
+<xs:element name="exito" type="xs:boolean"/>
+<xs:element name="mensaje" type="xs:string" minOccurs="0"/>
+<xs:any processContents="lax" namespace="##other"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="buscarInconsistencias">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="buscarInconsistenciasResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="marcar">
+<xs:sequence>
+<xs:element name="empleadoId" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="marcarResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="guardarMarca">
+<xs:sequence>
+<xs:element name="marca" type="tns:marcaDto" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="guardarMarcaResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="eliminarMarca">
+<xs:sequence>
+<xs:element name="id" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="eliminarMarcaResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:respuesta" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

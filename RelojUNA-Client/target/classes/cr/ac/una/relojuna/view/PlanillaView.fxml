@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="vista-root,ventana-modulo" stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.PlanillaController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" styleClass="app-header">
+            <Label styleClass="app-header-titulo" text="RelojUNA" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label styleClass="app-header-usuario" text="Generacion de Planillas" />
+            <Button fx:id="btnRegresar" onAction="#handleRegresar" styleClass="boton-header" text="Regresar" />
+        </HBox>
+    </top>
+
+    <center>
+        <VBox styleClass="contenedor-modulo">
+
+            <HBox styleClass="panel-tarjeta,barra-filtros">
+                <Label styleClass="etiqueta-campo" text="Anio:" />
+                <TextField fx:id="txtAnio" promptText="2026" />
+                <Label styleClass="etiqueta-campo" text="Mes:" />
+                <ComboBox fx:id="cmbMes" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnGenerar" onAction="#handleGenerar" styleClass="boton-primario" text="Generar Planilla" />
+                <Button fx:id="btnExportarExcel" onAction="#handleExportarExcel" styleClass="boton-secundario" text="Exportar a Excel" />
+            </HBox>
+
+            <TableView fx:id="tblPlanilla" styleClass="tabla-datos" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colEmpleado" prefWidth="150" text="Empleado" />
+                    <TableColumn fx:id="colHorasOrdinarias" prefWidth="120" text="H. Ordinarias" />
+                    <TableColumn fx:id="colHorasExtras" prefWidth="100" text="H. Extras" />
+                    <TableColumn fx:id="colHorasDobles" prefWidth="100" text="H. Dobles" />
+                    <TableColumn fx:id="colSalarioMensual" prefWidth="120" text="Salario Mensual" />
+                </columns>
+            </TableView>
+
+        </VBox>
+    </center>
+
+</BorderPane>

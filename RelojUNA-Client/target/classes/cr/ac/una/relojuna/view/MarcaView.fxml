@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane styleClass="vista-root,ventana-marcaje" stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.MarcaController">
+
+    <VBox styleClass="contenedor-marcaje">
+
+        <HBox alignment="CENTER_LEFT" styleClass="app-header">
+            <Label styleClass="app-header-titulo" text="RelojUNA" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnRegresar" onAction="#handleRegresar" styleClass="boton-header" text="Regresar" />
+        </HBox>
+
+        <VBox styleClass="panel-reloj">
+            <Label fx:id="lblReloj" styleClass="reloj-digital" text="00:00:00" />
+            <Label fx:id="lblFecha" styleClass="fecha-reloj" text="" />
+        </VBox>
+
+        <HBox styleClass="panel-tarjeta,tarjeta-marcaje-folio">
+            <Label styleClass="etiqueta-campo" text="Folio:" />
+            <TextField fx:id="txtFolio" promptText="Ingrese su folio" styleClass="campo-folio-grande" HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnMarcar" onAction="#handleMarcar" styleClass="boton-primario" text="Marcar" />
+        </HBox>
+
+        <VBox fx:id="panelResultado" styleClass="panel-tarjeta,panel-resultado-marca">
+            <StackPane styleClass="marco-foto">
+                <ImageView fx:id="imgFoto" fitHeight="90" fitWidth="90" preserveRatio="true" />
+            </StackPane>
+            <Label fx:id="lblNombreEmpleado" styleClass="nombre-empleado-marca" text="" />
+            <Label fx:id="lblHoraMarca" styleClass="hora-marca" text="" />
+            <Label fx:id="lblMensaje" styleClass="mensaje-exito" text="" />
+        </VBox>
+
+    </VBox>
+
+    <StackPane fx:id="panelAnimacion" styleClass="panel-animacion-cumple" mouseTransparent="true" visible="false">
+        <Label fx:id="lblFelicitacion" styleClass="mensaje-cumpleanos" text="" />
+    </StackPane>
+
+</StackPane>

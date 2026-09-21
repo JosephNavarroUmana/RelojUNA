@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane styleClass="login-root"
+           stylesheets="@/cr/ac/una/relojuna/css/estilos.css"
+           xmlns="http://javafx.com/javafx/25"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="cr.ac.una.relojuna.controller.LoginController">
+
+    <VBox styleClass="contenedor-login">
+
+        <VBox styleClass="encabezado-login">
+            <Label styleClass="insignia-login" text="RU" />
+            <Label styleClass="titulo-app" text="RelojUNA" />
+            <Region styleClass="divisor-acento" />
+            <Label styleClass="subtitulo-app"
+                   text="Sistema corporativo de control de asistencia" />
+        </VBox>
+
+        <VBox styleClass="panel-tarjeta,panel-tarjeta-acento,tarjeta-login">
+
+            <VBox styleClass="grupo-campo">
+                <Label styleClass="etiqueta-campo" text="Folio" />
+                <TextField fx:id="txtFolio" promptText="Ingrese su folio" />
+            </VBox>
+
+            <VBox styleClass="grupo-campo">
+                <Label styleClass="etiqueta-campo" text="Clave" />
+                <PasswordField fx:id="txtClave" promptText="Ingrese su clave" />
+            </VBox>
+
+            <Button fx:id="btnLogin" maxWidth="Infinity"
+                    onAction="#handleLogin"
+                    styleClass="boton-primario"
+                    text="Ingresar" />
+
+            <Label fx:id="lblMensaje" styleClass="mensaje-error" text="" />
+        </VBox>
+
+        <Label styleClass="texto-pie" text="Universidad Nacional - Sede Brunca" />
+
+    </VBox>
+</StackPane>

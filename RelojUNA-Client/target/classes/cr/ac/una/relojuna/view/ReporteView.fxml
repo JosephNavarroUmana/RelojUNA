@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="vista-root,ventana-modulo" stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.relojuna.controller.ReporteController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" styleClass="app-header">
+            <Label styleClass="app-header-titulo" text="RelojUNA" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label styleClass="app-header-usuario" text="Modulo de Reportes (Jasper Reports)" />
+            <Button fx:id="btnRegresar" onAction="#handleRegresar" styleClass="boton-header" text="Regresar" />
+        </HBox>
+    </top>
+
+    <center>
+        <VBox styleClass="contenedor-modulo-centrado">
+            <VBox styleClass="panel-tarjeta,tarjeta-formulario-angosta">
+
+                <HBox styleClass="fila-campo">
+                    <Label styleClass="etiqueta-campo" text="Tipo de reporte:" />
+                    <RadioButton fx:id="rbReporteEmpleados" text="Empleados" />
+                    <RadioButton fx:id="rbReporteMarcas" selected="true" text="Marcas" />
+                </HBox>
+
+                <HBox styleClass="fila-campo">
+                    <Label styleClass="etiqueta-campo" text="Empleado:" />
+                    <ComboBox fx:id="cmbEmpleado" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                </HBox>
+
+                <HBox styleClass="fila-campo">
+                    <Label styleClass="etiqueta-campo" text="Fecha desde:" />
+                    <DatePicker fx:id="dpFechaDesde" />
+                </HBox>
+
+                <HBox styleClass="fila-campo">
+                    <Label styleClass="etiqueta-campo" text="Fecha hasta:" />
+                    <DatePicker fx:id="dpFechaHasta" />
+                </HBox>
+
+                <HBox styleClass="barra-botones">
+                    <Button fx:id="btnGenerarReporte" onAction="#handleGenerarReporte" styleClass="boton-primario" text="Generar Reporte" />
+                    <Button fx:id="btnVistaPrevia" onAction="#handleVistaPrevia" styleClass="boton-secundario" text="Vista Previa" />
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>
