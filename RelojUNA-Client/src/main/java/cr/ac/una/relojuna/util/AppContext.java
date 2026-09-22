@@ -4,10 +4,7 @@ import java.util.HashMap;
 
 public class AppContext {
 
-    //Instancia unica de la clase, patron singleton
     private static AppContext instancia;
-
-    //Mapa donde se guardan los datos generales de la aplicacion
     private static HashMap<String, Object> contexto = new HashMap<>();
 
     private AppContext() {

@@ -5,16 +5,9 @@ import java.util.Map;
 
 public class Respuesta {
 
-    //Indica si la operacion se realizo correctamente
     private boolean estado;
-
-    //Mensaje que se le puede mostrar al usuario
     private String mensaje;
-
-    //Mensaje interno para el log, no se le muestra al usuario
     private String mensajeInterno;
-
-    //Mapa donde se guardan los resultados de la operacion, cada uno con un nombre
     private Map<String, Object> resultados;
 
     public Respuesta(boolean estado, String mensaje, String mensajeInterno) {

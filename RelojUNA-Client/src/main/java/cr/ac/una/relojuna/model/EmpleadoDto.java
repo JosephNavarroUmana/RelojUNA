@@ -11,12 +11,8 @@ import javafx.beans.property.StringProperty;
 
 public class EmpleadoDto {
 
-    //Id interno de Oracle. No se muestra en la UI, solo se usa para identificar
-    //el empleado en actualizaciones y eliminaciones.
     private ObjectProperty<Long> id;
 
-    //Folio visible para el usuario (ej. "FJ-0007"). Lo genera el servidor al crear
-    //el empleado y es de solo lectura en el cliente.
     private StringProperty folio;
 
     private StringProperty nombre;

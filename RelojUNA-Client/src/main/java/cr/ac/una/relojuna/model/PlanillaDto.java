@@ -14,7 +14,6 @@ public class PlanillaDto {
     private ObjectProperty<Double> horasExtras;
     private ObjectProperty<Double> horasDobles;
     private ObjectProperty<Double> salarioMensual;
-    
 
     public PlanillaDto() {
         this.folioEmpleado = new SimpleObjectProperty<>("");
@@ -26,8 +25,8 @@ public class PlanillaDto {
     }
 
     public String getFolioEmpleado() {
-    return folioEmpleado.get();
-}
+        return folioEmpleado.get();
+    }
 
     public void setFolioEmpleado(String folioEmpleado) {
         this.folioEmpleado.set(folioEmpleado);

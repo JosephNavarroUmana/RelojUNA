@@ -9,23 +9,21 @@ import javafx.stage.Stage;
 
 public class FlowController {
 
-    // Login: ventana chica, no redimensionable
     private static final double LOGIN_ANCHO = 480;
-    private static final double LOGIN_ALTO  = 620;
+    private static final double LOGIN_ALTO = 620;
 
-    // App: ventana estándar de vistas internas
-    private static final double APP_ANCHO     = 1180;
-    private static final double APP_ALTO      = 760;
+    private static final double APP_ANCHO = 1180;
+    private static final double APP_ALTO = 760;
     private static final double APP_MIN_ANCHO = 1000;
-    private static final double APP_MIN_ALTO  = 660;
+    private static final double APP_MIN_ALTO = 660;
 
     private static FlowController instancia;
     private Stage stagePrincipal;
 
-    // Bandera: ¿ya dimensionamos la app para las vistas internas?
     private boolean appDimensionada = false;
 
-    private FlowController() { }
+    private FlowController() {
+    }
 
     public static FlowController getInstancia() {
         if (instancia == null) {
@@ -38,9 +36,6 @@ public class FlowController {
         this.stagePrincipal = stage;
     }
 
-    // ------------------------------------------------------------------
-    // LOGIN: ventana chica, fija, centrada
-    // ------------------------------------------------------------------
     public void irALogin(String nombreFxml, String titulo) {
         try {
             Parent raiz = cargarFxml(nombreFxml);
@@ -64,9 +59,6 @@ public class FlowController {
         }
     }
 
-    // ------------------------------------------------------------------
-    // VISTAS INTERNAS: cambia solo el root, dimensiona UNA sola vez
-    // ------------------------------------------------------------------
     public void irAVista(String nombreFxml, String titulo) {
         try {
             Parent raiz = cargarFxml(nombreFxml);
@@ -92,9 +84,6 @@ public class FlowController {
         }
     }
 
-    // ------------------------------------------------------------------
-    // MODAL: ventana independiente, centrada, bloquea la principal
-    // ------------------------------------------------------------------
     public void abrirVistaModal(String nombreFxml, String titulo) {
         try {
             Parent raiz = cargarFxml(nombreFxml);
@@ -113,16 +102,12 @@ public class FlowController {
         }
     }
 
-    // ------------------------------------------------------------------
-    // Helpers
-    // ------------------------------------------------------------------
     private Parent cargarFxml(String nombreFxml) throws IOException {
         String ruta = "/cr/ac/una/relojuna/view/" + nombreFxml;
         FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
         return loader.load();
     }
 
-    /** Reemplaza el contenido del Stage sin recrear el Scene (conserva tamaño/posición). */
     private void reemplazarRoot(Parent raiz) {
         if (stagePrincipal.getScene() == null) {
             stagePrincipal.setScene(new Scene(raiz));

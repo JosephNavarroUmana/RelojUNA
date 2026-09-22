@@ -18,7 +18,7 @@ public class LoginService {
         puerto = servicioWS.getLoginWSPort();
     }
 
-   public Respuesta validarLogin(String folio, String clave) {
+    public Respuesta validarLogin(String folio, String clave) {
         try {
             cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.login(folio, clave);
 
@@ -39,26 +39,22 @@ public class LoginService {
         }
     }
 
-//Convierte el resultado crudo que manda el servidor a un EmpleadoDto
-//Puede llegar como JAXBElement, como el tipo directo, o como un nodo XML sin procesar
-private cr.ac.una.relojuna.ws.EmpleadoDto convertirAEmpleadoDtoServidor(Object resultadoCrudo) throws Exception {
-    if (resultadoCrudo instanceof JAXBElement) {
-        return (cr.ac.una.relojuna.ws.EmpleadoDto) ((JAXBElement<?>) resultadoCrudo).getValue();
-    }
+    private cr.ac.una.relojuna.ws.EmpleadoDto convertirAEmpleadoDtoServidor(Object resultadoCrudo) throws Exception {
+        if (resultadoCrudo instanceof JAXBElement) {
+            return (cr.ac.una.relojuna.ws.EmpleadoDto) ((JAXBElement<?>) resultadoCrudo).getValue();
+        }
 
-    if (resultadoCrudo instanceof cr.ac.una.relojuna.ws.EmpleadoDto) {
-        return (cr.ac.una.relojuna.ws.EmpleadoDto) resultadoCrudo;
-    }
+        if (resultadoCrudo instanceof cr.ac.una.relojuna.ws.EmpleadoDto) {
+            return (cr.ac.una.relojuna.ws.EmpleadoDto) resultadoCrudo;
+        }
 
-    //Si llega como nodo XML crudo, lo desempacamos a mano con un Unmarshaller
-    //Usamos la variante que recibe la clase esperada, asi no importa el nombre del elemento raiz
-    if (resultadoCrudo instanceof Element) {
-        JAXBContext contexto = JAXBContext.newInstance(cr.ac.una.relojuna.ws.EmpleadoDto.class);
-        Unmarshaller desempacador = contexto.createUnmarshaller();
-        JAXBElement<cr.ac.una.relojuna.ws.EmpleadoDto> elemento = desempacador.unmarshal((Element) resultadoCrudo, cr.ac.una.relojuna.ws.EmpleadoDto.class);
-        return elemento.getValue();
-    }
+        if (resultadoCrudo instanceof Element) {
+            JAXBContext contexto = JAXBContext.newInstance(cr.ac.una.relojuna.ws.EmpleadoDto.class);
+            Unmarshaller desempacador = contexto.createUnmarshaller();
+            JAXBElement<cr.ac.una.relojuna.ws.EmpleadoDto> elemento = desempacador.unmarshal((Element) resultadoCrudo, cr.ac.una.relojuna.ws.EmpleadoDto.class);
+            return elemento.getValue();
+        }
 
-    throw new Exception("No se pudo interpretar el resultado del servidor");
-}
+        throw new Exception("No se pudo interpretar el resultado del servidor");
+    }
 }

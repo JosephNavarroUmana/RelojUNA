@@ -1,6 +1,5 @@
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\AccesoDirectoMarcaApp.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\App.java
-C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\controller\AccesoDirectoMarcaController.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\controller\ConsultaController.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\controller\EmpleadoController.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\controller\LoginController.java
@@ -12,7 +11,6 @@ C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\reloj
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\Launcher.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\LauncherApp.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\model\ConsultaResultadoDto.java
-C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\model\DetallePlanillaDto.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\model\EmpleadoDto.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\model\MarcaDto.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\model\PlanillaDto.java
@@ -25,7 +23,6 @@ C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\reloj
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\util\AnimacionCumpleanos.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\util\AppContext.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\util\FlowController.java
-C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\util\ImagenUtil.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\src\main\java\cr\ac\una\relojuna\util\Respuesta.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\target\generated-sources\jaxws-wsimport\cr\ac\una\relojuna\ws\ArchivoDto.java
 C:\Users\kenda\Desktop\P#\RelojUNA\RelojUNA-Client\target\generated-sources\jaxws-wsimport\cr\ac\una\relojuna\ws\BuscarInconsistencias.java

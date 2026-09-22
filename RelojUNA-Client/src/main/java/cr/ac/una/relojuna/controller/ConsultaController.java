@@ -44,7 +44,7 @@ public class ConsultaController {
     @FXML
     private TableColumn<ConsultaResultadoDto, Double> colHorasTrabajadas;
     @FXML
-    private Button btnConsultar, btnExportarExcel;
+    private Button btnExportarExcel;
     @FXML
     private Button btnRegresar;
 
@@ -54,10 +54,8 @@ public class ConsultaController {
     private MarcaService marcaService;
     private ReporteService reporteService;
 
-    //Lista observable que alimenta la tabla
     private ObservableList<ConsultaResultadoDto> listaResultados;
 
-    //Lista de empleados cargados en el combo
     private List<EmpleadoDto> empleadosDelCombo;
 
     private DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
@@ -94,7 +92,6 @@ public class ConsultaController {
         dpFechaHasta.setValue(LocalDate.now());
     }
 
-    //Llena el combo de empleados con la opcion Todos de primero
     private void cargarComboEmpleados() {
         Respuesta respuesta = empleadoService.buscarEmpleados("");
 
@@ -123,7 +120,7 @@ public class ConsultaController {
         }
         return seleccionado.split(" - ")[0];
     }
-    
+
     @FXML
     private void handleConsultar() {
         LocalDate fechaDesde = dpFechaDesde.getValue();
@@ -134,9 +131,8 @@ public class ConsultaController {
             return;
         }
 
-//        Integer folioEmpleado = obtenerFolioSeleccionado();
         String folioEmpleado = obtenerFolioSeleccionado();
-        
+
         Respuesta respuesta = consultaService.consultarMarcas(fechaDesde, fechaHasta, folioEmpleado);
 
         if (!respuesta.getEstado()) {
@@ -151,7 +147,6 @@ public class ConsultaController {
         actualizarTotales(fechaDesde, fechaHasta, folioEmpleado, resultado);
     }
 
-    //Calcula los totales de la consulta usando streams
     private void actualizarTotales(LocalDate fechaDesde, LocalDate fechaHasta, String folioEmpleado, List<ConsultaResultadoDto> resultado) {
         long totalEmpleados = resultado.stream()
                 .map(fila -> fila.getFolioEmpleado())
@@ -174,7 +169,7 @@ public class ConsultaController {
         lblTotalHoras.setText("Total horas trabajadas: " + String.format("%.2f", totalHoras));
     }
 
-    //Pide al servidor que genere el Excel de la consulta y lo guarda donde el usuario elija
+    //Pide al servidor que genere el Excel
     @FXML
     private void handleExportarExcel() {
         if (listaResultados.isEmpty()) {

@@ -12,11 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,49 +36,32 @@ public class MarcaController {
     @FXML
     private ImageView imgFoto;
     @FXML
-    private Button btnMarcar;
-    @FXML
     private Button btnRegresar;
-    @FXML
-    private VBox panelResultado;
     @FXML
     private StackPane panelAnimacion;
 
-    //Servicios que se usan en esta pantalla
-//    private EmpleadoService empleadoService;
-//    private MarcaService marcaService;
-//
-//    //Formatos para mostrar la hora y la fecha en el reloj digital
-//    private DateTimeFormatter formatoReloj = DateTimeFormatter.ofPattern("HH:mm:ss");
-//    private DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "CR"));
-
-        private EmpleadoService empleadoService = new EmpleadoService();
+    private EmpleadoService empleadoService = new EmpleadoService();
     private MarcaService marcaService = new MarcaService();
-
-    //Formatos para mostrar la hora y la fecha en el reloj digital
     private DateTimeFormatter formatoReloj = DateTimeFormatter.ofPattern("HH:mm:ss");
     private DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "CR"));
-    
-  @FXML
-private void initialize() {
-    empleadoService = new EmpleadoService();
-    marcaService = new MarcaService();
 
-    //El circulo de recorte deja la foto redonda dentro del marco del FXML
-    Circle recorteFoto = new Circle(45, 45, 45);
-    imgFoto.setClip(recorteFoto);
+    @FXML
+    private void initialize() {
+        empleadoService = new EmpleadoService();
+        marcaService = new MarcaService();
 
-    iniciarReloj();
-}
-    //Arranca un timeline que actualiza el label del reloj cada segundo
+        Circle recorteFoto = new Circle(45, 45, 45);
+        imgFoto.setClip(recorteFoto);
+
+        iniciarReloj();
+    }
+
     private void iniciarReloj() {
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), evento -> actualizarReloj())
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-
-        //Ponemos la hora inmediatamente para no esperar el primer segundo
         actualizarReloj();
     }
 
@@ -101,7 +80,6 @@ private void initialize() {
             return;
         }
 
-        //Buscamos el empleado para mostrar su nombre y validar que exista
         Respuesta respuestaEmpleados = empleadoService.buscarEmpleados(folioTexto);
 
         if (!respuestaEmpleados.getEstado()) {
@@ -118,8 +96,6 @@ private void initialize() {
         }
 
         EmpleadoDto empleado = empleados.get(0);
-
-        //Registramos la marca usando el id real del empleado, no el folio escrito
         Respuesta respuestaMarca = marcaService.marcar(empleado.getId());
 
         if (!respuestaMarca.getEstado()) {
@@ -134,7 +110,6 @@ private void initialize() {
         lblHoraMarca.setText(marca.getTipo() + " registrada a las " + marca.getFechaHora().format(formatoReloj));
         lblMensaje.setText("Marca registrada correctamente.");
 
-        //Verificamos si hoy es el cumpleanios del empleado
         if (esCumpleanios(empleado)) {
             mostrarAnimacionCumpleanios(empleado);
         }
@@ -142,7 +117,6 @@ private void initialize() {
         txtFolio.clear();
     }
 
-    //Convierte el arreglo de bytes de la BD en una imagen para el ImageView
     private void mostrarFoto(EmpleadoDto empleado) {
         byte[] datosFoto = empleado.getFoto();
 
@@ -155,7 +129,6 @@ private void initialize() {
         imgFoto.setImage(imagen);
     }
 
-    //Compara el dia y mes de nacimiento con la fecha de hoy
     private boolean esCumpleanios(EmpleadoDto empleado) {
         LocalDate fechaNacimiento = empleado.getFechaNacimiento();
         LocalDate hoy = LocalDate.now();
@@ -170,7 +143,7 @@ private void initialize() {
         return mismoMes && mismoDia;
     }
 
-   private void mostrarAnimacionCumpleanios(EmpleadoDto empleado) {
+    private void mostrarAnimacionCumpleanios(EmpleadoDto empleado) {
         AnimacionCumpleanos.reproducir(panelAnimacion, lblFelicitacion, empleado.getNombre());
     }
 

@@ -160,14 +160,11 @@ public class ReporteService {
         }
     }
 
-    //Convierte el resultado crudo del servidor a bytes, desempacando el ArchivoDto
     private byte[] convertirABytes(Object resultadoCrudo) throws Exception {
         cr.ac.una.relojuna.ws.ArchivoDto archivoServidor = convertirAArchivoDtoServidor(resultadoCrudo);
         return archivoServidor.getContenido();
     }
 
-    //Convierte el resultado crudo que manda el servidor a un ArchivoDto
-    //Puede llegar como JAXBElement, como el tipo directo, o como un nodo XML sin procesar
     private cr.ac.una.relojuna.ws.ArchivoDto convertirAArchivoDtoServidor(Object resultadoCrudo) throws Exception {
         if (resultadoCrudo instanceof JAXBElement) {
             return (cr.ac.una.relojuna.ws.ArchivoDto) ((JAXBElement<?>) resultadoCrudo).getValue();

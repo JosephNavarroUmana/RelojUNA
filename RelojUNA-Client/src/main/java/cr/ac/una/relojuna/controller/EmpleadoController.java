@@ -57,8 +57,6 @@ public class EmpleadoController {
     @FXML
     private Button btnFoto;
     @FXML
-    private Button btnCamara;
-    @FXML
     private TableView<EmpleadoDto> tblEmpleados;
     @FXML
     private TableColumn<EmpleadoDto, String> colFolio;
@@ -71,30 +69,16 @@ public class EmpleadoController {
     @FXML
     private TableColumn<EmpleadoDto, Boolean> colAdmin;
     @FXML
-    private Button btnBuscar, btnGuardar, btnEliminar, btnLimpiar;
-    @FXML
-    private Button btnLimpiarBusqueda;
-    @FXML
     private Button btnRegresar;
 
     private static final int EDAD_MINIMA = 18;
 
     private EmpleadoService empleadoService;
     private ObservableList<EmpleadoDto> listaEmpleados;
-
-    //Id del empleado seleccionado en la tabla; null si estamos creando uno nuevo.
-    //El folio ya no sirve para esto porque ahora es solo texto generado por el servidor.
     private Long idSeleccionado;
-
-    //Bytes de la foto actualmente cargada en el formulario (nueva o existente).
-    //null significa "sin foto nueva" (en edicion, el servidor no la toca).
     private byte[] fotoActual;
-
-    //Camara actualmente abierta para tomar la foto; null si esta apagada
     private Webcam webcam;
-    //Ventana emergente donde se muestra la vista previa de la camara
     private Stage stageCamara;
-    //Actualiza la vista previa de la camara cuadro por cuadro
     private Timeline timelineCamara;
 
     @FXML
@@ -118,7 +102,6 @@ public class EmpleadoController {
             }
         });
 
-        //La clave solo tiene sentido si es administrador: deshabilitada y vacia por defecto
         txtClave.setDisable(!chkAdmin.isSelected());
         chkAdmin.selectedProperty().addListener((obs, anterior, esAdmin) -> {
             txtClave.setDisable(!esAdmin);
@@ -127,7 +110,6 @@ public class EmpleadoController {
             }
         });
 
-        //No se puede elegir hoy, el futuro, ni una fecha que de menos de 18 anios
         dpFechaNac.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate fecha, boolean vacio) {
@@ -140,6 +122,58 @@ public class EmpleadoController {
                 if (invalida) {
                     setStyle("-fx-background-color: #ffc0c0;");
                 }
+            }
+        });
+
+        txtNombre.textProperty().addListener((obs, textoAnterior, textoActual) -> {
+            if (!textoActual.matches("[a-zA-ZñÑáéíóúÁÉÍÓÚ ]{0,15}")) {
+                txtNombre.setText(textoAnterior);
+            }
+        });
+
+        txtApellidos.textProperty().addListener((obs, textoAnterior, textoActual) -> {
+            if (!textoActual.matches("[a-zA-ZñÑáéíóúÁÉÍÓÚ ]{0,20}")) {
+                txtApellidos.setText(textoAnterior);
+            }
+        });
+        txtCedula.textProperty().addListener((obs, textoAnterior, textoActual) -> {
+            if (!textoActual.matches("[0-9]{0,9}")) {
+                txtCedula.setText(textoAnterior);
+            }
+        });
+
+        txtSalario.textProperty().addListener((obs, textoAnterior, textoActual) -> {
+            if (textoActual.isBlank()) {
+                return;
+            }
+            if (!textoActual.matches("[0-9]+")) {
+                txtSalario.setText(textoAnterior);
+                return;
+            }
+
+            int valorSalario;
+            try {
+                valorSalario = Integer.parseInt(textoActual);
+            } catch (NumberFormatException ex) {
+                txtSalario.setText(textoAnterior);
+                return;
+            }
+
+            if (valorSalario > 100000) {
+                txtSalario.setText(textoAnterior);
+            }
+        });
+
+        txtClave.textProperty().addListener((obs, textoAnterior, textoActual) -> {
+            if (!textoActual.matches("[a-zA-Z0-9]{0,10}")) {
+                txtClave.setText(textoAnterior);
+            }
+        });
+
+        btnRegresar.sceneProperty().addListener((obs, escenaAnterior, escenaNueva) -> {
+            if (escenaNueva != null) {
+                Stage stage = (Stage) escenaNueva.getWindow();
+                stage.setOnCloseRequest(evento -> apagarCamara());
             }
         });
 
@@ -168,8 +202,6 @@ public class EmpleadoController {
         txtCedula.setText(empleado.getCedula());
         dpFechaNac.setValue(empleado.getFechaNacimiento());
         txtSalario.setText(empleado.getSalarioPorHora().toString());
-
-        //Primero el checkbox: dispara el listener que habilita/limpia txtClave
         chkAdmin.setSelected(empleado.isAdministrador());
         txtClave.setText(empleado.isAdministrador() ? empleado.getClave() : "");
 
@@ -178,7 +210,6 @@ public class EmpleadoController {
     }
 
     private void limpiarFormulario() {
-        //Si la camara esta encendida, se apaga antes de limpiar el formulario
         apagarCamara();
 
         idSeleccionado = null;
@@ -217,6 +248,8 @@ public class EmpleadoController {
 
     @FXML
     private void handleSeleccionarFoto() {
+        apagarCamara();
+
         FileChooser selector = new FileChooser();
         selector.setTitle("Seleccionar foto del empleado");
         selector.getExtensionFilters().add(
@@ -238,7 +271,6 @@ public class EmpleadoController {
         }
     }
 
-    //Abre una ventana con la vista previa de la camara para tomar la foto
     @FXML
     private void handleAbrirCamara() {
         try {
@@ -287,8 +319,6 @@ public class EmpleadoController {
         stageCamara = new Stage();
         stageCamara.setTitle("Capturar foto");
         stageCamara.setScene(new Scene(panelPrincipal));
-
-        //Si el usuario cierra la ventana con la x, la camara tambien se apaga
         stageCamara.setOnCloseRequest(evento -> apagarCamara());
 
         timelineCamara = new Timeline(
@@ -305,7 +335,6 @@ public class EmpleadoController {
         stageCamara.show();
     }
 
-    //Convierte la imagen capturada por la camara a bytes en formato PNG
     private byte[] convertirImagenABytes(BufferedImage imagen) {
         try {
             ByteArrayOutputStream salida = new ByteArrayOutputStream();
@@ -317,7 +346,6 @@ public class EmpleadoController {
         }
     }
 
-    //Detiene la vista previa, cierra la camara y la ventana emergente si estan abiertas
     private void apagarCamara() {
         if (timelineCamara != null) {
             timelineCamara.stop();
@@ -376,7 +404,6 @@ public class EmpleadoController {
         }
 
         EmpleadoDto empleado = new EmpleadoDto();
-        //idSeleccionado es null si es un empleado nuevo; el servidor genera el folio en ese caso
         empleado.setId(idSeleccionado);
 
         empleado.setNombre(txtNombre.getText());
@@ -426,9 +453,7 @@ public class EmpleadoController {
 
     @FXML
     private void handleRegresar(ActionEvent event) {
-        //Si la camara esta encendida, se apaga antes de cerrar la pantalla
         apagarCamara();
-
         Stage stage = (Stage) btnRegresar.getScene().getWindow();
         stage.close();
     }

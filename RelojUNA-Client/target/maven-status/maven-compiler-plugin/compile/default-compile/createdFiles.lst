@@ -41,7 +41,6 @@ cr\ac\una\relojuna\ws\ExportarPlanillaExcelResponse.class
 cr\ac\una\relojuna\ws\DetallePlanillaDto.class
 cr\ac\una\relojuna\ws\ObtenerMarcas.class
 cr\ac\una\relojuna\ws\GenerarReporteMarcasPdfResponse.class
-cr\ac\una\relojuna\controller\AccesoDirectoMarcaController.class
 cr\ac\una\relojuna\model\ConsultaResultadoDto.class
 cr\ac\una\relojuna\ws\GenerarReporteMarcasPdf.class
 cr\ac\una\relojuna\ws\MarcaWS.class
@@ -64,6 +63,7 @@ cr\ac\una\relojuna\ws\ConsultaFilaDto.class
 cr\ac\una\relojuna\util\FlowController.class
 cr\ac\una\relojuna\ws\EliminarEmpleadoResponse.class
 cr\ac\una\relojuna\ws\EliminarMarca.class
+cr\ac\una\relojuna\controller\MantenimientoMarcasController$1.class
 cr\ac\una\relojuna\controller\PlanillaController.class
 cr\ac\una\relojuna\model\PlanillaDto.class
 cr\ac\una\relojuna\model\MarcaDto.class
@@ -71,7 +71,6 @@ cr\ac\una\relojuna\ws\GenerarPlanillaResponse.class
 cr\ac\una\relojuna\ws\ConsultaWS.class
 cr\ac\una\relojuna\ws\GuardarPlanilla.class
 cr\ac\una\relojuna\ws\ExportarConsultaExcel.class
-cr\ac\una\relojuna\util\ImagenUtil.class
 cr\ac\una\relojuna\ws\LoginWS_Service.class
 cr\ac\una\relojuna\ws\ObtenerEmpleadoPorId.class
 cr\ac\una\relojuna\ws\LoginWS.class
@@ -88,7 +87,6 @@ cr\ac\una\relojuna\util\Respuesta.class
 cr\ac\una\relojuna\ws\LoginResponse.class
 cr\ac\una\relojuna\ws\GenerarReporteEmpleadosPdf.class
 cr\ac\una\relojuna\ws\GuardarPlanillaResponse.class
-cr\ac\una\relojuna\model\DetallePlanillaDto.class
 cr\ac\una\relojuna\service\PlanillaService.class
 cr\ac\una\relojuna\ws\Marcar.class
 cr\ac\una\relojuna\controller\ReporteController.class

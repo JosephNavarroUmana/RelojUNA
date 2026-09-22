@@ -6,7 +6,6 @@ import cr.ac.una.relojuna.util.AppContext;
 import cr.ac.una.relojuna.util.FlowController;
 import cr.ac.una.relojuna.util.Respuesta;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -17,8 +16,6 @@ public class LoginController {
     private TextField txtFolio;
     @FXML
     private PasswordField txtClave;
-    @FXML
-    private Button btnLogin;
     @FXML
     private Label lblMensaje;
 
@@ -42,7 +39,6 @@ public class LoginController {
 
         if (!respuesta.getEstado()) {
             lblMensaje.setText(respuesta.getMensaje());
-            //Limpiamos la clave para que no quede pegada en el campo tras un intento fallido
             txtClave.clear();
             return;
         }

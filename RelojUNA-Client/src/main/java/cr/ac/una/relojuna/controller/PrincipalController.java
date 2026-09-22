@@ -4,31 +4,15 @@ import cr.ac.una.relojuna.model.EmpleadoDto;
 import cr.ac.una.relojuna.util.AppContext;
 import cr.ac.una.relojuna.util.FlowController;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 public class PrincipalController {
 
     @FXML
     private Label lblUsuario;
-    @FXML
-    private Button btnEmpleados;
-    @FXML
-    private Button btnMarcas;
-    @FXML
-    private Button btnMantenimientoMarcas;
-    @FXML
-    private Button btnPlanilla;
-    @FXML
-    private Button btnConsulta;
-    @FXML
-    private Button btnReportes;
-    @FXML
-    private Button btnCerrarSesion;
 
     @FXML
     private void initialize() {
-        //Mostramos el nombre del empleado que inicio sesion
         EmpleadoDto empleado = (EmpleadoDto) AppContext.getInstance().get("Usuario");
 
         if (empleado != null) {
@@ -68,7 +52,6 @@ public class PrincipalController {
 
     @FXML
     private void handleCerrarSesion() {
-        //Limpiamos el contexto y regresamos a la pantalla de login
         AppContext.getInstance().delete("Usuario");
         FlowController.getInstancia().irAVista("LoginView.fxml", "Reloj Marcador");
     }

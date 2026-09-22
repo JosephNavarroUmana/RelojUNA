@@ -20,7 +20,6 @@ public class PlanillaService {
         puerto = servicioWS.getPlanillaWSPort();
     }
 
-    //Pide al servidor que genere la planilla del mes y anio indicados
     public Respuesta generarPlanilla(int anio, int mes) {
         try {
             cr.ac.una.relojuna.ws.Respuesta respuestaServidor = puerto.generarPlanilla(mes, anio);
@@ -46,7 +45,6 @@ public class PlanillaService {
         }
     }
 
-    //Convierte una fila que llega del servidor al dto que usa el cliente
     private PlanillaDto convertirAPlanillaCliente(cr.ac.una.relojuna.ws.PlanillaFilaDto filaServidor) {
         PlanillaDto planilla = new PlanillaDto();
         planilla.setFolioEmpleado(filaServidor.getFolioEmpleado());
@@ -58,8 +56,6 @@ public class PlanillaService {
         return planilla;
     }
 
-    //Convierte el resultado crudo que manda el servidor al envoltorio de la lista de filas
-    //Puede llegar como JAXBElement, como el tipo directo, o como un nodo XML sin procesar
     private cr.ac.una.relojuna.ws.ListaPlanillaFilaDto convertirAListaPlanillaFilaDto(Object resultadoCrudo) throws Exception {
         if (resultadoCrudo instanceof JAXBElement) {
             return (cr.ac.una.relojuna.ws.ListaPlanillaFilaDto) ((JAXBElement<?>) resultadoCrudo).getValue();

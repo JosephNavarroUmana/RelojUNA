@@ -19,6 +19,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -35,8 +36,6 @@ public class MantenimientoMarcasController {
     @FXML
     private Label lblCantInconsistencias;
     @FXML
-    private Button btnFiltrar, btnVerInconsistencias, btnSiguienteInconsistencia, btnAgregar, btnModificar, btnEliminar, btnCorregirInconsistencia, btnLimpiar;
-    @FXML
     private Button btnRegresar;
     @FXML
     private TextField txtFolioMarca, txtHoraMarca;
@@ -44,21 +43,11 @@ public class MantenimientoMarcasController {
     private DatePicker dpFechaMarca;
     @FXML
     private ComboBox<String> cmbTipoMarca;
-
-    //Servicio de marcas
     private MarcaService marcaService;
-
-    //Lista observable que alimenta la tabla
     private ObservableList<MarcaDto> listaMarcas;
-
-    //Lista de inconsistencias encontradas y la posicion actual al navegar con Siguiente
     private List<MarcaDto> listaInconsistencias;
     private int indiceInconsistenciaActual;
-
-    //Formato para mostrar la fecha y hora en la tabla
     private DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-    //Formato para mostrar y leer la hora en el campo de texto
     private DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
 
     @FXML
@@ -80,6 +69,17 @@ public class MantenimientoMarcasController {
 
         tblMarcas.setItems(listaMarcas);
 
+        tblMarcas.setRowFactory(tv -> new TableRow<MarcaDto>() {
+            @Override
+            protected void updateItem(MarcaDto marca, boolean vacio) {
+                super.updateItem(marca, vacio);
+                getStyleClass().remove("fila-inconsistente");
+                if (!vacio && marca != null && "Inconsistente".equals(marca.getEstado())) {
+                    getStyleClass().add("fila-inconsistente");
+                }
+            }
+        });
+
         tblMarcas.getSelectionModel().selectedItemProperty().addListener((obs, anterior, seleccionada) -> {
             if (seleccionada != null) {
                 cargarFormulario(seleccionada);
@@ -92,49 +92,47 @@ public class MantenimientoMarcasController {
         cargarTabla();
     }
 
-   //Trae las marcas del rango de fechas seleccionado y las pone en la tabla
-private void cargarTabla() {
-    LocalDate fechaDesde = dpFechaDesde.getValue();
-    LocalDate fechaHasta = dpFechaHasta.getValue();
+    private void cargarTabla() {
+        LocalDate fechaDesde = dpFechaDesde.getValue();
+        LocalDate fechaHasta = dpFechaHasta.getValue();
 
-    if (fechaDesde == null || fechaHasta == null) {
-        mostrarMensaje("Debe seleccionar la fecha desde y la fecha hasta.");
-        return;
+        if (fechaDesde == null || fechaHasta == null) {
+            mostrarMensaje("Debe seleccionar la fecha desde y la fecha hasta.");
+            return;
+        }
+
+        Respuesta respuesta = marcaService.buscarMarcas(fechaDesde, fechaHasta);
+
+        if (!respuesta.getEstado()) {
+            mostrarMensaje(respuesta.getMensaje());
+            return;
+        }
+
+        List<MarcaDto> marcas = (List<MarcaDto>) respuesta.getResultado("Marcas");
+
+        marcarInconsistencias(marcas, fechaDesde, fechaHasta);
+
+        listaMarcas.clear();
+        listaMarcas.addAll(marcas);
     }
 
-    Respuesta respuesta = marcaService.buscarMarcas(fechaDesde, fechaHasta);
+    private void marcarInconsistencias(List<MarcaDto> marcas, LocalDate fechaDesde, LocalDate fechaHasta) {
+        Respuesta respuestaInconsistencias = marcaService.buscarInconsistencias(fechaDesde, fechaHasta);
 
-    if (!respuesta.getEstado()) {
-        mostrarMensaje(respuesta.getMensaje());
-        return;
-    }
+        if (!respuestaInconsistencias.getEstado()) {
+            return;
+        }
 
-    List<MarcaDto> marcas = (List<MarcaDto>) respuesta.getResultado("Marcas");
+        List<MarcaDto> inconsistentes = (List<MarcaDto>) respuestaInconsistencias.getResultado("Marcas");
 
-    marcarInconsistencias(marcas, fechaDesde, fechaHasta);
-
-    listaMarcas.clear();
-    listaMarcas.addAll(marcas);
-}
-
-//Consulta las inconsistencias del mismo rango y marca en la lista cuales marcas lo son
-private void marcarInconsistencias(List<MarcaDto> marcas, LocalDate fechaDesde, LocalDate fechaHasta) {
-    Respuesta respuestaInconsistencias = marcaService.buscarInconsistencias(fechaDesde, fechaHasta);
-
-    if (!respuestaInconsistencias.getEstado()) {
-        return;
-    }
-
-    List<MarcaDto> inconsistentes = (List<MarcaDto>) respuestaInconsistencias.getResultado("Marcas");
-
-    for (MarcaDto marca : marcas) {
-        for (MarcaDto inconsistente : inconsistentes) {
-            if (marca.getId().equals(inconsistente.getId())) {
-                marca.setEstado("Inconsistente");
+        for (MarcaDto marca : marcas) {
+            for (MarcaDto inconsistente : inconsistentes) {
+                if (marca.getId().equals(inconsistente.getId())) {
+                    marca.setEstado("Inconsistente");
+                }
             }
         }
     }
-}
 
     @FXML
     private void handleFiltrar() {
@@ -159,6 +157,9 @@ private void marcarInconsistencias(List<MarcaDto> marcas, LocalDate fechaDesde, 
         }
 
         listaInconsistencias = (List<MarcaDto>) respuesta.getResultado("Marcas");
+        for (MarcaDto m : listaInconsistencias) {
+            m.setEstado("Inconsistente");
+        }
         indiceInconsistenciaActual = 0;
 
         lblCantInconsistencias.setText("Inconsistencias: " + listaInconsistencias.size());
@@ -275,7 +276,6 @@ private void marcarInconsistencias(List<MarcaDto> marcas, LocalDate fechaDesde, 
         handleVerInconsistencias();
     }
 
-    //Lee los datos del formulario y arma un MarcaDto, retorna null si hay error de validacion
     private MarcaDto leerFormulario(Integer idExistente) {
         String folioTexto = txtFolioMarca.getText();
         LocalDate fecha = dpFechaMarca.getValue();
@@ -323,7 +323,6 @@ private void marcarInconsistencias(List<MarcaDto> marcas, LocalDate fechaDesde, 
         return marca;
     }
 
-    //Llena el formulario con los datos de la marca seleccionada en la tabla
     private void cargarFormulario(MarcaDto marca) {
         txtFolioMarca.setText(marca.getFolioEmpleado());
         dpFechaMarca.setValue(marca.getFechaHora().toLocalDate());

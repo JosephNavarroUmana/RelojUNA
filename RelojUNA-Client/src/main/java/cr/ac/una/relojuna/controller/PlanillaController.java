@@ -36,18 +36,13 @@ public class PlanillaController {
     @FXML
     private TableColumn<PlanillaDto, Double> colHorasOrdinarias, colHorasExtras, colHorasDobles, colSalarioMensual;
     @FXML
-    private Button btnGenerar, btnExportarExcel;
+    private Button btnExportarExcel;
     @FXML
     private Button btnRegresar;
 
-    //Servicios usados en esta pantalla
     private PlanillaService planillaService;
     private ReporteService reporteService;
-
-    //Lista observable que alimenta la tabla
     private ObservableList<PlanillaDto> listaPlanilla;
-
-    //Nombres de los meses en el mismo orden que su numero, enero es la posicion 0
     private String[] nombresMeses = {
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Setiembre", "Octubre", "Noviembre", "Diciembre"
@@ -114,7 +109,7 @@ public class PlanillaController {
         listaPlanilla.addAll(planilla);
     }
 
-    //Pide al servidor que genere el Excel de la planilla y lo guarda donde el usuario elija
+    //Pide al servidor que genere el Excel 
     @FXML
     private void handleExportarExcel() {
         if (listaPlanilla.isEmpty()) {

@@ -34,11 +34,10 @@ public class ReporteController {
     @FXML
     private DatePicker dpFechaDesde, dpFechaHasta;
     @FXML
-    private Button btnGenerarReporte, btnVistaPrevia;
+    private Button btnGenerarReporte;
     @FXML
     private Button btnRegresar;
 
-    //Servicios usados en esta pantalla
     private EmpleadoService empleadoService;
     private ConsultaService consultaService;
     private ReporteService reporteService;
@@ -66,7 +65,6 @@ public class ReporteController {
         actualizarControlesSegunTipo();
     }
 
-    //Llena el combo de empleados con la opcion Todos de primero
     private void cargarComboEmpleados() {
         Respuesta respuesta = empleadoService.buscarEmpleados("");
 
@@ -104,7 +102,6 @@ public class ReporteController {
         return seleccionado.split(" - ")[0];
     }
 
-    //Trae las marcas segun los filtros de la pantalla y las ordena por empleado para que el reporte agrupe bien
     private List<ConsultaResultadoDto> obtenerMarcasOrdenadas() {
         LocalDate fechaDesde = dpFechaDesde.getValue();
         LocalDate fechaHasta = dpFechaHasta.getValue();
@@ -123,7 +120,6 @@ public class ReporteController {
         return marcas;
     }
 
-    //Trae todos los empleados para el reporte de empleados
     private List<EmpleadoDto> obtenerTodosLosEmpleados() {
         Respuesta respuesta = empleadoService.buscarEmpleados("");
 
@@ -135,7 +131,6 @@ public class ReporteController {
         return (List<EmpleadoDto>) respuesta.getResultado("Empleados");
     }
 
-    //Pide el pdf al servidor, lo guarda en un archivo temporal y lo abre con el visor del sistema
     @FXML
     private void handleVistaPrevia() {
         try {
@@ -179,7 +174,6 @@ public class ReporteController {
         }
     }
 
-    //Pide al servidor el pdf de empleados y lo guarda donde el usuario elija
     private void generarReporteEmpleados() {
         FileChooser selector = new FileChooser();
         selector.setTitle("Guardar reporte de empleados");
@@ -204,7 +198,6 @@ public class ReporteController {
         guardarBytesEnArchivo(bytesPdf, archivo);
     }
 
-    //Pide al servidor el pdf de marcas y lo guarda donde el usuario elija
     private void generarReporteMarcas() {
         FileChooser selector = new FileChooser();
         selector.setTitle("Guardar reporte de marcas");
@@ -229,7 +222,6 @@ public class ReporteController {
         guardarBytesEnArchivo(bytesPdf, archivo);
     }
 
-    //Escribe un arreglo de bytes en el archivo indicado
     private void guardarBytesEnArchivo(byte[] bytes, File archivo) {
         try (FileOutputStream salida = new FileOutputStream(archivo)) {
             salida.write(bytes);

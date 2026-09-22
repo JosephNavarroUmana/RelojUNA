@@ -23,23 +23,19 @@ public class AnimacionCumpleanos {
         Color.web("#8AC926"), Color.web("#B5179E"), Color.web("#FFD60A")
     };
 
-    // panel: el StackPane que cubre la pantalla (panelAnimacion del FXML)
-    // lblFelicitacion: el label donde va el texto
     public static void reproducir(StackPane panel, Label lblFelicitacion, String nombre) {
         lblFelicitacion.setText("¡Feliz cumpleaños " + nombre + "!");
 
         panel.setOpacity(0);
         panel.setVisible(true);
 
-        // Confeti: se agrega y se limpia solo al terminar
         lanzarConfeti(panel, 60);
 
-        // Fade in del panel completo
         FadeTransition fadeIn = new FadeTransition(Duration.millis(350), panel);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
 
-        // Texto con "rebote": aparece pequeño y crece pasándose de tamaño, luego se asienta
+        //Texto con rebote
         lblFelicitacion.setScaleX(0.3);
         lblFelicitacion.setScaleY(0.3);
         ScaleTransition rebote = new ScaleTransition(Duration.millis(500), lblFelicitacion);
@@ -53,7 +49,7 @@ public class AnimacionCumpleanos {
         asentar.setToX(1.0);
         asentar.setToY(1.0);
 
-        // Pulso continuo mientras está visible
+        //Pulso continuo
         ScaleTransition pulso = new ScaleTransition(Duration.millis(450), lblFelicitacion);
         pulso.setFromX(1.0);
         pulso.setFromY(1.0);
@@ -78,7 +74,6 @@ public class AnimacionCumpleanos {
         secuencia.play();
     }
 
-    // Crea piezas de confeti que caen desde arriba con rotación y balanceo
     private static void lanzarConfeti(StackPane panel, int cantidad) {
         double ancho = panel.getWidth() > 0 ? panel.getWidth() : 800;
         double alto = panel.getHeight() > 0 ? panel.getHeight() : 600;
